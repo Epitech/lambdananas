@@ -7,7 +7,9 @@ CP=cp
 BIN_PATH=`stack path --local-install-root`/bin/haskell-style-checker-exe
 INSTALL_PATH=$(HOME)/bin/
 
-$(NAME):
+SRC = app/Main.hs $(wildcard src/*.hs)
+
+$(NAME): $(SRC)
 	stack build
 	cp $(BIN_PATH) $(NAME)
 

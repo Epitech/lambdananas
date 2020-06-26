@@ -38,8 +38,8 @@ allRules = [
 defaultConf :: Conf
 defaultConf = Conf showLong allRules 
 
-rulesLook :: [Rule] -> [(String,Rule)]
-rulesLook = map (\ r -> (name r, r))
+rulesLookup :: String -> [Rule] -> Maybe Rule
+rulesLookup s = lookup s . map (\ r -> (name r, r))
 
 showLong :: Warn -> String
 showLong = show
@@ -75,7 +75,7 @@ doArgs conf ("--disable":y:xs)
   | otherwise = Nothing
   where newRules = [r | r <- rules conf, name r /= y ]
 doArgs conf@(Conf _ rls) ("--enable":y:xs) =
-  lookup y (rulesLook allRules) >>= updateRules
+  rulesLookup y allRules >>= updateRules
   where updateRules r = doArgs (conf {rules=newRules r}) xs
         newRules r = if rls == allRules then [r] else rls++[r]
 doArgs conf lst = Just (conf, lst)

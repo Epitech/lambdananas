@@ -87,8 +87,8 @@ isRetOrPure _ = False
 checkSigs :: Check
 checkSigs lst = join $ map genWarn binds
   where sigsAndBinds = explore collect lst
-        sigs = foldl (<>) mempty $ map fst sigsAndBinds
-        binds = foldl (<>) mempty $ map getBind sigsAndBinds
+        sigs = foldMap fst sigsAndBinds
+        binds = foldMap getBind sigsAndBinds
         getBind (_,l) = if l == [] then [] else [head l]
         genWarn (fct, ssi) | fct `notElem` sigs =
                              [Warn (NoSig fct) (getLoc ssi)]

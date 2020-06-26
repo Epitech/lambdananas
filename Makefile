@@ -14,7 +14,7 @@ $(NAME):
 all: $(NAME)
 
 install: $(NAME)
-	upx $(NAME) || true
+	upx --best $(NAME) || true
 	cp $(NAME) $(INSTALL_PATH)
 
 tests_run:

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 58ac1a8fb46fc5cb3a750c222d62c3ec23ef806f79f44a73a5584c0682362b66
+-- hash: 7f2a23b739c3e9ada183f366abc59083c805a3ba7b8096f692c31e8eb635f0be
 
 name:           haskell-style-checker
 version:        0.1.0.0
@@ -15,7 +15,6 @@ author:         Author name here
 maintainer:     example@example.com
 copyright:      2020 Author name here
 license:        BSD3
-license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md

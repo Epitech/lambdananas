@@ -64,24 +64,30 @@ usage = putStrLn (unwords ["usage: hsc [--short] [--long]",
   where displayRule (Rule n desc _) =
           putStrLn ("    * "++ n ++":\n      "++ desc)
 
-doArgs :: Conf -> [String] -> Maybe (Conf, [String])
-doArgs _ [] = Nothing
-doArgs _ ["-h"] = Nothing
-doArgs _ ["--help"] = Nothing
-doArgs conf ("--short":xs) = doArgs (conf{ showFct=showShort }) xs
-doArgs conf ("--long":xs) = doArgs (conf{ showFct=showLong }) xs
-doArgs conf ("--disable":y:xs)
-  | y `elem` map name (rules conf) = doArgs (conf{ rules = newRules}) xs
-  | otherwise = Nothing
+doOpt :: Conf -> [String] -> Either String (Conf, [String])
+doOpt _ ("-h":_) = Left "usage"
+doOpt _ ("--help":_) = Left "usage"
+doOpt conf ("--short":xs) = Right (conf{ showFct=showShort }, xs)
+doOpt conf ("--long":xs) = Right (conf{ showFct=showLong }, xs)
+doOpt conf ("--disable":y:xs)
+  | y `elem` map name (rules conf) = Right (conf{ rules=newRules}, xs)
+  | otherwise = Left ("unknown rule: '"++y++"'")
   where newRules = [r | r <- rules conf, name r /= y ]
-doArgs conf@(Conf _ rls) ("--enable":y:xs) =
-  rulesLookup y allRules >>= updateRules
-  where updateRules r = doArgs (conf {rules=newRules r}) xs
-        newRules r = if rls == allRules then [r] else rls++[r]
-doArgs conf lst = Just (conf, lst)
+doOpt conf@(Conf _ rls) ("--enable":y:xs) = case rulesLookup y allRules of
+  Just r -> Right $ updateRules r
+  Nothing -> Left ("unknown rule: '"++y++"'")
+  where updateRules r = (conf {rules=newRules r}, xs)
+        newRules r = if rls == allRules then [r] else r:rls
+doOpt _ (x:_) = Left ("unkown option: "++x)
+
+doArgs :: Conf -> [String] -> Either String (Conf, [String])
+doArgs _ [] = Left "Error: no file given"
+doArgs conf args@(('-':_):_) = doOpt conf args >>= uncurry doArgs 
+doArgs conf lst = Right (conf, lst)
         
 main :: IO ()
 main = getArgs >>= processAll . doArgs defaultConf
-  where processAll Nothing = usage
-        processAll (Just (conf,files)) = mapM_ (doOne conf) files
+  where processAll (Left "usage") = usage
+        processAll (Left str) = putStrLn ("Error: "++str) >> usage
+        processAll (Right (conf,files)) = mapM_ (doOne conf) files
           

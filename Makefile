@@ -4,9 +4,18 @@
 NAME=hsc
 CP=cp
 
-all:
+BIN_PATH=`stack path --local-install-root`/bin/haskell-style-checker-exe
+INSTALL_PATH=$(HOME)/bin/
+
+$(NAME):
 	stack build
-	cp `stack path --local-install-root`/bin/haskell-style-checker-exe $(NAME)
+	cp $(BIN_PATH) $(NAME)
+
+all: $(NAME)
+
+install: $(NAME)
+	upx $(NAME) || true
+	cp $(NAME) $(INSTALL_PATH)
 
 tests_run:
 	stack test

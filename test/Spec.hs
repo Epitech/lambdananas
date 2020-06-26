@@ -29,12 +29,15 @@ main = hspec $ do
       
     it "should work on multiple functions" $
       checkSigs
-      `appliedTo` ["f1 :: Int -> Int",
+      `appliedTo` [ "f1 :: Int -> Int",
                     "f1 x = 42",
                     "",
                     "f2 x y = x + y",
                     "",
-                    "f3 toto = 42"]
+                    "f3 toto = 42",
+                    "",
+                    "a :: Int",
+                    "a = 42" ]
       `shouldBe` Right [Warn (NoSig "f2") (".", 4),
                         Warn (NoSig "f3") (".", 6)]
 

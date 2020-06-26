@@ -5,7 +5,7 @@ import Language.Haskell.Exts.Syntax
 import Language.Haskell.Exts.SrcLoc
 import Language.Haskell.Exts.Pretty
 import Control.Monad
-import Control.Monad.Writer (Sum)
+import Control.Monad.Writer (Sum,(<>))
 import Debug.Trace
 import Control.Exception
 

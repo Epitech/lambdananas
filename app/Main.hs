@@ -1,18 +1,20 @@
 import Parser
 import Rules
 import System.Environment
-import Debug.Trace
-import Data.Monoid
 import Control.Monad
 import Data.List
 
 data Rule = Rule { name :: String
-                 , description :: String
+                 , _description :: String
                  , getRule :: Check
                  }
 
 instance Eq Rule where
   r1 == r2 = name r1 == name r2
+
+data Conf = Conf { showFct :: Warn -> String
+                 , rules :: [Rule]
+                 }
 
 allRules :: [Rule]
 allRules = [
@@ -33,35 +35,53 @@ allRules = [
   checkGuards
   ]
 
+defaultConf :: Conf
+defaultConf = Conf showLong allRules 
+
 rulesLook :: [Rule] -> [(String,Rule)]
 rulesLook = map (\ r -> (name r, r))
 
-doOne :: [Rule] -> String -> IO ()
-doOne rules filename = do
+showLong :: Warn -> String
+showLong = show
+
+showShort :: Warn -> String
+showShort (Warn w (f, l)) = f ++ ":" ++ show l ++ ":" ++ fst (issues w)
+
+doOne :: Conf -> String -> IO ()
+doOne (Conf sFct rls) filename = do
   buff <- parseFile filename
   case buff of
-    Right lst -> let rs = map getRule rules
+    Right lst -> let rs = map getRule rls
                      warnings = sort $ join $ map (\ f -> f lst) rs
-                 in mapM_ print warnings
+                 in mapM_ (putStrLn . sFct) warnings
     Left err -> putStrLn $ "unable to load file: "++ show (err :: IOError)
 
 usage :: IO ()
-usage = putStrLn "usage: hsc [--disable rule] [--enable rule] [files]"
+usage = putStrLn (unwords ["usage: hsc [--short] [--long]",
+                           "[--disable rule] [--enable rule] [files]"])
         >> putStrLn "  - Rules:"
         >> mapM_ displayRule allRules
-  where displayRule (Rule name description _) =
-          putStrLn ("    * "++ name ++":\n      "++description)
+  where displayRule (Rule n desc _) =
+          putStrLn ("    * "++ n ++":\n      "++ desc)
 
-doArgs :: [Rule] -> [String] -> Maybe ([Rule],[String])
-doArgs rules [] = Nothing
-doArgs rules ("--disable":y:xs)
-  | y `elem` map name rules = doArgs [r | r <- rules, name r /= y ] xs
+doArgs :: Conf -> [String] -> Maybe (Conf, [String])
+doArgs _ [] = Nothing
+doArgs _ ["-h"] = Nothing
+doArgs _ ["--help"] = Nothing
+doArgs conf ("--short":xs) = doArgs (conf{ showFct=showShort }) xs
+doArgs conf ("--long":xs) = doArgs (conf{ showFct=showLong }) xs
+doArgs conf ("--disable":y:xs)
+  | y `elem` map name (rules conf) = doArgs (conf{ rules = newRules}) xs
   | otherwise = Nothing
-doArgs rules ("--enable":y:xs) = lookup y (rulesLook allRules) >>=
-  \ r -> doArgs (if rules == allRules then [r] else rules++[r]) xs
-doArgs rules lst = Just (rules, lst)
+  where newRules = [r | r <- rules conf, name r /= y ]
+doArgs conf@(Conf _ rls) ("--enable":y:xs) =
+  lookup y (rulesLook allRules) >>= updateRules
+  where updateRules r = doArgs (conf {rules=newRules r}) xs
+        newRules r = if rls == allRules then [r] else rls++[r]
+doArgs conf lst = Just (conf, lst)
         
 main :: IO ()
-main = getArgs >>= processAll . doArgs allRules
+main = getArgs >>= processAll . doArgs defaultConf
   where processAll Nothing = usage
-        processAll (Just (rules, files)) = mapM_ (doOne rules) files
+        processAll (Just (conf,files)) = mapM_ (doOne conf) files
+          

@@ -5,7 +5,8 @@ import Language.Haskell.Exts.SrcLoc
 import Parser
 import Control.Monad
 import Control.Monad.Writer
-import Debug.Trace
+import Data.Foldable
+-- import Debug.Trace
 
 type Check = [Decl SrcSpanInfo] -> [Warn]
 
@@ -17,14 +18,17 @@ data Issue = NoSig String
            | BadDo
            deriving Eq
 
-instance Show Issue where
-  show (NoSig s) = "T1 # " ++ s ++ " has no signature" -- T types
-  show BadIf     = "C1 # nested IFs" -- C conditonnal branching
-  show BadReturn = "D2 # useless generator"  -- D do and generators
-  show BadGuard  = "C2 # guard should be a pattern" -- C conditional branch.
-  show BadDo     = "D1 # useless DO"
-  show (Debug s) = "DBG: "++s
+issues :: Issue -> (String,String)
+issues BadIf = ("C1", "nested IFs")  -- C conditonnal branching
+issues BadGuard = ("C2", "guard should be a pattern")  -- C conditonnal branching
+issues BadDo = ("D1", "useless DO")  -- D do and generators
+issues BadReturn = ("D2", "useless generator")  -- D do and generators
+issues (NoSig s) = ("T1", s ++ " has no signature")  -- T types
+issues (Debug s) = ("XX", s) -- DEBUG
 
+instance Show Issue where
+  show i = let (idd, msg) = issues i in idd ++ " # " ++ msg
+  
 data Warn = Warn { _what :: Issue
                  , _location :: (String, Int)
                  } deriving Eq
@@ -44,6 +48,7 @@ checkIfs = join . explore checkIf
         checkIf _ = []                                                  
         countIfs ifthen ifelse = inspectExpr countIf ifthen <>
                                  inspectExpr countIf ifelse
+        countIf :: Node -> Sum Int
         countIf (NExp If{}) = Sum 1
         countIf _ = Sum 0
 
@@ -54,6 +59,7 @@ checkDos = join . explore checkDo
                                        [Warn BadDo (getLoc ssi)]
         checkDo _ = []
         countGenerators = foldMap (countGenerator . NSmt)
+        countGenerator :: Node -> Sum Int
         countGenerator = checkGen (\ _ isRet ->
                                      if isRet then Sum 0 else Sum 1)
 
@@ -70,7 +76,7 @@ checkReturns = join . explore checkReturn
 {- auxiliary functions for checkDos and checkReturns -}
 checkGen :: Monoid m => (SrcSpanInfo -> Bool -> m) -> Node -> m
 checkGen f (NSmt (Generator ssi _ e1)) = f ssi $ isReturn e1
-checkGen f _ = mempty
+checkGen _ _ = mempty
 
 isReturn :: Exp SrcSpanInfo -> Bool
 isReturn (App _ (Var _ (UnQual _ (Ident _ f))) _) = isRetOrPure f
@@ -89,15 +95,15 @@ checkSigs lst = join $ map genWarn binds
   where sigsAndBinds = explore collect lst
         sigs = foldMap fst sigsAndBinds
         binds = foldMap getBind sigsAndBinds
-        getBind (_,l) = if l == [] then [] else [head l]
+        getBind (_,l) = if null l then [] else [head l]
         genWarn (fct, ssi) | fct `notElem` sigs =
                              [Warn (NoSig fct) (getLoc ssi)]
         genWarn _ = []
-        collect (NDec (TypeSig ssi (x:_) t )) = ([getIdent x],[])
+        collect (NDec (TypeSig _ (x:_) _ )) = ([getIdent x],[])
         collect (NDec (PatBind ssi (PVar _ idt) _ _ )) =
-          ([],[((getIdent idt), ssi)])
+          ([],[(getIdent idt, ssi)])
         collect (NDec (FunBind ssi (Match _ idt _ _ _:_))) =
-          ([],[((getIdent idt), ssi)])
+          ([],[(getIdent idt, ssi)])
         collect _ = ([],[])
 
 {- CHECK BAD GUARDS -}
@@ -107,17 +113,17 @@ checkGuards lst = join $ explore checkGuard lst
     checkGuard (NDec (FunBind _ match)) =
       let vars = map (inspectMatch collectVar) match
           matchs = map (inspectMatch collectGuards) match
-      in foldMap id $ zipWith toWarns vars matchs
+      in fold $ zipWith toWarns vars matchs
     checkGuard _ = []
 
-    collectVar (NPat (PVar ssi idt)) = [getIdent idt]
+    collectVar (NPat (PVar _ idt)) = [getIdent idt]
     collectVar _ = []
     
     collectGuards (NSmt (Qualifier _ expr)) = [expr]
     collectGuards _ = []
     
     toWarns :: [String] -> [Exp SrcSpanInfo] -> [Warn]
-    toWarns vars lst = foldMap (inspectExpr (toWarn vars)) lst
+    toWarns vars = foldMap (inspectExpr (toWarn vars))
     toWarn vars (NExp (InfixApp ssi e1 e2 e3))
       | isBadGuard vars e1 e2 e3 = [Warn BadGuard (getLoc ssi)]
     toWarn _ _ = []
@@ -136,4 +142,4 @@ checkGuards lst = join $ explore checkGuard lst
     isLit Con{} = True
     isLit (App _ Con{} _) = True
     isLit (List _ []) = True
-    isLit e = False
+    isLit _ = False

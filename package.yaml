@@ -26,6 +26,9 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options:
+  - -O3
+  - -Wall
 
 executables:
   haskell-style-checker-exe:
@@ -36,6 +39,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     - -O3
+    - -Wall
     dependencies:
     - haskell-style-checker
 

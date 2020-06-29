@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 74c3377ab86fe7a2564ea655e8cf323b095957e17698a780eb8944228140ba6d
+-- hash: 945c5bb885fc6b15056ecb8127d712532d1e95e548ddc653f8d4c77d592e476a
 
 name:           haskell-style-checker
 version:        0.1.0.0
@@ -26,6 +26,7 @@ source-repository head
 
 library
   exposed-modules:
+      Conf
       Parser
       Rules
   other-modules:
@@ -35,6 +36,8 @@ library
   ghc-options: -O3 -Wall
   build-depends:
       base >=4.7 && <5
+    , directory >=1.3
+    , filepath >=1.4
     , haskell-src-exts >=1.23
     , mtl >=2.2
   default-language: Haskell2010
@@ -48,6 +51,8 @@ executable haskell-style-checker-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N -O3 -Wall
   build-depends:
       base >=4.7 && <5
+    , directory >=1.3
+    , filepath >=1.4
     , haskell-src-exts >=1.23
     , haskell-style-checker
     , mtl >=2.2
@@ -63,6 +68,8 @@ test-suite haskell-style-checker-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , directory >=1.3
+    , filepath >=1.4
     , haskell-src-exts >=1.23
     , haskell-style-checker
     , hspec >=2.7

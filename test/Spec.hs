@@ -2,15 +2,16 @@ import Test.Hspec
 import Parser
 import Rules
 import Language.Haskell.Exts.Syntax
+import Control.Monad
 
 appliedTo :: Check -> [String] -> Either IOError [Warn]
-appliedTo rule src = fmap rule $ parseHS "." (unlines src)
+appliedTo rule src = rule <$> parseHS "." (unlines src)
 
 main :: IO ()
 main = hspec $ do
-  describe "parseHS" $ do
+  describe "parseHS" $
     it "parse haskell source" $
-      let res = fmap (map (fmap (\_->()) )) $ parseHS "." "v = 42"
+      let res = map void <$> parseHS "." "v = 42"
       in res `shouldBe` Right [PatBind () (PVar () (Ident () "v"))
                                (UnGuardedRhs () (Lit () (Int () 42 "42")))
                                Nothing]

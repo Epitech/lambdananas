@@ -35,11 +35,14 @@ doOne (Conf sFct rls _) filename = do
 loadDir :: FilePath -> IO [FilePath]
 loadDir dir = do
   files <- listDirectory dir
-  files2 <- mapM ((\ f -> doesDirectoryExist f >>=
-                    \ isDir -> if isDir && f `notElem` ["test","bonus"]
-                               then loadDir f
-                               else return [f]) . (dir </>)) files
+  files2 <- mapM (expandDir . (dir </>)) files
   return $ filter (\ f -> takeExtension f == ".hs" &&
                           takeFileName f /= "Setup.hs") $
     join files2
   
+expandDir :: FilePath -> IO [FilePath]
+expandDir f = doesDirectoryExist f >>=
+                    \ isDir -> if isDir && ignore f
+                               then loadDir f
+                               else return [f]
+  where ignore fl = takeFileName fl `notElem` ["test","bonus",".stack-work"]

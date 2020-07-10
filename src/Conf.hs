@@ -15,23 +15,38 @@ data Conf = Conf { showFct :: Warn -> String
                  }
 
 allRules :: [Rule]
-allRules = [
-  Rule "check-signatures"
-  "top declaration has no corresponging type signature"
-  checkSigs,
-  Rule "check-ifs"
-  "nested if"
-  checkIfs,
-  Rule "check-returns"
-  "useless return statement in do block"
-  checkReturns,
-  Rule "check-dos"
-  "useless do"
-  checkDos,
-  Rule "check-guards"
-  "guard should be pattern match"
-  checkGuards
-  ]
+allRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
+            ruleCheckGuards, ruleCheckLines ]
+
+ruleCheckSign :: Rule            
+ruleCheckSign = Rule "check-signatures"
+                "top declaration has no corresponging type signature"
+                checkSigs
+                
+ruleCheckIfs :: Rule
+ruleCheckIfs = Rule "check-ifs"
+               "nested if"
+               checkIfs
+               
+ruleCheckReturns :: Rule
+ruleCheckReturns = Rule "check-returns"
+                   "useless return statement in do block"
+                   checkReturns
+
+ruleCheckDos :: Rule
+ruleCheckDos = Rule "check-dos"
+               "useless do"
+               checkDos
+
+ruleCheckGuards :: Rule               
+ruleCheckGuards = Rule "check-guards"
+                  "guard should be pattern match"
+                  checkGuards
+
+ruleCheckLines :: Rule
+ruleCheckLines = Rule "check-lines"
+                 "functions should be less than 10 lines x 80 columns"
+                 checkLines
 
 defaultConf :: Conf
 defaultConf = Conf showLong allRules []

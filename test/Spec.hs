@@ -134,3 +134,14 @@ main = hspec $ do
                    "         | otherwise = True"]
       `shouldBe` Right [Warn BadGuard (".", 1),
                         Warn BadGuard (".", 2)]
+
+  describe "checkLines" $ do
+    it "should detect too long functions" $
+      checkLines
+      `appliedTo` (["f 0 = "] ++ ["" | _ <- [1..10] ] ++ ["    True"])
+      `shouldBe` Right [Warn FunctionTooBig (".", 1)]
+
+    it "should detect too long lines" $
+      checkLines
+      `appliedTo` ["f 0 = " ++ [' ' | _ <- [1..70] ] ++ "    True"]
+      `shouldBe` Right [Warn LineTooLong (".", 1)]

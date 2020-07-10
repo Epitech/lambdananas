@@ -35,7 +35,7 @@ getLoc :: SrcSpanInfo -> (String,Int)
 getLoc (SrcSpanInfo (SrcSpan f l _ _ _) _) = (f,l)
 
 inspectExpr :: Monoid a => (Node -> a) -> Exp SrcSpanInfo -> a
-inspectExpr f e0@(InfixApp _ e1 q e2) = f (NExp e0) `mappend`
+inspectExpr f e0@(InfixApp _ e1 _q e2) = f (NExp e0) `mappend`
                                         inspectExpr f e1 `mappend`
                                         inspectExpr f e2
 inspectExpr f e0@(App _ e1 e2) = f (NExp e0) `mappend`
@@ -65,7 +65,7 @@ inspectAlt f (Alt _ pat rhs (Just binds)) = inspectPat f pat <>
 
 inspectStmt :: Monoid a => (Node -> a) -> Stmt SrcSpanInfo -> a
 inspectStmt f s@(Qualifier _ e) = f (NSmt s) <> inspectExpr f e
-inspectStmt f s@(Generator _ e1 e2) = f (NSmt s) <> inspectExpr f e2
+inspectStmt f s@(Generator _ _e1 e2) = f (NSmt s) <> inspectExpr f e2
 inspectStmt f s@(LetStmt _ b) = f (NSmt s) <> inspectBinds f b
 inspectStmt _ _ = mempty --trace (showS s) mempty
 

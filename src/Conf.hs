@@ -16,7 +16,7 @@ data Conf = Conf { showFct :: Warn -> String
 
 allRules :: [Rule]
 allRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
-            ruleCheckGuards, ruleCheckLines ]
+            ruleCheckDos, ruleCheckGuards, ruleCheckLines ]
 
 ruleCheckSign :: Rule            
 ruleCheckSign = Rule "check-signatures"

@@ -10,25 +10,25 @@ import Data.Foldable
 
 type Check = [Decl SrcSpanInfo] -> [Warn]
 
-data Issue = NoSig String
-           | BadIf
+data Issue = BadIf
+           | BadDo
            | BadReturn
            | BadGuard
            | LineTooLong
            | FunctionTooBig
+           | NoSig String
            | Debug String
-           | BadDo
            deriving Eq
 
 issues :: Issue -> (String,String)
-issues BadIf = ("C1", "nested IFs")  -- C conditonnal branching
-issues BadGuard = ("C2", "guard should be a pattern")  -- C cond. branch.
-issues BadDo = ("D1", "useless DO")  -- D do and generators
-issues BadReturn = ("D2", "useless generator")  -- D do and generators
-issues (NoSig s) = ("T1", s ++ " has no signature")  -- T types
-issues LineTooLong = ("F3", "line too long")  -- D do and generators
+issues BadIf =          ("C1", "nested IFs")  -- C cond. branching
+issues BadGuard =       ("C2", "guard should be a pattern")  -- C cond. branch.
+issues BadDo =          ("D1", "useless DO")  -- D do and generators
+issues BadReturn =      ("D2", "useless generator")  -- D do and generators
+issues LineTooLong =    ("F3", "line too long")  -- D do and generators
 issues FunctionTooBig = ("F4", "function too big")  -- D do and generators
-issues (Debug s) = ("XX", s) -- DEBUG
+issues (NoSig s) =      ("T1", s ++ " has no signature")  -- T types
+issues (Debug s) =      ("XX", s) -- DEBUG
 
 instance Show Issue where
   show i = let (idd, msg) = issues i in idd ++ " # " ++ msg
@@ -148,6 +148,7 @@ isLit (App _ Con{} _) = True
 isLit (List _ []) = True
 isLit _ = False
 
+{- CHECK LINES LENGTH AND FUNCTION SIZE -}
 checkLines :: Check
 checkLines lst = uniqWarn $ join $ explore checkLine lst
   where checkLine (NDec (FunBind _ matches)) = foldMap checkLine' matches

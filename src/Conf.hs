@@ -16,8 +16,18 @@ data Conf = Conf { showFct :: Warn -> String
 
 allRules :: [Rule]
 allRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
-            ruleCheckDos, ruleCheckGuards, ruleCheckLines ]
+            ruleCheckDos, ruleCheckGuards, ruleCheckLines ] --, ruleCheckFuncs ]
 
+defaultRules :: [Rule]
+defaultRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
+                 ruleCheckDos, ruleCheckGuards, ruleCheckLines ]
+
+{-
+ruleCheckFuncs :: Rule            
+ruleCheckFuncs = Rule "check-functions"
+                "only allowed functions in pool days1"
+                checkFuncs
+-}              
 ruleCheckSign :: Rule            
 ruleCheckSign = Rule "check-signatures"
                 "top declaration has no corresponging type signature"
@@ -49,7 +59,7 @@ ruleCheckLines = Rule "check-lines"
                  checkLines
 
 defaultConf :: Conf
-defaultConf = Conf showLong allRules []
+defaultConf = Conf showLong defaultRules []
 
 rulesLookup :: String -> [Rule] -> Maybe Rule
 rulesLookup s = lookup s . map (\ r -> (name r, r))
@@ -73,8 +83,23 @@ doOpt conf@(Conf _ rls _) ("--enable":y:xs) = case rulesLookup y allRules of
   Just r -> Right $ updateRules r
   Nothing -> Left ("unknown rule: '" ++ y ++ "'")
   where updateRules r = (conf {rules=newRules r}, xs)
-        newRules r = if rls == allRules then [r] else r:rls
+        newRules r = if rls == defaultRules then [r] else r:rls
 doOpt conf ("-d":y:xs) = Right (conf {dirs=y:dirs conf}, xs)
+doOpt conf ("--day1":xs) =
+  Right (conf{rules=(banned:defaultRules)},xs)
+  where banned = Rule "check-functions"
+                 "rejects banned functions in pool days1"
+                 (checkFuncs
+                  [ "succ", "abs", "min", "max", "fst", "snd",
+                    "head", "tail", "length", "!!", "take", "drop", "++",
+                    "reverse", "init", "last", "zip", "unzip",
+                    "map", "filter", "foldl", "foldr", "partition" ])
+doOpt conf ("--day2":xs) =
+  Right (conf{rules=(banned:defaultRules)},xs)
+  where banned = Rule "check-functions"
+                 "rejects banned functions in pool days2"
+                 (checkFuncs [ "fromJust", "readMaybe", "elem", "lookup" ])
+                 
 doOpt _ (x:_) = Left ("unkown option: "++x)
 doOpt _ _ = Left "shouldn't be there :("
 

@@ -45,4 +45,5 @@ expandDir f = doesDirectoryExist f >>=
                     \ isDir -> if isDir && ignore f
                                then loadDir f
                                else return [f]
-  where ignore fl = takeFileName fl `notElem` ["test","bonus",".stack-work"]
+  where ignore fl = takeFileName fl `notElem` ["tests", "test",
+                                               "bonus",".stack-work"]

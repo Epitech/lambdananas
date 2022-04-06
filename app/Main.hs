@@ -1,3 +1,5 @@
+module Main where
+
 import Parser
 import Conf
 import System.Environment
@@ -5,14 +7,16 @@ import Control.Monad
 import Data.List
 import System.Directory
 import System.FilePath.Posix
+import Options.Applicative
 
 main :: IO ()
-main = getArgs >>= processAll . doArgs defaultConf
+main =  execParser (info optParser (fullDesc <> progDesc "test")) >>= print
+{-- main = getArgs >>= processAll . doArgs defaultConf
   where processAll (Left "usage") = usage
         processAll (Left str) = putStrLn ("Error: "++str) >> usage
         processAll (Right (conf,files)) = do
           files2 <- join <$> mapM loadDir (dirs conf)
-          mapM_ (doOne conf) (files ++ files2)
+          mapM_ (doOne conf) (files ++ files2) --}
 
 usage :: IO ()
 usage = putStrLn (unwords ["usage: hsc [--short] [--long]",

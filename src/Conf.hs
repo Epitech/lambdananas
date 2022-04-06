@@ -1,4 +1,13 @@
-module Conf where
+module Conf (
+doArgs,
+Conf (Conf),
+Rule (Rule),
+allRules,
+getRule,
+optParser,
+) where
+
+import Options.Applicative
 import Rules
 
 data Rule = Rule { name :: String
@@ -8,6 +17,45 @@ data Rule = Rule { name :: String
 
 instance Eq Rule where
   r1 == r2 = name r1 == name r2
+
+-- | Holds the command line argument parsing result.
+-- The 'Conf'' data aims at replacing the 'Conf' data.
+data Conf' = Conf' { usage :: Bool
+                   , descriptions :: Bool
+                   , veraCompatible :: Bool
+                   , silent :: Bool
+                   , directories :: [FilePath]
+                   }
+                   deriving (Show)
+
+parseDirectoryList :: String -> Maybe [FilePath]
+parseDirectoryList s = Just [s]
+
+optParser :: Parser Conf'
+optParser = let
+            descriptionHelp = "Outputs a description for each infraction"
+            veraHelp = "Enables vera compatibility"
+            in Conf'
+            <$> switch
+                (long "help"
+                 <> short 'h'
+                 <> help "Shows this message")
+            <*> switch
+                (long "descriptions"
+                 <> short 'v'
+                 <> help descriptionHelp)
+            <*> switch
+                (long "vera-compatible"
+                 <> short 'c'
+                 <> help veraHelp)
+            <*> switch
+                (long "silent"
+                 <> short 's'
+                 <> help "Disables output to stdout and stderr")
+            <*> option (maybeReader parseDirectoryList)
+                (long "directories"
+                 <> short 'd'
+                 <> help "Directories to search")
 
 data Conf = Conf { showFct :: Warn -> String
                  , rules :: [Rule]
@@ -63,6 +111,11 @@ showLong = show
 
 showShort :: Warn -> String
 showShort (Warn w (f, l)) = f ++ ":" ++ show l ++ ":" ++ fst (issues w)
+
+-- TODO : replace those with optparse applicative
+
+
+
 
 doOpt :: Conf -> [String] -> Either String (Conf, [String])
 doOpt _ ("-h":_) = Left "usage"

@@ -22,22 +22,16 @@ defaultRules :: [Rule]
 defaultRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
                  ruleCheckDos, ruleCheckGuards, ruleCheckLines ]
 
-{-
-ruleCheckFuncs :: Rule            
-ruleCheckFuncs = Rule "check-functions"
-                "only allowed functions in pool days1"
-                checkFuncs
--}              
-ruleCheckSign :: Rule            
+ruleCheckSign :: Rule
 ruleCheckSign = Rule "check-signatures"
                 "top declaration has no corresponging type signature"
                 checkSigs
-                
+
 ruleCheckIfs :: Rule
 ruleCheckIfs = Rule "check-ifs"
                "nested if"
                checkIfs
-               
+
 ruleCheckReturns :: Rule
 ruleCheckReturns = Rule "check-returns"
                    "useless return statement in do block"
@@ -48,7 +42,7 @@ ruleCheckDos = Rule "check-dos"
                "useless do"
                checkDos
 
-ruleCheckGuards :: Rule               
+ruleCheckGuards :: Rule
 ruleCheckGuards = Rule "check-guards"
                   "guard should be pattern match"
                   checkGuards
@@ -85,25 +79,11 @@ doOpt conf@(Conf _ rls _) ("--enable":y:xs) = case rulesLookup y allRules of
   where updateRules r = (conf {rules=newRules r}, xs)
         newRules r = if rls == defaultRules then [r] else r:rls
 doOpt conf ("-d":y:xs) = Right (conf {dirs=y:dirs conf}, xs)
-doOpt conf ("--day1":xs) =
-  Right (conf{rules=(banned:defaultRules)},xs)
-  where banned = Rule "check-functions"
-                 "rejects banned functions in pool days1"
-                 (checkFuncs
-                  [ "succ", "abs", "min", "max", "fst", "snd",
-                    "head", "tail", "length", "!!", "take", "drop", "++",
-                    "reverse", "init", "last", "zip", "unzip",
-                    "map", "filter", "foldl", "foldr", "partition" ])
-doOpt conf ("--day2":xs) =
-  Right (conf{rules=(banned:defaultRules)},xs)
-  where banned = Rule "check-functions"
-                 "rejects banned functions in pool days2"
-                 (checkFuncs [ "fromJust", "readMaybe", "elem", "lookup" ])
-                 
+
 doOpt _ (x:_) = Left ("unkown option: "++x)
 doOpt _ _ = Left "shouldn't be there :("
 
 doArgs :: Conf -> [String] -> Either String (Conf, [String])
 doArgs (Conf _ _ []) [] = Left "Error: no file given"
-doArgs conf args@(('-':_):_) = doOpt conf args >>= uncurry doArgs 
+doArgs conf args@(('-':_):_) = doOpt conf args >>= uncurry doArgs
 doArgs conf lst = Right (conf, lst)

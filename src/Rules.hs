@@ -6,7 +6,6 @@ import Parser
 import Control.Monad
 import Control.Monad.Writer
 import Data.Foldable
-import Debug.Trace
 
 type Check = [Decl SrcSpanInfo] -> [Warn]
 
@@ -17,7 +16,6 @@ data Issue = BadIf
            | LineTooLong
            | FunctionTooBig
            | NoSig String
-           | BadFun String
            | Debug String
            deriving Eq
 
@@ -28,13 +26,12 @@ issues BadDo =          ("D1", "useless DO")  -- D do and generators
 issues BadReturn =      ("D2", "useless generator")  -- D do and generators
 issues LineTooLong =    ("F3", "line too long")  -- D do and generators
 issues FunctionTooBig = ("F4", "function too big")  -- D do and generators
-issues (BadFun s) =     ("B1", "banned function ("++s++")") -- Banned funcs
 issues (NoSig s) =      ("T1", s ++ " has no signature")  -- T types
 issues (Debug s) =      ("XX", s) -- DEBUG
 
 instance Show Issue where
   show i = let (idd, msg) = issues i in idd ++ " # " ++ msg
-  
+
 data Warn = Warn { what :: Issue
                  , _location :: (String, Int)
                  } deriving Eq
@@ -51,7 +48,7 @@ checkIfs :: Check
 checkIfs = join . explore checkIf
   where checkIf (NExp (If ssi _ ift ife)) | countIfs ift ife >= 1 =
                                                   [Warn BadIf (getLoc ssi)]
-        checkIf _ = []                                                  
+        checkIf _ = []
         countIfs ifthen ifelse = inspectExpr countIf ifthen <>
                                  inspectExpr countIf ifelse
         countIf :: Node -> Sum Int
@@ -126,7 +123,7 @@ checkGuards lst = join $ explore checkGuard lst
         collectVar _ = []
         collectGuards (NSmt (Qualifier _ expr)) = [expr]
         collectGuards _ = []
-    
+
 toWarns :: [String] -> [Exp SrcSpanInfo] -> [Warn]
 toWarns vars = foldMap (inspectExpr toWarn)
   where toWarn (NExp (InfixApp ssi e1 e2 e3))
@@ -173,25 +170,3 @@ uniqWarn :: [Warn] -> [Warn]
 uniqWarn [] = []
 uniqWarn (x:xs) | x `elem` xs  = uniqWarn xs
                 | otherwise = x : uniqWarn xs
-
-{- CHECK FORBIDEN FUNCTIONS -}
-checkFuncs :: [String] -> Check
-checkFuncs banned = join . explore checkFct
-  where checkFct (NExp (App _ a _)) = getName a
-        checkFct (NExp (InfixApp _ _ a _)) = getQop a
-        checkFct (NExp a) = getName a
-        checkFct e = [] --trace (">>> "++show e++"\n") []
-        getQop (QVarOp ssi (UnQual _ (Symbol _ name))) = check' ssi name
-        getQop QConOp{} = [] -- [Warn (BadFun name) (getLoc ssi)]
-        getQop e = [] -- trace (show e) [] -- error (show e)
-        getName (Con ssi (UnQual _ (Ident _ name))) = check' ssi name
-        getName (Var ssi (UnQual _ (Ident _ name))) = check' ssi name
-        getName (Var ssi (UnQual _ (Symbol _ name))) = check' ssi name
-        getName (Lit ssi (String _ name _)) = check' ssi name
-        getName App{} = []
-        getName InfixApp{} = []
-        getName (ListComp ssi _ _) = [Warn (BadFun "*ListComp*") (getLoc ssi)]
-        getName e = [] -- trace (show e) [] -- error (show e)
-        check' ssi name = if elem name banned
-                          then [Warn (BadFun name) (getLoc ssi)]
-                          else []

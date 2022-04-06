@@ -30,8 +30,8 @@ doOne (Conf sFct rls _) filename = do
     Right lst -> let rs = map getRule rls
                      warnings = sort $ join $ map (\ f -> f lst) rs
                  in mapM_ (putStrLn . sFct) warnings
-    Left err -> putStrLn $ "unable to load file: "++ show (err :: IOError)
-                  
+    Left err -> putStrLn $ "unable to load file: " ++ show (err :: IOError) -- TODO : check les extensions ici en regardant l'erreur
+
 loadDir :: FilePath -> IO [FilePath]
 loadDir dir = do
   files <- listDirectory dir
@@ -39,7 +39,7 @@ loadDir dir = do
   return $ filter (\ f -> takeExtension f == ".hs" &&
                           takeFileName f /= "Setup.hs") $
     join files2
-  
+
 expandDir :: FilePath -> IO [FilePath]
 expandDir f = doesDirectoryExist f >>=
                     \ isDir -> if isDir && ignore f

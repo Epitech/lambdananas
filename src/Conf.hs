@@ -20,27 +20,25 @@ instance Eq Rule where
 
 -- | Holds the command line argument parsing result.
 -- The 'Conf'' data aims at replacing the 'Conf' data.
-data Conf' = Conf' { usage :: Bool
-                   , descriptions :: Bool
+data Conf' = Conf' { descriptions :: Bool
                    , veraCompatible :: Bool
                    , silent :: Bool
                    , directories :: [FilePath]
+                   , files :: [FilePath]
                    }
                    deriving (Show)
 
-parseDirectoryList :: String -> Maybe [FilePath]
-parseDirectoryList s = Just [s]
+-- | Determine a list of path from a string.
+parsePathList :: String -> Maybe [FilePath]
+parsePathList s = Just $ words s
 
+-- | Create a 'Conf'' when the returned parser is ran.
 optParser :: Parser Conf'
 optParser = let
             descriptionHelp = "Outputs a description for each infraction"
             veraHelp = "Enables vera compatibility"
             in Conf'
             <$> switch
-                (long "help"
-                 <> short 'h'
-                 <> help "Shows this message")
-            <*> switch
                 (long "descriptions"
                  <> short 'v'
                  <> help descriptionHelp)
@@ -52,10 +50,16 @@ optParser = let
                 (long "silent"
                  <> short 's'
                  <> help "Disables output to stdout and stderr")
-            <*> option (maybeReader parseDirectoryList)
+            <*> option (maybeReader parsePathList)
                 (long "directories"
                  <> short 'd'
+                 <> metavar "DIR"
                  <> help "Directories to search")
+            <*> option (maybeReader parsePathList)
+                (long "files"
+                 <> short 'f'
+                 <> metavar "FILE"
+                 <> help "Files to search")
 
 data Conf = Conf { showFct :: Warn -> String
                  , rules :: [Rule]
@@ -64,7 +68,7 @@ data Conf = Conf { showFct :: Warn -> String
 
 allRules :: [Rule]
 allRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
-            ruleCheckDos, ruleCheckGuards, ruleCheckLines ] --, ruleCheckFuncs ]
+            ruleCheckDos, ruleCheckGuards, ruleCheckLines ]
 
 defaultRules :: [Rule]
 defaultRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
@@ -111,11 +115,6 @@ showLong = show
 
 showShort :: Warn -> String
 showShort (Warn w (f, l)) = f ++ ":" ++ show l ++ ":" ++ fst (issues w)
-
--- TODO : replace those with optparse applicative
-
-
-
 
 doOpt :: Conf -> [String] -> Either String (Conf, [String])
 doOpt _ ("-h":_) = Left "usage"

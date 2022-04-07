@@ -10,7 +10,11 @@ import System.FilePath.Posix
 import Options.Applicative
 
 main :: IO ()
-main =  execParser (info optParser (fullDesc <> progDesc "test")) >>= print
+main =  execParser options >>= print where
+    options = info (optParser <**> helper)
+              (fullDesc
+              <> header "Haskell Style Checker - An EPITECH Haskell Linter")
+
 {-- main = getArgs >>= processAll . doArgs defaultConf
   where processAll (Left "usage") = usage
         processAll (Left str) = putStrLn ("Error: "++str) >> usage

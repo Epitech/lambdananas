@@ -23,8 +23,8 @@ instance Eq Rule where
 data Conf' = Conf' { descriptions :: Bool
                    , veraCompatible :: Bool
                    , silent :: Bool
-                   , directories :: [FilePath]
-                   , files :: [FilePath]
+                   , directories :: Maybe [FilePath]
+                   , files :: Maybe [FilePath]
                    }
                    deriving (Show)
 
@@ -50,16 +50,16 @@ optParser = let
                 (long "silent"
                  <> short 's'
                  <> help "Disables output to stdout and stderr")
-            <*> option (maybeReader parsePathList)
+            <*> optional (option (maybeReader parsePathList)
                 (long "directories"
                  <> short 'd'
                  <> metavar "DIR"
-                 <> help "Directories to search")
-            <*> option (maybeReader parsePathList)
+                 <> help "Directories to search"))
+            <*> optional (option (maybeReader parsePathList)
                 (long "files"
                  <> short 'f'
                  <> metavar "FILE"
-                 <> help "Files to search")
+                 <> help "Files to search"))
 
 data Conf = Conf { showFct :: Warn -> String
                  , rules :: [Rule]

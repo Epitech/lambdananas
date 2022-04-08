@@ -2,7 +2,6 @@ module Main where
 
 import Parser
 import Conf
-import System.Environment
 import Control.Monad
 import Data.List
 import System.Directory
@@ -10,26 +9,23 @@ import System.FilePath.Posix
 import Options.Applicative
 
 main :: IO ()
-main =  execParser options >>= print where
+main =  execParser options >>= processAll . translateConf where
     options = info (optParser <**> helper)
               (fullDesc
               <> header "Haskell Style Checker - An EPITECH Haskell Linter")
 
-{-- main = getArgs >>= processAll . doArgs defaultConf
-  where processAll (Left "usage") = usage
-        processAll (Left str) = putStrLn ("Error: "++str) >> usage
-        processAll (Right (conf,files)) = do
-          files2 <- join <$> mapM loadDir (dirs conf)
-          mapM_ (doOne conf) (files ++ files2) --}
+-- TODO : remove this glue code
+-- | Translates a 'Conf'' to a 'Conf'.
+translateConf :: Conf' -> Either String (Conf, [String])
+translateConf (Conf' _ _ _ Nothing Nothing) = Left "No files or directories"
+translateConf (Conf' _ _ _ (Just dir) (Just file)) = Right (Conf showLong defaultRules [], dir)
+translateConf _ = Left "failed"
 
-usage :: IO ()
-usage = putStrLn (unwords ["usage: hsc [--short] [--long]",
-                           "[--disable rule] [--enable rule]",
-                           "[-d directory] [files]"])
-        >> putStrLn "  - Rules:"
-        >> mapM_ displayRule allRules
-  where displayRule (Rule n desc _) =
-          putStrLn ("    * "++ n ++":\n      "++ desc)
+processAll :: Either String (Conf, [String]) -> IO ()
+processAll (Left str) = putStrLn ("Error: "++str)
+processAll (Right (conf,files)) = do
+    files2 <- join <$> mapM loadDir (dirs conf)
+    mapM_ (doOne conf) (files ++ files2)
 
 doOne :: Conf -> String -> IO ()
 doOne (Conf sFct rls _) filename = do
@@ -38,7 +34,7 @@ doOne (Conf sFct rls _) filename = do
     Right lst -> let rs = map getRule rls
                      warnings = sort $ join $ map (\ f -> f lst) rs
                  in mapM_ (putStrLn . sFct) warnings
-    Left err -> putStrLn $ "unable to load file: " ++ show (err :: IOError) -- TODO : check les extensions ici en regardant l'erreur
+    Left err -> putStrLn $ "unable to load file: " ++ show (err :: IOError) -- TODO : check for extensions here by watching for the error returned
 
 loadDir :: FilePath -> IO [FilePath]
 loadDir dir = do

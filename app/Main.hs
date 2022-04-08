@@ -18,7 +18,7 @@ main =  execParser options >>= processAll . translateConf where
 -- | Translates a 'Conf'' to a 'Conf'.
 translateConf :: Conf' -> Either String (Conf, [String])
 translateConf (Conf' _ _ _ Nothing Nothing) = Left "No files or directories"
-translateConf (Conf' _ _ _ (Just dir) (Just file)) = Right (Conf showLong defaultRules [], dir)
+translateConf (Conf' _ _ _ (Just dir) (Just file)) = Right (Conf showLong defaultRules dir, file)
 translateConf _ = Left "failed"
 
 processAll :: Either String (Conf, [String]) -> IO ()

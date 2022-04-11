@@ -1,2 +1,2 @@
-stack run -- test/examples/Correct.hs
+stack run -- -d "" -f test/examples/Correct.hs
 >>>= 0

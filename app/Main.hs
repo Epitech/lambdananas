@@ -17,9 +17,10 @@ main =  execParser options >>= processAll . translateConf where
 -- TODO : remove this glue code
 -- | Translates a 'Conf'' to a 'Conf'.
 translateConf :: Conf' -> Either String (Conf, [String])
-translateConf (Conf' _ _ _ Nothing Nothing) = Left "No files or directories"
 translateConf (Conf' _ _ _ (Just dir) (Just file)) = Right (Conf showLong defaultRules dir, file)
-translateConf _ = Left "failed"
+translateConf (Conf' _ _ _ _ (Just file)) = Right (Conf showLong defaultRules [], file)
+translateConf (Conf' _ _ _ (Just dir) _) = Right (Conf showLong defaultRules dir, [])
+translateConf (Conf' _ _ _ Nothing Nothing) = Left "Missing --files or --directories"
 
 processAll :: Either String (Conf, [String]) -> IO ()
 processAll (Left str) = putStrLn ("Error: "++str)

@@ -23,6 +23,7 @@ source-repository head
 library
   exposed-modules:
       Conf
+      Files
       Parser
       Rules
   other-modules:

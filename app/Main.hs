@@ -2,53 +2,43 @@ module Main where
 
 import Parser
 import Conf
+import Files
 import Control.Monad
 import Data.List
-import System.Directory
-import System.FilePath.Posix
+import System.IO
 import Options.Applicative
 
 main :: IO ()
-main =  execParser options >>= processAll . translateConf where
-    options = info (optParser <**> helper)
-              (fullDesc
-              <> header "Haskell Style Checker - An EPITECH Haskell Linter")
+main = execParser options >>= process where
+  options = info (optParser <**> helper)
+            (fullDesc
+            <> header "Haskell Style Checker - An EPITECH Haskell Linter")
 
--- TODO : remove this glue code
--- | Translates a 'Conf'' to a 'Conf'.
-translateConf :: Conf' -> Either String (Conf, [String])
-translateConf (Conf' _ _ _ (Just dir) (Just file)) = Right (Conf showLong defaultRules dir, file)
-translateConf (Conf' _ _ _ _ (Just file)) = Right (Conf showLong defaultRules [], file)
-translateConf (Conf' _ _ _ (Just dir) _) = Right (Conf showLong defaultRules dir, [])
-translateConf (Conf' _ _ _ Nothing Nothing) = Left "Missing --files or --directories"
+-- | Top level compute function.
+-- Is called after the cli arguments have been parsed.
+process :: Conf' -> IO ()
+-- Vera compatible compute
+process (Conf' _ True _ Nothing Nothing) = getLine >>= putStrLn
+-- Normal compute
+process conf@(Conf' _ True _ (Just d) (Just f)) = do
+  dir <- join <$> mapM loadDir d
+  mapM_ (processOne $ conf) (f ++ dir)
+process _ = hPutStrLn stderr $ errorMsg "failed to interpret cli options"
 
-processAll :: Either String (Conf, [String]) -> IO ()
-processAll (Left str) = putStrLn ("Error: "++str)
-processAll (Right (conf,files)) = do
-    files2 <- join <$> mapM loadDir (dirs conf)
-    mapM_ (doOne conf) (files ++ files2)
-
-doOne :: Conf -> String -> IO ()
-doOne (Conf sFct rls _) filename = do
+-- | Given a 'Conf'', checks the coding style for a single file.
+processOne :: Conf' -> FilePath -> IO ()
+processOne _ filename = do
   buff <- parseFile filename
   case buff of
     Right lst -> let rs = map getRule rls
                      warnings = sort $ join $ map (\ f -> f lst) rs
                  in mapM_ (putStrLn . sFct) warnings
-    Left err -> putStrLn $ "unable to load file: " ++ show (err :: IOError) -- TODO : check for extensions here by watching for the error returned
+    Left err -> putStrLn $ errorMsg $ "Unable to load file: " ++ show (err :: IOError) -- TODO : check for extensions here by watching for the error returned
+  where
+    sFct = showLong
+    rls = defaultRules
 
-loadDir :: FilePath -> IO [FilePath]
-loadDir dir = do
-  files <- listDirectory dir
-  files2 <- mapM (expandDir . (dir </>)) files
-  return $ filter (\ f -> takeExtension f == ".hs" &&
-                          takeFileName f /= "Setup.hs") $
-    join files2
+-- | Creates an error message appending it to `Error :`.
+errorMsg :: String -> String
+errorMsg = (++) "Error: "
 
-expandDir :: FilePath -> IO [FilePath]
-expandDir f = doesDirectoryExist f >>=
-                    \ isDir -> if isDir && ignore f
-                               then loadDir f
-                               else return [f]
-  where ignore fl = takeFileName fl `notElem` ["tests", "test",
-                                               "bonus",".stack-work"]

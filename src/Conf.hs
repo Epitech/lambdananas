@@ -1,7 +1,7 @@
 module Conf (
 Rule (Rule),
 Conf (Conf, showFct, rules, dirs),
-Conf' (Conf'),
+Conf' (Conf', directories),
 allRules,
 getRule,
 optParser,

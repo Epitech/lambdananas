@@ -90,10 +90,12 @@ jobs:
           ${{ runner.os }}-stack
     - name: Build
       run: stack build
-    - uses: gacts/upx@master
+    - uses: crazy-max/ghaction-upx@v1
       with:
-        file: 'hsc'
-        upx_args: '--best'
+        version: latest
+        file: |
+          hsc
+        args: --best
     - name: Archive production artifacts
       uses: actions/upload-artifact@v1
       with:

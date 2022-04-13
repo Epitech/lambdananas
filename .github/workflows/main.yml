@@ -96,7 +96,7 @@ jobs:
       uses: crazy-max/ghaction-upx@v1
       with:
         version: latest
-        file: |
+        files: |
           hsc
         args: --best
     - name: Archive production artifacts

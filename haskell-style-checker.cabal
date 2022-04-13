@@ -4,25 +4,21 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e09cb3c20549f6fd782e7006cfa84062e9635ff239efb339d43e7e07d3f0041e
+-- hash: 7b2ecedbb3b8360494082176f03c47e80fbb61f889f7543a50db49509e0d98fb
 
 name:           haskell-style-checker
-version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/haskell-style-checker#readme>
-homepage:       https://github.com/githubuser/haskell-style-checker#readme
-bug-reports:    https://github.com/githubuser/haskell-style-checker/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
+version:        1.0.0.0
+description:    Please see the README on GitHub at <https://github.com/Epitech/haskell-style-checker#readme>
+homepage:       https://github.com/ArthurS2/hsc#readme
+bug-reports:    https://github.com/ArthurS2/hsc/issues
+author:         Arthur Soulié
+maintainer:     arthur2.soulie@epitech.eu
 license:        BSD3
 build-type:     Simple
-extra-source-files:
-    README.md
-    ChangeLog.md
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/haskell-style-checker
+  location: https://github.com/ArthurS2/hsc
 
 library
   exposed-modules:
@@ -60,7 +56,7 @@ executable haskell-style-checker-exe
     , optparse-applicative ==0.16.*
   default-language: Haskell2010
 
-test-suite haskell-style-checker-test
+test-suite integration-tests
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:

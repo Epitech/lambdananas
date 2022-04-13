@@ -1,8 +1,8 @@
 name:                haskell-style-checker
 version:             1.0.0.0
-github:              "ArthurS2/hsc"
+github:              "Epitech/haskell-style-checker"
 license:             BSD3
-author:              "Arthur Soulié"
+author:              ["Arthur Soulié", "Marc Planard"]
 maintainer:          "arthur2.soulie@epitech.eu"
 
 description:         Please see the README on GitHub at <https://github.com/Epitech/haskell-style-checker#readme>

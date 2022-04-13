@@ -21,7 +21,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-stack
     - name: Build
-      run: stack build
+      run: stack build --test --no-run-tests
 
   unit:
     name: Unit tests
@@ -88,9 +88,12 @@ jobs:
         key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
         restore-keys: |
           ${{ runner.os }}-stack
-    - name: Build
+    - name: Building
       run: stack build
-    - uses: crazy-max/ghaction-upx@v1
+    - name: Install to current directory
+      run: cp $(stack path --local-install-root)/bin/haskell-style-checker-exe hsc
+    - name: Compressing and stripping binary
+      uses: crazy-max/ghaction-upx@v1
       with:
         version: latest
         file: |
@@ -101,4 +104,3 @@ jobs:
       with:
         name: hsc
         path: hsc
-

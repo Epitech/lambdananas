@@ -12,13 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/cache@v3
       with:
         path: |
           ~/.stack
           .stack-work
         key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: ${{ runner.os }}-stack
-    - uses: actions/cache@v3
+        restore-keys: |
+          ${{ runner.os }}-stack
     - name: Build
       run: stack build
 

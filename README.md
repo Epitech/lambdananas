@@ -13,5 +13,5 @@ You can use commands specified by Epitech ($NAME re clean fclean tests_run)
 
 ## 🔧 Tests
 
-- Run `stack test` for code testing
+- Run `stack test` to run all integration and unit tests
 - Install `shelltest` and run `shelltest -c tests` from the root of the repo to run cli tests

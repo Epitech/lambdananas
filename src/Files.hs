@@ -10,11 +10,10 @@ import Control.Monad
 -- TODO : Document
 loadDir :: FilePath -> IO [FilePath]
 loadDir dir = do
-  files <- listDirectory dir -- files = ["path"]
-  files2 <- mapM (expandDir . (dir </>)) files --["path/path"]
-  return $ filter (\ f -> takeExtension f == ".hs" &&
-                          takeFileName f /= "Setup.hs") $
-    join files2
+    files <- listDirectory dir -- files = ["path"]
+    files2 <- mapM (expandDir . (dir </>)) files --["path/path"]
+    return $ filter (\ f -> takeExtension f == ".hs" &&
+                          takeFileName f /= "Setup.hs") $ join files2
 
 -- TODO : Document
 expandDir :: FilePath -> IO [FilePath]

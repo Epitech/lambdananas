@@ -9,24 +9,36 @@ import System.IO
 import Options.Applicative
 
 main :: IO ()
-main = execParser options >>= process where
-  options = info (optParser <**> helper)
+main = execParser options >>= process
+  where
+    options = info (optParser <**> helper)
             (fullDesc
             <> header "Haskell Style Checker - An EPITECH Haskell Linter")
 
 -- | Top level compute function.
 -- Is called after the cli arguments have been parsed.
-process :: Conf' -> IO ()
--- Vera compatible compute
-process (Conf' _ True _ Nothing Nothing) = getLine >>= putStrLn
--- Normal compute
-process conf@(Conf' _ True _ (Just d) (Just f)) = do
-  dir <- join <$> mapM loadDir d
-  mapM_ (processOne $ conf) (f ++ dir)
+process :: Conf -> IO ()
+process (Conf _ True _ Nothing Nothing) = getLine >>= putStrLn
+process conf@(Conf _ False _ directories files) = do
+  haskellFiles <- loadAll directories files
+  case haskellFiles of
+    [] -> hPutStrLn stderr $ errorMsg "no files or directories"
+    nonEmptyFiles -> mapM_ (processOne conf) nonEmptyFiles
 process _ = hPutStrLn stderr $ errorMsg "failed to interpret cli options"
 
--- | Given a 'Conf'', checks the coding style for a single file.
-processOne :: Conf' -> FilePath -> IO ()
+-- | Returns a complete list of paths needed to be checked.
+loadAll :: Maybe [FilePath] -- ^ Directories to be loaded
+        -> Maybe [FilePath] -- ^ Files to be loaded
+        -> IO [FilePath] -- ^ A list of files to be checked
+loadAll (Just d) (Just f) = do
+  loadedDirs <- join <$> mapM loadDir d
+  return $ loadedDirs <> f
+loadAll Nothing (Just f) = return f
+loadAll (Just d) Nothing = join <$> mapM loadDir d
+loadAll Nothing Nothing = return []
+
+-- | Checks the coding style for a single file.
+processOne :: Conf -> FilePath -> IO ()
 processOne _ filename = do
   buff <- parseFile filename
   case buff of

@@ -1,7 +1,6 @@
 module Conf (
 Rule (Rule),
-Conf (Conf, showFct, rules, dirs),
-Conf' (Conf', directories),
+Conf (Conf),
 allRules,
 getRule,
 optParser,
@@ -20,15 +19,9 @@ data Rule = Rule { name :: String
 instance Eq Rule where
   r1 == r2 = name r1 == name r2
 
-data Conf = Conf {
-      showFct :: Warn -> String,
-      rules :: [Rule],
-      dirs :: [String]
-}
-
 -- | Holds the command line argument parsing result.
--- The 'Conf'' data aims at replacing the 'Conf' data.
-data Conf' = Conf' { descriptions :: Bool
+-- The 'Conf' data aims at replacing the 'Conf' data.
+data Conf = Conf { descriptions :: Bool
                    , veraCompatible :: Bool
                    , silent :: Bool
                    , directories :: Maybe [FilePath]
@@ -40,12 +33,12 @@ data Conf' = Conf' { descriptions :: Bool
 parsePathList :: String -> Maybe [FilePath]
 parsePathList s = Just $ words s
 
--- | Create a 'Conf'' when the returned parser is ran.
-optParser :: Parser Conf'
+-- | Create a 'Conf when the returned parser is ran.
+optParser :: Parser Conf
 optParser = let
             descriptionHelp = "Outputs a description for each infraction"
             veraHelp = "Enables vera compatibility"
-            in Conf'
+            in Conf
             <$> switch
                 (long "descriptions"
                  <> short 'v'

@@ -1,3 +1,6 @@
+{-|
+Main module for the haskell style checker program.
+-}
 module Main where
 
 import Parser
@@ -16,7 +19,7 @@ main = execParser options >>= process
             <> header "Haskell Style Checker - An EPITECH Haskell Linter")
 
 -- | Top level compute function.
--- Is called after the cli arguments have been parsed.
+-- Is called after the cli arguments have been parsed
 process :: Conf -> IO ()
 process conf@(Conf _ True _ Nothing Nothing) =
   getContents >>= processMultiple conf . lines
@@ -35,7 +38,7 @@ loadAll Nothing (Just f) = return f
 loadAll (Just d) Nothing = join <$> mapM loadDir d
 loadAll Nothing Nothing = return []
 
--- | Checks the coding style for a list of files
+-- | Checks the coding style for a list of files.
 processMultiple :: Conf -> [FilePath] -> IO()
 processMultiple conf haskellFiles = do
   case haskellFiles of

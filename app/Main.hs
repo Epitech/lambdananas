@@ -18,12 +18,10 @@ main = execParser options >>= process
 -- | Top level compute function.
 -- Is called after the cli arguments have been parsed.
 process :: Conf -> IO ()
-process (Conf _ True _ Nothing Nothing) = getLine >>= putStrLn
-process conf@(Conf _ False _ directories files) = do
-  haskellFiles <- loadAll directories files
-  case haskellFiles of
-    [] -> hPutStrLn stderr $ errorMsg "no files or directories"
-    nonEmptyFiles -> mapM_ (processOne conf) nonEmptyFiles
+process conf@(Conf _ True _ Nothing Nothing) =
+  getContents >>= processMultiple conf . lines
+process conf@(Conf _ False _ directories files) =
+  loadAll directories files >>= processMultiple conf
 process _ = hPutStrLn stderr $ errorMsg "failed to interpret cli options"
 
 -- | Returns a complete list of paths needed to be checked.
@@ -36,6 +34,13 @@ loadAll (Just d) (Just f) = do
 loadAll Nothing (Just f) = return f
 loadAll (Just d) Nothing = join <$> mapM loadDir d
 loadAll Nothing Nothing = return []
+
+-- | Checks the coding style for a list of files
+processMultiple :: Conf -> [FilePath] -> IO()
+processMultiple conf haskellFiles = do
+  case haskellFiles of
+    [] -> hPutStrLn stderr $ errorMsg "no files or directories"
+    nonEmptyFiles -> mapM_ (processOne conf) nonEmptyFiles
 
 -- | Checks the coding style for a single file.
 processOne :: Conf -> FilePath -> IO ()

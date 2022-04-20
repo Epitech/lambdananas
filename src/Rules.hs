@@ -117,7 +117,7 @@ checkReturns = join . explore checkReturn
           foldMap (badReturns . NSmt) body
         checkReturn _ = []
         badReturns = checkGen toWarn
-        toWarn ssi True = [Warn BadReturn (getLoc ssi) Major]
+        toWarn ssi True = [Warn BadReturn (getLoc ssi) Minor]
         toWarn _ _ = []
 
 {- auxiliary functions for checkDos and checkReturns -}
@@ -144,7 +144,7 @@ checkSigs lst = join $ map genWarn binds
         binds = foldMap getBind sigsAndBinds
         getBind (_,l) = if null l then [] else [head l]
         genWarn (fct, ssi) | fct `notElem` sigs =
-                             [Warn (NoSig fct) (getLoc ssi) Major]
+                             [Warn (NoSig fct) (getLoc ssi) Minor]
         genWarn _ = []
 
 collectSigs :: Node -> ([String], [(String, SrcSpanInfo)])
@@ -199,13 +199,13 @@ checkLines lst = uniqWarn $ join $ explore checkLine lst
         checkLine _ = []
         checkLine' decl = uniqFunWarn $ foldMap toWarn decl
         toWarn ssi@(SrcSpanInfo (SrcSpan _f l1 _c1 l2 c2) _) =
-          [Warn FunctionTooBig (getLoc ssi) Major | l2-l1 >= 10]
+          [Warn FunctionTooBig (getLoc ssi) Minor | l2-l1 >= 10]
           ++
-          [Warn LineTooLong (getLoc ssi) Major | l1==l2 && c2 > 80]
+          [Warn LineTooLong (getLoc ssi) Minor | l1==l2 && c2 > 80]
 
 uniqFunWarn :: [Warn] -> [Warn]
 uniqFunWarn [] = []
-uniqFunWarn (w1@(Warn FunctionTooBig _ Major):xs)
+uniqFunWarn (w1@(Warn FunctionTooBig _ Info):xs)
   | FunctionTooBig `elem` map what xs = uniqFunWarn xs
   | otherwise = w1 : uniqFunWarn xs
 uniqFunWarn (x:xs) = x:uniqFunWarn xs

@@ -1,4 +1,17 @@
-module Rules where
+{-|
+Coding style rules.
+-}
+module Rules (
+    Check,
+    Warn (Warn),
+    checkSigs,
+    checkIfs,
+    checkReturns,
+    checkDos,
+    checkGuards,
+    checkLines,
+    getIssueDesc
+) where
 
 import Language.Haskell.Exts.Syntax
 import Language.Haskell.Exts.SrcLoc
@@ -9,45 +22,73 @@ import Data.Foldable
 
 type Check = [Decl SrcSpanInfo] -> [Warn]
 
-data Issue = BadIf
-           | BadDo
-           | BadReturn
-           | BadGuard
-           | LineTooLong
-           | FunctionTooBig
-           | NoSig String
-           | Debug String
-           deriving Eq
-
-issues :: Issue -> (String,String)
-issues BadIf =          ("C1", "nested IFs")  -- C cond. branching
-issues BadGuard =       ("C2", "guard should be a pattern")  -- C cond. branch.
-issues BadDo =          ("D1", "useless DO")  -- D do and generators
-issues BadReturn =      ("D2", "useless generator")  -- D do and generators
-issues LineTooLong =    ("F3", "line too long")  -- D do and generators
-issues FunctionTooBig = ("F4", "function too big")  -- D do and generators
-issues (NoSig s) =      ("T1", s ++ " has no signature")  -- T types
-issues (Debug s) =      ("XX", s) -- DEBUG
-
-instance Show Issue where
-  show i = let (idd, msg) = issues i in idd ++ " # " ++ msg
-
-data Warn = Warn { what :: Issue
-                 , _location :: (String, Int)
+-- | A coding style warning emitted by the checker.
+data Warn = Warn { what :: Issue                -- ^ The issue raised (description can be retrived by 'getIssueDesc')
+                 , _location :: (FilePath, Int) -- ^ The location of the issue
+                 , gravity :: Gravity           -- ^ The gravity of the issue
                  } deriving Eq
 
+-- | All possible issues arising from a code.
+data Issue = BadIf              -- ^ Nested ifs
+           | BadDo              -- ^ Useless do
+           | BadReturn          -- ^ Useless generator
+           | BadGuard           -- ^ Guard should be a pattern
+           | LineTooLong        -- ^ Line too long
+           | FunctionTooBig     -- ^ Function too big
+           | NoSig String       -- ^ No signature
+           | Debug String       -- ^ Debug
+           deriving Eq
+
+-- | Retrives a tuple with the code and description of a coding
+-- style issue.
+getIssueDesc :: Issue -> (String, String)
+getIssueDesc BadIf =          ("C1", "nested IFs")  -- C cond. branching
+getIssueDesc BadGuard =       ("C2", "guard should be a pattern")  -- C cond. branch.
+getIssueDesc BadDo =          ("D1", "useless DO")  -- D do and generators
+getIssueDesc BadReturn =      ("D2", "useless generator")  -- D do and generators
+getIssueDesc LineTooLong =    ("F3", "line too long")  -- D do and generators
+getIssueDesc FunctionTooBig = ("F4", "function too big")  -- D do and generators
+getIssueDesc (NoSig s) =      ("T1", s ++ " has no signature")  -- T types
+getIssueDesc (Debug s) =      ("XX", s) -- DEBUG
+
+-- | Describes an 'Issue' gravity.
+data Gravity = Info | Minor | Major deriving Eq
+
+class (Show a) => ShowOpt a where
+  -- | Creates a vera compatible output of form:
+  -- `<complete path>:<line>: <gravity>:<code>`
+  showVera :: a -> String
+  -- | Creates an Argo compatible output of form:
+  -- `<complete path>:<line>:<code>`
+  showArgo :: a -> String
+  -- | Creates a silent output.
+  showSilent :: a -> String
+
+instance ShowOpt Warn where
+  showVera = show
+  showArgo = show -- TODO: fix this one
+  showSilent _ = ""
+
+instance Show Issue where
+  show i = let (idd, msg) = getIssueDesc i in idd ++ " # " ++ msg
+
+instance Show Gravity where
+  show Info = "INFO"
+  show Minor = "MINOR"
+  show Major = "MAJOR"
+
 instance Show Warn where
-  show (Warn w (f, l)) = f ++ ":" ++ show l ++ ":" ++ show w
+  show (Warn w (f, l) g) = f ++ ":" ++ show l ++ ": " ++ show g ++ ":" ++ show w
 
 instance Ord Warn where
-  compare (Warn _ (s1,l1)) (Warn _ (s2,l2)) | s1 == s2 = compare l1 l2
+  compare (Warn _ (s1,l1) _) (Warn _ (s2,l2) _) | s1 == s2 = compare l1 l2
                                             | otherwise = compare s1 s2
 
 {- CHECK CASCADING IFS -}
 checkIfs :: Check
 checkIfs = join . explore checkIf
   where checkIf (NExp (If ssi _ ift ife)) | countIfs ift ife >= 1 =
-                                                  [Warn BadIf (getLoc ssi)]
+                                                  [Warn BadIf (getLoc ssi) Major]
         checkIf _ = []
         countIfs ifthen ifelse = inspectExpr countIf ifthen <>
                                  inspectExpr countIf ifelse
@@ -59,7 +100,7 @@ checkIfs = join . explore checkIf
 checkDos :: Check
 checkDos = join . explore checkDo
   where checkDo (NExp (Do ssi body)) | countGenerators body < 1 =
-                                       [Warn BadDo (getLoc ssi)]
+                                       [Warn BadDo (getLoc ssi) Major]
         checkDo _ = []
         countGenerators = foldMap (countGenerator . NSmt)
         countGenerator :: Node -> Sum Int
@@ -73,7 +114,7 @@ checkReturns = join . explore checkReturn
           foldMap (badReturns . NSmt) body
         checkReturn _ = []
         badReturns = checkGen toWarn
-        toWarn ssi True = [Warn BadReturn (getLoc ssi)]
+        toWarn ssi True = [Warn BadReturn (getLoc ssi) Major]
         toWarn _ _ = []
 
 {- auxiliary functions for checkDos and checkReturns -}
@@ -100,7 +141,7 @@ checkSigs lst = join $ map genWarn binds
         binds = foldMap getBind sigsAndBinds
         getBind (_,l) = if null l then [] else [head l]
         genWarn (fct, ssi) | fct `notElem` sigs =
-                             [Warn (NoSig fct) (getLoc ssi)]
+                             [Warn (NoSig fct) (getLoc ssi) Major]
         genWarn _ = []
 
 collectSigs :: Node -> ([String], [(String, SrcSpanInfo)])
@@ -127,7 +168,7 @@ checkGuards lst = join $ explore checkGuard lst
 toWarns :: [String] -> [Exp SrcSpanInfo] -> [Warn]
 toWarns vars = foldMap (inspectExpr toWarn)
   where toWarn (NExp (InfixApp ssi e1 e2 e3))
-          | isBadGuard vars e1 e2 e3 = [Warn BadGuard (getLoc ssi)]
+          | isBadGuard vars e1 e2 e3 = [Warn BadGuard (getLoc ssi) Major]
         toWarn _ = []
 
 isBadGuard :: [String] -> Exp SrcSpanInfo -> QOp SrcSpanInfo ->
@@ -155,13 +196,13 @@ checkLines lst = uniqWarn $ join $ explore checkLine lst
         checkLine _ = []
         checkLine' decl = uniqFunWarn $ foldMap toWarn decl
         toWarn ssi@(SrcSpanInfo (SrcSpan _f l1 _c1 l2 c2) _) =
-          [Warn FunctionTooBig (getLoc ssi) | l2-l1 >= 10]
+          [Warn FunctionTooBig (getLoc ssi) Major | l2-l1 >= 10]
           ++
-          [Warn LineTooLong (getLoc ssi) | l1==l2 && c2 > 80]
+          [Warn LineTooLong (getLoc ssi) Major | l1==l2 && c2 > 80]
 
 uniqFunWarn :: [Warn] -> [Warn]
 uniqFunWarn [] = []
-uniqFunWarn (w1@(Warn FunctionTooBig _):xs)
+uniqFunWarn (w1@(Warn FunctionTooBig _ Major):xs)
   | FunctionTooBig `elem` map what xs = uniqFunWarn xs
   | otherwise = w1 : uniqFunWarn xs
 uniqFunWarn (x:xs) = x:uniqFunWarn xs

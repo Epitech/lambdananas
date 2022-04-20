@@ -1,3 +1,6 @@
+{-|
+Configuration.
+-}
 module Conf (
 Rule (Rule),
 Conf (Conf),
@@ -107,4 +110,4 @@ showLong :: Warn -> String
 showLong = show
 
 showShort :: Warn -> String
-showShort (Warn w (f, l)) = f ++ ":" ++ show l ++ ":" ++ fst (issues w)
+showShort (Warn w (f, l) _) = f ++ ":" ++ show l ++ ":" ++ fst (getIssueDesc w)

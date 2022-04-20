@@ -3,27 +3,27 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 7b2ecedbb3b8360494082176f03c47e80fbb61f889f7543a50db49509e0d98fb
 
 name:           haskell-style-checker
 version:        1.0.0.0
 description:    Please see the README on GitHub at <https://github.com/Epitech/haskell-style-checker#readme>
-homepage:       https://github.com/ArthurS2/hsc#readme
-bug-reports:    https://github.com/ArthurS2/hsc/issues
-author:         Arthur Soulié
+homepage:       https://github.com/Epitech/haskell-style-checker#readme
+bug-reports:    https://github.com/Epitech/haskell-style-checker/issues
+author:         Arthur Soulié,
+                Marc Planard
 maintainer:     arthur2.soulie@epitech.eu
 license:        BSD3
 build-type:     Simple
 
 source-repository head
   type: git
-  location: https://github.com/ArthurS2/hsc
+  location: https://github.com/Epitech/haskell-style-checker
 
 library
   exposed-modules:
       Conf
       Files
+      Output
       Parser
       Rules
   other-modules:
@@ -38,7 +38,6 @@ library
     , haskell-src-exts >=1.23
     , mtl >=2.2
     , optparse-applicative ==0.16.*
-    , transformers >=0.5
   default-language: Haskell2010
 
 executable haskell-style-checker-exe
@@ -56,7 +55,6 @@ executable haskell-style-checker-exe
     , haskell-style-checker
     , mtl >=2.2
     , optparse-applicative ==0.16.*
-    , transformers >=0.5
   default-language: Haskell2010
 
 test-suite integration-tests
@@ -76,5 +74,4 @@ test-suite integration-tests
     , hspec >=2.7
     , mtl >=2.2
     , optparse-applicative ==0.16.*
-    , transformers >=0.5
   default-language: Haskell2010

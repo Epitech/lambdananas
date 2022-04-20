@@ -4,18 +4,21 @@ Coding style rules.
 module Rules (
     Check,
     Warn (Warn),
+    getIssueDesc,
+    showArgo,
+    showVera,
+    showSilent,
     checkSigs,
     checkIfs,
     checkReturns,
     checkDos,
     checkGuards,
-    checkLines,
-    getIssueDesc
+    checkLines
 ) where
 
+import Parser
 import Language.Haskell.Exts.Syntax
 import Language.Haskell.Exts.SrcLoc
-import Parser
 import Control.Monad
 import Control.Monad.Writer
 import Data.Foldable

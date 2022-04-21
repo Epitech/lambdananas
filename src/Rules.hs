@@ -3,11 +3,10 @@ Coding style rules.
 -}
 module Rules (
     Check,
-    Warn (Warn),
+    Warn (..),
     getIssueDesc,
-    Rule (Rule),
+    Rule (..),
     allRules,
-    getRule,
     showLong,
     defaultRules,
     showArgo,

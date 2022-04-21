@@ -3,6 +3,7 @@ Higher level module for style checker computations.
 -}
 module Compute (
   outputOne,
+  argoOutputFiles,
   module Parser,
   module Rules,
 ) where
@@ -17,7 +18,6 @@ argoOutputFiles = (<> ".txt") <$> ("style-" <>) <$> ["major", "minor", "info"]
 
 -- | Output the result of a single coding style error.
 outputOne :: Conf -> Warn -> IO ()
-outputOne (Conf True _ _ _ _) w = putStrLn $ showArgo w
-outputOne (Conf _ True _ _ _) w = appendFile "style-major.txt" $ showVera w
-outputOne (Conf _ _ True _ _) _ = return ()
-outputOne _ w = print w
+outputOne (Conf Silent _) _ = return ()
+outputOne (Conf Argos _) w = appendFile "style-major.txt" $ showArgo w
+outputOne _ w = putStrLn $ showVera w

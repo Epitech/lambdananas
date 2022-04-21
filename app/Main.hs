@@ -22,22 +22,18 @@ main = execParser options >>= process
 -- | Top level compute function.
 -- Is called after the cli arguments have been parsed
 process :: Conf -> IO ()
-process conf@(Conf _ True _ Nothing Nothing) =
+process conf@(Conf Vera _) =
   getContents >>= processMultiple conf . lines
-process conf@(Conf _ False _ directories files) =
-  loadAll directories files >>= processMultiple conf
+process conf@(Conf Argos files) =
+  loadAll files >>= processMultiple conf
 process _ = hPutStrLn stderr $ errorMsg "failed to interpret cli options"
 
 -- | Returns a complete list of paths needing to be checked.
-loadAll :: Maybe [FilePath] -- ^ Directories to be loaded
-        -> Maybe [FilePath] -- ^ Files to be loaded
+loadAll :: [FilePath] -- ^ Directories to be loaded
         -> IO [FilePath] -- ^ A list of files to be checked
-loadAll (Just d) (Just f) = do
+loadAll d = do
   loadedDirs <- join <$> mapM loadDir d
-  return $ loadedDirs <> f
-loadAll Nothing (Just f) = return f
-loadAll (Just d) Nothing = join <$> mapM loadDir d
-loadAll Nothing Nothing = return []
+  return $ loadedDirs
 
 -- | Checks the coding style for a list of files.
 processMultiple :: Conf -> [FilePath] -> IO()

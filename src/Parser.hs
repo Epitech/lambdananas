@@ -1,6 +1,6 @@
 module Parser (
   parseFile,
-  Node (NDec, NBin, NSmt, NExp, NPat),
+  Node (..),
   explore,
   getLoc,
   inspectMatch,

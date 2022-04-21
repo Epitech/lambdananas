@@ -3,10 +3,10 @@ Main module for the haskell style checker program.
 -}
 module Main where
 
-import Parser
 import Conf
 import Files
-import Output
+import Compute
+
 import Control.Monad
 import Data.List
 import System.IO

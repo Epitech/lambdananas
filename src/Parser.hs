@@ -1,4 +1,12 @@
-module Parser where
+module Parser (
+  parseFile,
+  Node (NDec, NBin, NSmt, NExp, NPat),
+  explore,
+  getLoc,
+  inspectMatch,
+  inspectExpr,
+  getIdent,
+) where
 
 import Language.Haskell.Exts.Parser
 import Language.Haskell.Exts.Syntax
@@ -86,7 +94,7 @@ inspectPat f p = f (NPat p) <> iPat p
         iPat (PParen _ pp) = inspectPat f pp
         iPat (PTuple _ _ ps) = inspectPats f ps
         iPat _ = mempty
-        
+
 inspectPats :: Monoid a => (Node -> a) -> [Pat SrcSpanInfo] -> a
 inspectPats f = foldMap $ inspectPat f
 

@@ -1,12 +1,15 @@
 {-|
-Output helper functions.
+Higher level module for style checker computations.
 -}
-module Output (
+module Compute (
   outputOne,
+  module Parser,
+  module Rules,
 ) where
 
 import Conf
 import Rules
+import Parser
 
 -- | File list for argo output
 argoOutputFiles :: [FilePath]

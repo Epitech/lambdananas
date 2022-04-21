@@ -2,25 +2,11 @@
 Configuration.
 -}
 module Conf (
-Rule (Rule),
-Conf (Conf),
-allRules,
-getRule,
-optParser,
-showLong,
-defaultRules,
+  Conf (Conf),
+  optParser,
 ) where
 
 import Options.Applicative
-import Rules
-
-data Rule = Rule { name :: String
-                 , _description :: String
-                 , getRule :: Check
-                 }
-
-instance Eq Rule where
-  r1 == r2 = name r1 == name r2
 
 -- | Holds the command line argument parsing result.
 -- The 'Conf' data aims at replacing the 'Conf' data.
@@ -65,49 +51,3 @@ optParser = let
                  <> metavar "FILE"
                  <> help "Files to search"))
 
-allRules :: [Rule]
-allRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
-            ruleCheckDos, ruleCheckGuards, ruleCheckLines ]
-
-defaultRules :: [Rule]
-defaultRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
-                 ruleCheckDos, ruleCheckGuards, ruleCheckLines ]
-
-ruleCheckSign :: Rule
-ruleCheckSign = Rule "check-signatures"
-                "top declaration has no corresponging type signature"
-                checkSigs
-
-ruleCheckIfs :: Rule
-ruleCheckIfs = Rule "check-ifs"
-               "nested if"
-               checkIfs
-
-ruleCheckReturns :: Rule
-ruleCheckReturns = Rule "check-returns"
-                   "useless return statement in do block"
-                   checkReturns
-
-ruleCheckDos :: Rule
-ruleCheckDos = Rule "check-dos"
-               "useless do"
-               checkDos
-
-ruleCheckGuards :: Rule
-ruleCheckGuards = Rule "check-guards"
-                  "guard should be pattern match"
-                  checkGuards
-
-ruleCheckLines :: Rule
-ruleCheckLines = Rule "check-lines"
-                 "functions should be less than 10 lines x 80 columns"
-                 checkLines
-
-rulesLookup :: String -> [Rule] -> Maybe Rule
-rulesLookup s = lookup s . map (\ r -> (name r, r))
-
-showLong :: Warn -> String
-showLong = show
-
-showShort :: Warn -> String
-showShort (Warn w (f, l) _) = f ++ ":" ++ show l ++ ":" ++ fst (getIssueDesc w)

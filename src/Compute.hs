@@ -18,6 +18,6 @@ argoOutputFiles = (<> ".txt") <$> ("style-" <>) <$> ["major", "minor", "info"]
 
 -- | Output the result of a single coding style error.
 outputOne :: Conf -> Warn -> IO ()
-outputOne (Conf Silent _) _ = return ()
-outputOne (Conf Argos _) w = appendFile "style-major.txt" $ showArgo w
+outputOne (Conf (Just Silent) _) _ = return ()
+outputOne (Conf (Just Argos) _) w = appendFile "style-major.txt" $ showArgo w
 outputOne _ w = putStrLn $ showVera w

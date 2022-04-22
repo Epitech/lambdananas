@@ -23,22 +23,18 @@ instance Read OutputModes where
 
 -- | Holds the command line argument parsing result.
 -- The 'Conf' data aims at replacing the 'Conf' data.
-data Conf = Conf { mode :: OutputModes
+data Conf = Conf { mode :: Maybe OutputModes
                  , files :: [FilePath]
                  }
                  deriving Show
 
--- | Determine a list of path from a string.
-parsePathList :: String -> Maybe [FilePath]
-parsePathList s = Just $ words s
-
 -- | Create a 'Conf when the returned parser is ran.
 optParser :: Parser Conf
 optParser = Conf
-            <$> option auto
+            <$> optional (option auto
                 (long "output"
                  <> short 'o'
-                 <> help outputHelp)
+                 <> help outputHelp))
             <*> many (strArgument
                 (metavar "FILE"
                  <> help "Files to search"))

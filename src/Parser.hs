@@ -1,3 +1,6 @@
+{-|
+Parsing wrapper and inspection functions.
+-}
 module Parser (
   parseFile,
   Node (..),

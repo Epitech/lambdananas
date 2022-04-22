@@ -20,14 +20,14 @@ main = hspec $ do
     it "should detect a function with no signature" $
       checkSigs
       `appliedTo` ["f x = 42"]
-      `shouldBe` Right [Warn (NoSig "f") (".", 1)]
-      
+      `shouldBe` Right [Warn (NoSig "f") (".", 1) Minor]
+
     it "should stay silent if all functions have signature" $
       checkSigs
       `appliedTo` ["f :: Int -> Int",
                    "f x = 42"]
       `shouldBe` Right []
-      
+
     it "should work on multiple functions" $
       checkSigs
       `appliedTo` [ "f1 :: Int -> Int",
@@ -39,8 +39,8 @@ main = hspec $ do
                     "",
                     "a :: Int",
                     "a = 42" ]
-      `shouldBe` Right [Warn (NoSig "f2") (".", 4),
-                        Warn (NoSig "f3") (".", 6)]
+      `shouldBe` Right [Warn (NoSig "f2") (".", 4) Minor,
+                        Warn (NoSig "f3") (".", 6) Minor]
 
   describe "checkIfs" $ do
     it "should detect nested ifs" $
@@ -50,7 +50,7 @@ main = hspec $ do
                    "          then True",
                    "          else False",
                    "     else False"]
-      `shouldBe` Right [Warn BadIf (".", 1)]
+      `shouldBe` Right [Warn BadIf (".", 1) Major]
 
     it "should be silent if only one if" $
       checkIfs
@@ -66,7 +66,7 @@ main = hspec $ do
                    "            then True",
                    "            else False)",
                    "     else False"]
-      `shouldBe` Right [Warn BadIf (".", 1)]
+      `shouldBe` Right [Warn BadIf (".", 1) Major]
 
   describe "checkDos" $ do
     it "should detect useless usage of do" $
@@ -75,7 +75,7 @@ main = hspec $ do
                    "        let a = x * x",
                    "        let b = y * y",
                    "        a + b"]
-      `shouldBe` Right [Warn BadDo (".", 1)]
+      `shouldBe` Right [Warn BadDo (".", 1) Major]
 
     it "should stay silent on allowed usage of do" $
       checkDos
@@ -91,18 +91,18 @@ main = hspec $ do
                    "    a <- return (x * x)",
                    "    b <- return (y * y)",
                    "    return a + b"]
-      `shouldBe` Right [Warn BadDo (".", 1)]
+      `shouldBe` Right [Warn BadDo (".", 1) Major]
 
   describe "checkReturns" $ do
     it "should detect bad returns" $
       checkReturns
       `appliedTo` ["f x y = do",
-                   "    a <- return (x * x)", 
+                   "    a <- return (x * x)",
                    "    b <- return (y * y)",
                    "    return a + b"]
-      `shouldBe` Right [Warn BadReturn (".", 2),
-                        Warn BadReturn (".", 3)]
-      
+      `shouldBe` Right [Warn BadReturn (".", 2) Minor,
+                        Warn BadReturn (".", 3) Minor]
+
     it "should stay silent on good generators and returns" $
       checkReturns
       `appliedTo` ["f = do",
@@ -117,9 +117,9 @@ main = hspec $ do
       `appliedTo` ["f x | x == 0 = True",
                    "    | 1 == x = False",
                    "    | otherwise = True"]
-      `shouldBe` Right [Warn BadGuard (".", 1),
-                        Warn BadGuard (".", 2)]
-      
+      `shouldBe` Right [Warn BadGuard (".", 1) Major,
+                        Warn BadGuard (".", 2) Major]
+
     it "should stay silent on good guards" $
       checkGuards
       `appliedTo` ["f x | null x = True",
@@ -132,16 +132,16 @@ main = hspec $ do
       `appliedTo` ["f (x:xs) | xs == [] = True",
                    "         | Just 1 == x = False",
                    "         | otherwise = True"]
-      `shouldBe` Right [Warn BadGuard (".", 1),
-                        Warn BadGuard (".", 2)]
+      `shouldBe` Right [Warn BadGuard (".", 1) Major,
+                        Warn BadGuard (".", 2) Major]
 
   describe "checkLines" $ do
     it "should detect too long functions" $
       checkLines
       `appliedTo` (["f 0 = "] ++ ["" | _ <- [1..10] ] ++ ["    True"])
-      `shouldBe` Right [Warn FunctionTooBig (".", 1)]
+      `shouldBe` Right [Warn FunctionTooBig (".", 1) Minor]
 
     it "should detect too long lines" $
       checkLines
       `appliedTo` ["f 0 = " ++ [' ' | _ <- [1..70] ] ++ "    True"]
-      `shouldBe` Right [Warn LineTooLong (".", 1)]
+      `shouldBe` Right [Warn LineTooLong (".", 1) Minor]

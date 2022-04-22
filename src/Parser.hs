@@ -6,6 +6,7 @@ module Parser (
   inspectMatch,
   inspectExpr,
   getIdent,
+  parseHS,
 ) where
 
 import Language.Haskell.Exts.Parser

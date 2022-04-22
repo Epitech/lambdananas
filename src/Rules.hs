@@ -7,6 +7,7 @@ module Rules (
     getIssueDesc,
     Rule (..),
     Gravity(..),
+    Issue (..),
     allRules,
     showLong,
     defaultRules,

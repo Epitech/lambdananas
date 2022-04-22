@@ -6,12 +6,12 @@ module Rules (
     Warn (..),
     getIssueDesc,
     Rule (..),
+    Gravity(..),
     allRules,
     showLong,
     defaultRules,
     showArgo,
     showVera,
-    showSilent,
     checkSigs,
     checkIfs,
     checkReturns,
@@ -73,14 +73,8 @@ ruleCheckLines = Rule "check-lines"
                  "functions should be less than 10 lines x 80 columns"
                  checkLines
 
-rulesLookup :: String -> [Rule] -> Maybe Rule
-rulesLookup s = lookup s . map (\ r -> (name r, r))
-
 showLong :: Warn -> String
 showLong = show
-
-showShort :: Warn -> String
-showShort (Warn w (f, l) _) = f ++ ":" ++ show l ++ ":" ++ fst (getIssueDesc w)
 
 type Check = [Decl SrcSpanInfo] -> [Warn]
 
@@ -123,13 +117,10 @@ class (Show a) => ShowOpt a where
   -- | Creates an Argo compatible output of form:
   -- `<complete path>:<line>:<code>`
   showArgo :: a -> String
-  -- | Creates a silent output.
-  showSilent :: a -> String
 
 instance ShowOpt Warn where
   showVera = show
   showArgo = show -- TODO: fix this one
-  showSilent _ = ""
 
 instance Show Issue where
   show i = let (idd, msg) = getIssueDesc i in idd ++ " # " ++ msg

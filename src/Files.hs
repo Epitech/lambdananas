@@ -13,16 +13,6 @@ import Control.Monad
 ignoredDirs :: [String]
 ignoredDirs = ["tests", "test", "bonus",".stack-work"]
 
--- | Given a 'FilePath' returns all haskell files found recursively.
--- example: `File.hs` gives `[File.hs]`
--- example: `src/` could give `[src/File1.hs, src/File2.hs]`
-loadDir :: FilePath -> IO [FilePath]
-loadDir dir = do
-    files <- listDirectory dir
-    files2 <- mapM (load . (dir </>)) files
-    return $ filter (\ f -> takeExtension f == ".hs" &&
-                          takeFileName f /= "Setup.hs") $ join files2
-
 -- | If the given 'FilePath' is a directory, returns a list
 -- of all files inside recursively. Given a file, will
 -- return it as a single element list.
@@ -32,3 +22,13 @@ load f = doesDirectoryExist f >>=
                                then loadDir f
                                else return [f]
   where ignore fl = takeFileName fl `notElem` ignoredDirs
+
+-- | Given a 'FilePath' returns all haskell files found recursively.
+-- example: `File.hs` gives `[File.hs]`
+-- example: `src/` could give `[src/File1.hs, src/File2.hs]`
+loadDir :: FilePath -> IO [FilePath]
+loadDir dir = do
+    files <- listDirectory dir
+    files2 <- mapM (load . (dir </>)) files
+    return $ filter (\ f -> takeExtension f == ".hs" &&
+                          takeFileName f /= "Setup.hs") $ join files2

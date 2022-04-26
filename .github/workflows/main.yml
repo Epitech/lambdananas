@@ -72,7 +72,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-stack
     - name: Run system tests
-      run: echo "not implemented yet"
+      run: shelltest -a -d -p test/system/
 
   artifacts:
     name: Upload artifact

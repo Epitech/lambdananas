@@ -121,7 +121,7 @@ class (Show a) => ShowOpt a where
 
 instance ShowOpt Warn where
   showVera = show
-  showArgo = show -- TODO: fix this one
+  showArgo (Warn w (f, l) _) = f ++ ":" ++ show l ++ ":" ++ show w
 
 instance Show Issue where
   show i = let (idd, msg) = getIssueDesc i in idd ++ " # " ++ msg

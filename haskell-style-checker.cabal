@@ -21,9 +21,9 @@ source-repository head
 
 library
   exposed-modules:
-      Compute
       Conf
-      Files
+      Input
+      Output
       Parser
       Rules
   other-modules:

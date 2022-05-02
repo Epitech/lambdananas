@@ -1,7 +1,7 @@
 {-|
 Higher level module for style checker computations.
 -}
-module Compute (
+module Output (
   outputOne,
   argoOutputFiles,
   module Parser,

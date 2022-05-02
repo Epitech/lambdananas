@@ -1,7 +1,7 @@
 {-|
 Describes input operations on folders and files.
 -}
-module Files (
+module Input (
   load,
 ) where
 

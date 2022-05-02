@@ -4,8 +4,8 @@ Main module for the haskell style checker program.
 module Main where
 
 import Conf
-import Files
-import Compute
+import Input
+import Output
 
 import Control.Monad
 import Data.List

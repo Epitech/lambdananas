@@ -22,10 +22,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-stack
     - uses: haskell/actions/setup@v2
-        with:
-          ghc-version: '8.10.7'
-          enable-stack: true
-          stack-version: 'latest'
+      with:
+        ghc-version: '8.10.7'
+        enable-stack: true
+        stack-version: 'latest'
     - name: Build
       run: stack build --test --no-run-tests
 

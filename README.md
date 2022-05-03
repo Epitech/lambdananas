@@ -1,4 +1,8 @@
-# haskell-style-checker
+# Lambdananas
+
+The haskell coding style checker, version 2.
+
+> Was previously called hsc or haskell-language-checker
 
 ## 📦 Build & Run
 

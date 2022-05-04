@@ -72,6 +72,8 @@ jobs:
         key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
         restore-keys: |
           ${{ runner.os }}-stack
+    - name: Install shelltestrunner
+      run: stack install shelltestrunner-1.9
     - name: Run system tests
       run: shelltest -a -d -p test/system/
 

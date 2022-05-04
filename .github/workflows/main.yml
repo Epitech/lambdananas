@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v3
@@ -31,7 +31,7 @@ jobs:
 
   unit:
     name: Unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build
     steps:
     - uses: actions/checkout@v2
@@ -48,7 +48,7 @@ jobs:
 
   integration:
     name: Integration tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [unit, build]
     steps:
     - uses: actions/checkout@v2
@@ -65,7 +65,7 @@ jobs:
 
   system:
     name: System tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [unit, integration, build]
     steps:
     - uses: actions/checkout@v2
@@ -82,7 +82,7 @@ jobs:
 
   artifacts:
     name: Upload artifact
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build
     steps:
     - uses: actions/checkout@v2

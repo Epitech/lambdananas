@@ -1,0 +1,33 @@
+# --- Building before tests ---
+
+$$$ stack build
+>>>2
+>>>= 0
+
+# --- Input tests ---
+
+$$$ stack run -- test/system/examples/Correct.hs
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/Correct.hs
+$$$ stack run -- test/system/examples/Correct.hs
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/Correct.hs
+$$$ stack run
+>>>2
+>>>= 0
+
+# --- Output tests ---
+
+<<<
+test/system/examples/UselessDo.hs
+$$$ stack run
+>>>
+test/system/examples/UselessDo.hs:4: MAJOR:D1 # useless DO
+>>>2
+>>>= 0

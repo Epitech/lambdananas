@@ -1,2 +1,0 @@
-stack run -- test/examples/Correct.hs
->>>= 0

@@ -1,5 +1,7 @@
 # Lambdananas
 
+![pineapple](https://user-images.githubusercontent.com/102175969/166650736-40d20379-fe54-4f79-9f27-f74ceaeedef6.png)
+
 The haskell coding style checker, version 2.
 
 > Was previously called hsc or haskell-language-checker

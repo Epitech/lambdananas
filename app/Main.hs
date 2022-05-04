@@ -34,21 +34,21 @@ loadAll d = join <$> mapM load d
 
 -- | Checks the coding style for a list of files.
 processMultiple :: Conf -> [FilePath] -> IO()
-processMultiple conf haskellFiles = do
-  case haskellFiles of
-    [] -> hPutStrLn stderr $ errorMsg "no files or directories"
-    nonEmptyFiles -> mapM_ (processOne conf) nonEmptyFiles
+processMultiple conf haskellFiles = case haskellFiles of
+  [] -> hPutStrLn stderr $ errorMsg "no files or directories"
+  nonEmptyFiles -> mapM_ (processOne conf) nonEmptyFiles
 
 -- | Checks the coding style for a single file.
 -- We are not returning a list of issues for performance reasons!
 processOne :: Conf -> FilePath -> IO ()
 processOne conf filename = do
-  buff <- parseFile filename -- buff is a Either IOError [Decl SrcSpanInfo]
+  buff <- parseFile filename
   case buff of
-    Right lst -> let rs = map getRule rls -- rs = [([Decl SrcSpanInfo] -> [Warn])]
-                     warnings = sort $ join $ map (\ f -> f lst) rs -- [Warn] : sorted
+    Right lst -> let rs = map getRule rls
+                     warnings = sort $ join $ map (\ f -> f lst) rs
                  in mapM_ (outputOne conf) warnings -- IO ()
-    Left err -> putStrLn $ errorMsg $ "Unable to load file: " ++ show (err :: IOError) -- TODO : check for extensions here by watching for the error returned
+    Left err -> putStrLn $
+      errorMsg $ "Unable to load file: " ++ show (err :: IOError)
   where
     rls = defaultRules -- [Rule]
 

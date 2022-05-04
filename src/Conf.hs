@@ -32,12 +32,10 @@ data Conf = Conf { mode :: Maybe OutputModes
 optParser :: Parser Conf
 optParser = Conf
             <$> optional (option auto
-                (long "output"
-                 <> short 'o'
-                 <> help outputHelp))
+                (long "output" <> short 'o' <> help outputHelp))
             <*> many (strArgument
-                (metavar "FILE"
-                 <> help "Files to search"))
+                (metavar "FILE" <> help "Files to search"))
           where
-            outputHelp = "Outputs the coding style issues in a specific way, can be 'silent', 'argos' or 'vera'."
+            outputHelp = "Outputs the coding style issues in a specific way, \
+            \can be 'silent', 'argos' or 'vera'."
 

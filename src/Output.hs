@@ -30,7 +30,8 @@ createArgoFileName s = "style-" <> s <> ".txt"
 -- | Output the result of a single coding style error.
 outputOne :: Conf -> Warn -> IO ()
 outputOne Conf {mode = Just Silent} _ = return ()
-outputOne Conf {mode = Just Argos} w@(Warn _ _ g) = appendFile atPath $ showArgo w <> "\n"
+outputOne Conf {mode = Just Argos} w@(Warn _ _ g) =
+    appendFile atPath $ showArgo w <> "\n"
   where
     atPath = fromMaybe errorsPath $ lookup g argoOutputFiles
     errorsPath = createArgoFileName "debug"

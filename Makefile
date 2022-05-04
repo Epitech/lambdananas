@@ -22,6 +22,9 @@ install: $(NAME)
 tests_run:
 	stack test
 
+tests_run_coverage:
+	stack test --coverage
+
 clean:
 	stack clean
 

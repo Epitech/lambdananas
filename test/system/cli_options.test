@@ -18,3 +18,10 @@ test/system/examples/UselessDo.hs
 $$$ stack run -- test/system/examples/Correct.hs
 >>>2
 >>>= 0
+
+# Invoquing with argos output
+$$$ stack run -- -o argos test/system/examples/UselessDo.hs && cat style-major.txt
+>>>
+test/system/examples/UselessDo.hs:4:D1
+>>>2
+>>>= 0

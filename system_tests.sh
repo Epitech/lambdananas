@@ -12,4 +12,5 @@ else
     sleep 0.2 # stack does stuff even after exit so this is a dirty fix
     echo "shelltest will run on all .test files of the test/ directory"
     shelltest -c test/
+    rm style-minor.txt style-major.txt style-info.txt > /dev/null
 fi

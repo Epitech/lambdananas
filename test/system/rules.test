@@ -1,0 +1,51 @@
+# --- Output tests ---
+
+<<<
+test/system/examples/UselessDo.hs
+$$$ stack run
+>>>
+test/system/examples/UselessDo.hs:4: MAJOR:D1 # useless DO
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/UselessReturn.hs
+$$$ stack run
+>>>
+test/system/examples/UselessReturn.hs:8: MINOR:D2 # useless generator
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/NestedIfs.hs
+$$$ stack run
+>>>
+test/system/examples/NestedIfs.hs:8: MAJOR:C1 # nested IFs
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/NoCorrespondingSig.hs
+$$$ stack run
+>>>
+test/system/examples/NoCorrespondingSig.hs:3: MINOR:T1 # main has no signature
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/ReplacableGuards.hs
+$$$ stack run
+>>>
+test/system/examples/ReplacableGuards.hs:8: MAJOR:C2 # guard should be a pattern
+test/system/examples/ReplacableGuards.hs:9: MAJOR:C2 # guard should be a pattern
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/FunctionTooBig.hs
+$$$ stack run
+>>>
+test/system/examples/FunctionTooBig.hs:4: MINOR:F3 # line too long
+test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
+>>>2
+>>>= 0

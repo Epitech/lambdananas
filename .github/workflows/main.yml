@@ -75,7 +75,7 @@ jobs:
     - name: Install shelltestrunner
       run: stack install shelltestrunner-1.9
     - name: Run system tests
-      run: shelltest -a -d -p test/system/
+      run: stack build --exec ./system_tests.sh
 
   artifacts:
     name: Upload artifact

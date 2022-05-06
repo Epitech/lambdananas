@@ -7,10 +7,7 @@ then
     echo "you can download it using 'stack install shelltestrunner-1.9'"
     exit
 else
-    echo "making sure binary is built"
-    stack build
-    sleep 0.2 # stack does stuff even after exit so this is a dirty fix
     echo "shelltest will run on all .test files of the test/ directory"
-    shelltest -c test/
-    rm style-minor.txt style-major.txt style-info.txt > /dev/null
+    shelltest test/
+    rm -f style-minor.txt style-major.txt style-info.txt > /dev/null
 fi

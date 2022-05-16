@@ -44,7 +44,7 @@ optParser = Conf
                 (metavar "FILE" <> help "Files to search"))
           where
             outputHelp = "Outputs the coding style issues in a specific way, \
-            \can be 'silent', 'argos' or 'vera'."
+            \can be 'silent', 'argos' or 'vera'"
             manifestHelp = "Dumps a manifest of all errors in the following format \
             \<code>:<description>"
 

@@ -11,7 +11,7 @@ import Control.Monad
 
 -- | A list of directories to be ignored.
 ignoredDirs :: [String]
-ignoredDirs = ["tests", "test", "bonus",".stack-work"]
+ignoredDirs = ["tests", "test", "bonus", ".stack-work", ".git"]
 
 -- | If the given 'FilePath' is a directory, returns a list
 -- of all files inside recursively. Given a file, will

@@ -25,3 +25,18 @@ $$$ stack run -- -o argos test/system/examples/UselessDo.hs && cat style-major.t
 test/system/examples/UselessDo.hs:4:D1
 >>>2
 >>>= 0
+
+# Dumping issue manifest
+$$$ stack run -- --dump-manifest
+>>>
+C1:nested IFs
+C2:guard should be a pattern
+D1:useless DO
+D2:useless generator
+F3:line too long
+F4:function too big
+T1:some function has no signature
+XX:debug
+
+>>>2
+>>>= 0

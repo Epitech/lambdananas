@@ -22,6 +22,8 @@ main = execParser options >>= process
 -- | Top level compute function.
 -- Is called after the cli arguments have been parsed
 process :: Conf -> IO ()
+process (Conf _ (Just Dump) _ ) =
+  putStrLn dumpManifest
 process conf@(Conf _ _ []) =
   getContents >>= processMultiple conf . lines
 process conf@(Conf _ _ paths) =

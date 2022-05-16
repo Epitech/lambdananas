@@ -4,6 +4,7 @@ CLI argument configuration.
 module Conf (
   Conf (..),
   OutputModes (..),
+  ManifestDump (..),
   optParser,
 ) where
 
@@ -46,5 +47,5 @@ optParser = Conf
             outputHelp = "Outputs the coding style issues in a specific way, \
             \can be 'silent', 'argos' or 'vera'"
             manifestHelp = "Dumps a manifest of all errors in the following format \
-            \<code>:<description>"
+            \<code>:<description> while ignoring every other options"
 

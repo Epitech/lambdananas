@@ -4,6 +4,7 @@ Higher level module for style checker computations.
 module Output (
   outputOne,
   argoOutputFiles,
+  dumpManifest,
   module Parser,
   module Rules,
 ) where
@@ -35,5 +36,12 @@ outputOne Conf {mode = Just Argos} w@(Warn _ _ g) =
   where
     atPath = fromMaybe errorsPath $ lookup g argoOutputFiles
     errorsPath = createArgoFileName "debug"
-
 outputOne _ w = putStrLn $ showVera w
+
+-- | Dumps a manifest of all coding style issues in format
+-- `<code>:<description>`.
+dumpManifest :: String
+dumpManifest = foldr mergeLines "" (merge <$> getIssuesList)
+  where
+    merge (a, b) = a ++ ':':b
+    mergeLines e acc = e ++ '\n':acc

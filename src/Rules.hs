@@ -5,6 +5,7 @@ module Rules (
     Check,
     Warn (..),
     getIssueDesc,
+    getIssuesList,
     Rule (..),
     Gravity(..),
     Issue (..),
@@ -107,6 +108,18 @@ getIssueDesc LineTooLong =    ("F3", "line too long")  -- D do and generators
 getIssueDesc FunctionTooBig = ("F4", "function too big")  -- D do and generators
 getIssueDesc (NoSig s) =      ("T1", s ++ " has no signature")  -- T types
 getIssueDesc (Debug s) =      ("XX", s) -- DEBUG
+
+-- | Retrives a list of issues code and descriptions.
+getIssuesList :: [(String, String)]
+getIssuesList = [getIssueDesc BadIf
+                , getIssueDesc BadGuard
+                , getIssueDesc BadDo
+                , getIssueDesc BadReturn
+                , getIssueDesc LineTooLong
+                , getIssueDesc FunctionTooBig
+                , getIssueDesc (NoSig "some function")
+                , getIssueDesc (Debug "debug")
+                ]
 
 -- | Describes an 'Issue' gravity.
 data Gravity = Info | Minor | Major deriving Eq

@@ -97,7 +97,7 @@ jobs:
     - name: Building
       run: stack build
     - name: Install to current directory
-      run: cp $(stack path --local-install-root)/bin/haskell-style-checker-exe $NAME
+      run: cp $(stack path --local-install-root)/bin/haskell-style-checker-exe ${{ env.NAME }}
     - name: Compressing and stripping binary
       uses: crazy-max/ghaction-upx@v1
       with:
@@ -108,5 +108,6 @@ jobs:
     - name: Archive production artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: $NAME
-        path: $NAME
+        name: ${{ env.NAME }}
+        path: ${{ env.NAME }}
+

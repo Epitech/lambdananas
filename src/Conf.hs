@@ -15,6 +15,10 @@ data OutputModes = Silent -- ^ Do not output anything (usefull for tests maybe ?
                  | Vera -- ^ Output everything to stdout (compatible with vera++ output)
                  deriving Show
 
+data ManifestDump = Dump -- ^ Dump a manifest of all error codes and their descriptions
+              | NoDump -- ^ Do not dump (default)
+              deriving Show
+
 instance Read OutputModes where
   readsPrec _ "silent" = [(Silent, "")]
   readsPrec _ "argos" = [(Argos, "")]
@@ -24,7 +28,8 @@ instance Read OutputModes where
 -- | Holds the command line argument parsing result.
 -- The 'Conf' data aims at replacing the 'Conf' data.
 data Conf = Conf { mode :: Maybe OutputModes
-                 , files :: [FilePath]
+                 , manifest :: Maybe ManifestDump -- ^ Should a manifest be dumped
+                 , files :: [FilePath] -- ^ Files to be checked
                  }
                  deriving Show
 
@@ -33,9 +38,13 @@ optParser :: Parser Conf
 optParser = Conf
             <$> optional (option auto
                 (long "output" <> short 'o' <> help outputHelp))
+            <*> optional (flag NoDump Dump
+                (long "dump-manifest" <> help manifestHelp))
             <*> many (strArgument
                 (metavar "FILE" <> help "Files to search"))
           where
             outputHelp = "Outputs the coding style issues in a specific way, \
             \can be 'silent', 'argos' or 'vera'."
+            manifestHelp = "Dumps a manifest of all errors in the following format \
+            \<code>:<description>"
 

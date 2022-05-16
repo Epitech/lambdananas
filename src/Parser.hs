@@ -16,8 +16,6 @@ import Language.Haskell.Exts.Parser
 import Language.Haskell.Exts.Syntax
 import Language.Haskell.Exts.SrcLoc
 import Control.Exception
-import Control.Monad (void)
---import Debug.Trace
 
 data Node = NExp (Exp SrcSpanInfo)
           | NBin (Binds SrcSpanInfo)
@@ -25,9 +23,6 @@ data Node = NExp (Exp SrcSpanInfo)
           | NDec (Decl SrcSpanInfo)
           | NPat (Pat SrcSpanInfo)
           deriving (Eq, Show)
-
-showS :: (Functor f, Show (f ())) => f a -> String
-showS = show . void
 
 parseFile :: String -> IO (Either IOError [Decl SrcSpanInfo])
 parseFile filename = parseStr <$> try (readFile filename)

@@ -29,13 +29,19 @@ import Control.Monad
 import Control.Monad.Writer
 import Data.Foldable
 
-data Rule = Rule { name :: String
-                 , _description :: String
-                 , getRule :: Check
+-- | A function that will check a given rule.
+type Check = [Decl SrcSpanInfo] -> [Warn]
+
+-- | Describes a coding style rule.
+data Rule = Rule { name :: String         -- ^ Rule name
+                 , _description :: String -- ^ Rule description
+                 , getRule :: Check       -- ^ Function to check the rule
                  }
 
 instance Eq Rule where
   r1 == r2 = name r1 == name r2
+
+---- RULES ----
 
 allRules :: [Rule]
 allRules = [ ruleCheckSign, ruleCheckIfs, ruleCheckReturns,
@@ -75,10 +81,10 @@ ruleCheckLines = Rule "check-lines"
                  "functions should be less than 10 lines x 80 columns"
                  checkLines
 
+---- RULES END ----
+
 showLong :: Warn -> String
 showLong = show
-
-type Check = [Decl SrcSpanInfo] -> [Warn]
 
 -- | A coding style warning emitted by the checker.
 data Warn = Warn { what :: Issue                -- ^ The issue raised (description can be retrived by 'getIssueDesc')
@@ -159,6 +165,8 @@ instance Show Warn where
 instance Ord Warn where
   compare (Warn _ (s1,l1) _) (Warn _ (s2,l2) _) | s1 == s2 = compare l1 l2
                                             | otherwise = compare s1 s2
+
+---- RULE CHECKING FUNCTIONS ----
 
 {- CHECK CASCADING IFS -}
 checkIfs :: Check

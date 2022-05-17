@@ -128,6 +128,7 @@ getIssuesList = [getIssueDesc BadIf
                 , getIssueDesc LineTooLong
                 , getIssueDesc FunctionTooBig
                 , getIssueDesc (NoSig "some function")
+                , getIssueDesc (ForbiddenExt "some")
                 , getIssueDesc (NotParsable "some")
                 , getIssueDesc (Debug "debug")
                 ]

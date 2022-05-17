@@ -49,14 +49,16 @@ outputOneErr :: Conf -> String -> IO ()
 outputOneErr Conf {mode = Just Silent} _ =
   return ()
 outputOneErr Conf {mode = Just Argos} s
-    | "Parse error:" `isPrefixOf` s = appendFile "banned_funcs" $
+    | "Parse error:" `isPrefixOf` s = appendFile atPath $
       showArgo issue <> "\n"
     | otherwise = appendFile "banned_funcs" $ snd $ getIssueDesc $
       ForbiddenExt "file"
   where
+    atPath = fromMaybe errorsPath $ lookup Major argoOutputFiles
+    errorsPath = createArgoFileName "debug"
     issue = Warn (NotParsable "file") ("file", 0) Major
 outputOneErr _ s
-    | "Parse error:" `isPrefixOf` s = print issue
+    | "Parse error:" `isPrefixOf` s = putStrLn $ showVera issue
     | otherwise = putStrLn $ snd $ getIssueDesc $ ForbiddenExt "file"
   where
     issue = Warn (NotParsable "file") ("file", 0) Major

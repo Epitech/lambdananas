@@ -49,8 +49,7 @@ processOne conf filename = do
     Right lst -> let rs = map getRule rls
                      warnings = sort $ join $ map (\ f -> f lst) rs
                  in mapM_ (outputOne conf) warnings -- IO ()
-    Left err -> putStrLn $
-      errorMsg $ "Unable to load file: " ++ show (err :: IOError)
+    Left err -> outputOneErr conf $ show (err :: IOError)
   where
     rls = defaultRules -- [Rule]
 

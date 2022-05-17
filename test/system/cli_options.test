@@ -36,6 +36,8 @@ D2:useless generator
 F3:line too long
 F4:function too big
 T1:some function has no signature
+P1:some file contains forbidden extension
+P1:some file is not parsable
 XX:debug
 
 >>>2

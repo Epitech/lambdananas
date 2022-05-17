@@ -3,6 +3,7 @@ Higher level module for style checker computations.
 -}
 module Output (
   outputOne,
+  outputOneErr,
   argoOutputFiles,
   dumpManifest,
   module Parser,
@@ -14,6 +15,9 @@ import Rules
 import Parser
 
 import Data.Maybe
+import Data.List
+import Debug.Trace
+import Control.Monad (when)
 
 -- | Table of gravities linked to their filepath dump.
 -- Used in argos mode only.
@@ -37,6 +41,25 @@ outputOne Conf {mode = Just Argos} w@(Warn _ _ g) =
     atPath = fromMaybe errorsPath $ lookup g argoOutputFiles
     errorsPath = createArgoFileName "debug"
 outputOne _ w = putStrLn $ showVera w
+
+-- TODO : this is very much temporary and should be patched when
+-- refactoring the way issues are handled.
+-- | Outputs a single error when the file could not be parsed.
+outputOneErr :: Conf -> String -> IO ()
+outputOneErr Conf {mode = Just Silent} _ =
+  return ()
+outputOneErr Conf {mode = Just Argos} s
+    | "Parse error:" `isPrefixOf` s = appendFile "banned_funcs" $
+      showArgo issue <> "\n"
+    | otherwise = appendFile "banned_funcs" $ snd $ getIssueDesc $
+      ForbiddenExt "file"
+  where
+    issue = Warn (NotParsable "file") ("file", 0) Major
+outputOneErr _ s
+    | "Parse error:" `isPrefixOf` s = print issue
+    | otherwise = putStrLn $ snd $ getIssueDesc $ ForbiddenExt "file"
+  where
+    issue = Warn (NotParsable "file") ("file", 0) Major
 
 -- | Dumps a manifest of all coding style issues in format
 -- `<code>:<description>`.

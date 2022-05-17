@@ -87,27 +87,31 @@ data Warn = Warn { what :: Issue                -- ^ The issue raised (descripti
                  } deriving Eq
 
 -- | All possible issues arising from a code.
-data Issue = BadIf              -- ^ Nested ifs
-           | BadDo              -- ^ Useless do
-           | BadReturn          -- ^ Useless generator
-           | BadGuard           -- ^ Guard should be a pattern
-           | LineTooLong        -- ^ Line too long
-           | FunctionTooBig     -- ^ Function too big
-           | NoSig String       -- ^ No signature
-           | Debug String       -- ^ Debug
+data Issue = BadIf                        -- ^ Nested ifs
+           | BadDo                        -- ^ Useless do
+           | BadReturn                    -- ^ Useless generator
+           | BadGuard                     -- ^ Guard should be a pattern
+           | LineTooLong                  -- ^ Line too long
+           | FunctionTooBig               -- ^ Function too big
+           | NoSig String                 -- ^ No signature
+           | NotParsable FilePath         -- ^ File is not parsable
+           | ForbiddenExt FilePath        -- ^ File contains forbidden extension
+           | Debug String                 -- ^ Debug
            deriving Eq
 
 -- | Retrives a tuple with the code and description of a coding
 -- style issue.
 getIssueDesc :: Issue -> (String, String)
-getIssueDesc BadIf =          ("C1", "nested IFs")  -- C cond. branching
-getIssueDesc BadGuard =       ("C2", "guard should be a pattern")  -- C cond. branch.
-getIssueDesc BadDo =          ("D1", "useless DO")  -- D do and generators
-getIssueDesc BadReturn =      ("D2", "useless generator")  -- D do and generators
-getIssueDesc LineTooLong =    ("F3", "line too long")  -- D do and generators
-getIssueDesc FunctionTooBig = ("F4", "function too big")  -- D do and generators
-getIssueDesc (NoSig s) =      ("T1", s ++ " has no signature")  -- T types
-getIssueDesc (Debug s) =      ("XX", s) -- DEBUG
+getIssueDesc BadIf =            ("C1", "nested IFs")
+getIssueDesc BadGuard =         ("C2", "guard should be a pattern")
+getIssueDesc BadDo =            ("D1", "useless DO")
+getIssueDesc BadReturn =        ("D2", "useless generator")
+getIssueDesc LineTooLong =      ("F3", "line too long")
+getIssueDesc FunctionTooBig =   ("F4", "function too big")
+getIssueDesc (NoSig s) =        ("T1", s ++ " has no signature")
+getIssueDesc (ForbiddenExt f) = ("P1", f ++ " file contains forbidden extension")
+getIssueDesc (NotParsable f) =  ("P1", f ++ " file is not parsable")
+getIssueDesc (Debug s) =        ("XX", s) -- DEBUG
 
 -- | Retrives a list of issues code and descriptions.
 getIssuesList :: [(String, String)]
@@ -118,6 +122,7 @@ getIssuesList = [getIssueDesc BadIf
                 , getIssueDesc LineTooLong
                 , getIssueDesc FunctionTooBig
                 , getIssueDesc (NoSig "some function")
+                , getIssueDesc (NotParsable "some")
                 , getIssueDesc (Debug "debug")
                 ]
 

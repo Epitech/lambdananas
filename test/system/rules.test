@@ -50,6 +50,8 @@ test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
 >>>2
 >>>= 0
 
+#---- Parse failures with vera output mode ----
+
 <<<
 test/system/examples/ForbiddenExtension.hs
 $$$ stack run
@@ -63,5 +65,21 @@ test/system/examples/ParseError.hs
 $$$ stack run
 >>>
 test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError.hs file is not parsable
+>>>2
+>>>= 0
+
+#---- Parse failures with argos output mode ----
+
+$$$ stack run -- -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
+>>>
+test/system/examples/ForbiddenExtension.hs:24:E1
+>>>2
+>>>= 0
+
+<<<
+test/system/examples/ParseError.hs
+$$$ stack run -- -o argos && tail -n 1 style-major.txt
+>>>
+test/system/examples/ParseError.hs:5:P1
 >>>2
 >>>= 0

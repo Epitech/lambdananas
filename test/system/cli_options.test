@@ -20,7 +20,7 @@ $$$ stack run -- test/system/examples/Correct.hs
 >>>= 0
 
 # Invoquing with argos output
-$$$ stack run -- -o argos test/system/examples/UselessDo.hs && cat style-major.txt
+$$$ stack run -- -o argos test/system/examples/UselessDo.hs && tail -n 1 style-major.txt
 >>>
 test/system/examples/UselessDo.hs:4:D1
 >>>2
@@ -36,7 +36,7 @@ D2:useless generator
 F3:line too long
 F4:function too big
 T1:some function has no signature
-P1:some file contains forbidden extension
+E1:some file contains forbidden extension
 P1:some file is not parsable
 XX:debug
 

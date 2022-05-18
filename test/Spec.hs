@@ -4,7 +4,7 @@ import Rules
 import Language.Haskell.Exts.Syntax
 import Control.Monad
 
-appliedTo :: Check -> [String] -> Either IOError [Warn]
+appliedTo :: Check -> [String] -> Either ParseError [Warn]
 appliedTo rule src = rule <$> parseHS "." (unlines src)
 
 main :: IO ()

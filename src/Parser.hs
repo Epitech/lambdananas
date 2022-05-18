@@ -10,12 +10,12 @@ module Parser (
   inspectExpr,
   getIdent,
   parseHS,
+  ParseError (..),
 ) where
 
 import Language.Haskell.Exts.Parser
 import Language.Haskell.Exts.Syntax
 import Language.Haskell.Exts.SrcLoc
-import Control.Exception
 
 data Node = NExp (Exp SrcSpanInfo)
           | NBin (Binds SrcSpanInfo)
@@ -24,15 +24,26 @@ data Node = NExp (Exp SrcSpanInfo)
           | NPat (Pat SrcSpanInfo)
           deriving (Eq, Show)
 
-parseFile :: String -> IO (Either IOError [Decl SrcSpanInfo])
-parseFile filename = parseStr <$> try (readFile filename)
-  where parseStr buff = buff >>= parseHS filename
+data ParseError = ParseError { file :: String
+                             , line :: Int
+                             , column :: Int
+                             , desc :: String
+                             }
 
-parseHS :: String -> String -> Either IOError [Decl SrcSpanInfo]
-parseHS file s =
-  purge $ parseWithMode (defaultParseMode { parseFilename = file }) s
+instance Show ParseError where
+  show (ParseError f l c d) = d ++ ' ':f ++ ' ':show l ++ ':':show c
+
+parseFile :: FilePath -> IO (Either ParseError [Decl SrcSpanInfo])
+parseFile filename = do
+    s <- readFile filename
+    return $ parseHS filename s
+
+parseHS :: FilePath -> String -> Either ParseError [Decl SrcSpanInfo]
+parseHS filename s =
+    purge $ parseWithMode (defaultParseMode { parseFilename = filename }) s
   where purge (ParseOk (Module _mod _ _ _ body)) = Right body
-        purge err = Left (userError (show err))
+        purge (ParseFailed (SrcLoc f l c) err) = Left $ ParseError f l c err
+        purge _ = Left $ ParseError "?" 0 0 "this should never happen"
 
 getIdent :: Name SrcSpanInfo -> String
 getIdent (Ident _ name) = name

@@ -115,7 +115,7 @@ getIssueDesc BadReturn =        ("D2", "useless generator")
 getIssueDesc LineTooLong =      ("F3", "line too long")
 getIssueDesc FunctionTooBig =   ("F4", "function too big")
 getIssueDesc (NoSig s) =        ("T1", s ++ " has no signature")
-getIssueDesc (ForbiddenExt f) = ("P1", f ++ " file contains forbidden extension")
+getIssueDesc (ForbiddenExt f) = ("E1", f ++ " file contains forbidden extension")
 getIssueDesc (NotParsable f) =  ("P1", f ++ " file is not parsable")
 getIssueDesc (Debug s) =        ("XX", s) -- DEBUG
 

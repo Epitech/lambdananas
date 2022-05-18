@@ -1,2 +1,0 @@
-stack run -- test/examples/ForbiddenExtension.hs
->>>= 0

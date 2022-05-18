@@ -51,10 +51,10 @@ test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
 >>>= 0
 
 <<<
-test/system/examples/ForbidenExtension.hs
+test/system/examples/ForbiddenExtension.hs
 $$$ stack run
 >>>
-test/system/examples/ForbidenExtension.hs:1: MAJOR:E1 # test/system/examples/ForbidenExtension.hs file contains forbidden extension
+test/system/examples/ForbiddenExtension.hs file contains forbidden extension
 >>>2
 >>>= 0
 
@@ -62,6 +62,6 @@ test/system/examples/ForbidenExtension.hs:1: MAJOR:E1 # test/system/examples/For
 test/system/examples/ParseError.hs
 $$$ stack run
 >>>
-test/system/examples/ParseError.hs:1: MAJOR:P1 # test/system/examples/ParseError.hs file is not parsable
+test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError.hs file is not parsable
 >>>2
 >>>= 0

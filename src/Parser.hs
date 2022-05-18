@@ -28,7 +28,7 @@ data ParseError = ParseError { file :: String
                              , line :: Int
                              , column :: Int
                              , desc :: String
-                             }
+                             } deriving Eq
 
 instance Show ParseError where
   show (ParseError f l c d) = d ++ ' ':f ++ ' ':show l ++ ':':show c

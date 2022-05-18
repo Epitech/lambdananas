@@ -48,15 +48,18 @@ outputOneErr Conf {mode = Just Silent} _ =
   return ()
 outputOneErr Conf {mode = Just Argos} (ParseError filename loc _ text)
     | "Parse error:" `isPrefixOf` text = appendFile atPath $
-      showArgo issue <> "\n"
-    | otherwise = appendFile "banned_funcs" $ snd $ getIssueDesc $
-      ForbiddenExt "file"
+      showArgo notParsableIssue <> "\n"
+    -- everything not a parse error is an extension error
+    | otherwise = appendFile "banned_funcs" $
+      showArgo forbiddenExtIssue <> "\n"
   where
     atPath = fromMaybe errorsPath $ lookup Major argoOutputFiles
     errorsPath = createArgoFileName "debug"
-    issue = Warn (NotParsable filename) (filename, loc) Major
+    notParsableIssue = Warn (NotParsable filename) (filename, loc) Major
+    forbiddenExtIssue = Warn (ForbiddenExt filename) (filename, loc) Major
 outputOneErr _ (ParseError filename loc _ text)
     | "Parse error:" `isPrefixOf` text = putStrLn $ showVera issue
+    -- everything not a parse error is an extension error
     | otherwise = putStrLn $ snd $ getIssueDesc $ ForbiddenExt filename
   where
     issue = Warn (NotParsable filename) (filename, loc) Major

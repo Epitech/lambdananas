@@ -22,11 +22,11 @@ main = execParser options >>= process
 -- | Top level compute function.
 -- Is called after the cli arguments have been parsed
 process :: Conf -> IO ()
-process (Conf _ (Just Dump) _ ) =
+process Conf{manifest = Just Dump} =
   putStrLn dumpManifest
-process conf@(Conf _ _ []) =
+process conf@Conf{files = []} =
   getContents >>= processMultiple conf . lines
-process conf@(Conf _ _ paths) =
+process conf@Conf{files = paths} =
   loadAll paths >>= processMultiple conf
 
 -- | Returns a complete list of paths needing to be checked.

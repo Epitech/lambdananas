@@ -16,8 +16,6 @@ import Parser
 
 import Data.Maybe
 import Data.List
-import Debug.Trace
-import Control.Monad (when)
 
 -- | Table of gravities linked to their filepath dump.
 -- Used in argos mode only.
@@ -45,26 +43,26 @@ outputOne _ w = putStrLn $ showVera w
 -- TODO : this is very much temporary and should be patched when
 -- refactoring the way issues are handled.
 -- | Outputs a single error when the file could not be parsed.
-outputOneErr :: Conf -> String -> IO ()
+outputOneErr :: Conf -> ParseError -> IO ()
 outputOneErr Conf {mode = Just Silent} _ =
   return ()
-outputOneErr Conf {mode = Just Argos} s
-    | "Parse error:" `isPrefixOf` s = appendFile atPath $
+outputOneErr Conf {mode = Just Argos} (ParseError filename loc _ text)
+    | "Parse error:" `isPrefixOf` text = appendFile atPath $
       showArgo issue <> "\n"
     | otherwise = appendFile "banned_funcs" $ snd $ getIssueDesc $
       ForbiddenExt "file"
   where
     atPath = fromMaybe errorsPath $ lookup Major argoOutputFiles
     errorsPath = createArgoFileName "debug"
-    issue = Warn (NotParsable "file") ("file", 0) Major
-outputOneErr _ s
-    | "Parse error:" `isPrefixOf` s = putStrLn $ showVera issue
-    | otherwise = putStrLn $ snd $ getIssueDesc $ ForbiddenExt "file"
+    issue = Warn (NotParsable filename) (filename, loc) Major
+outputOneErr _ (ParseError filename loc _ text)
+    | "Parse error:" `isPrefixOf` text = putStrLn $ showVera issue
+    | otherwise = putStrLn $ snd $ getIssueDesc $ ForbiddenExt filename
   where
-    issue = Warn (NotParsable "file") ("file", 0) Major
+    issue = Warn (NotParsable filename) (filename, loc) Major
 
 -- | Dumps a manifest of all coding style issues in format
--- `<code>:<description>`.
+-- `<code>:<textription>`.
 dumpManifest :: String
 dumpManifest = foldr mergeLines "" (merge <$> getIssuesList)
   where

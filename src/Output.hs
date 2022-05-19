@@ -4,6 +4,7 @@ Higher level module for style checker computations.
 module Output (
   outputOne,
   outputOneErr,
+  outputVague,
   argoOutputFiles,
   dumpManifest,
   module Parser,
@@ -41,7 +42,7 @@ outputOne Conf {mode = Just Argos} w@(Warn _ _ g) =
 outputOne _ w = putStrLn $ showVera w
 
 -- TODO : this is very much temporary and should be patched when
--- refactoring the way issues are handled.
+-- switching backend parsing library.
 -- | Outputs a single error when the file could not be parsed.
 outputOneErr :: Conf -> ParseError -> IO ()
 outputOneErr Conf {mode = Just Silent} _ =
@@ -65,9 +66,29 @@ outputOneErr _ (ParseError filename loc _ text)
     issue = Warn (NotParsable filename) (filename, loc) Major
 
 -- | Dumps a manifest of all coding style issues in format
--- `<code>:<textription>`.
+-- `<code>:<description>`.
 dumpManifest :: String
 dumpManifest = foldr mergeLines "" (merge <$> getIssuesList)
   where
     merge (a, b) = a ++ ':':b
     mergeLines e acc = e ++ '\n':acc
+
+-- | Appends a vague description of issues to style-student.txt
+outputVague :: [Issue] -> IO ()
+outputVague i = appendFile "style-student.txt" (toString $ accumulate i)
+  where
+    accumulate :: [Issue] -> [(Int, Issue)]
+    accumulate = foldr (\e acc ->  ) []
+    toString :: [(Int, Issue)] -> String
+    toString l = concat $ ( \ (x, issue) -> showVague issue x) <$> l
+
+-- | Creates a vague description of a given issue.
+showVague :: Issue    -- ^ The issue
+          -> Int      -- ^ The number of times it was raised
+          -> String
+showVague issue n =
+  code ++ " rule has been violated " ++ show n ++ " times: " ++ des ++ '\n'
+  where
+    code = fst $ getIssueDesc issue
+    des = snd $ getIssueDesc issue
+

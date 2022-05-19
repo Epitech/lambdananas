@@ -35,23 +35,26 @@ loadAll :: [FilePath] -- ^ Directories to be loaded
 loadAll d = join <$> mapM load d
 
 -- | Checks the coding style for a list of files.
-processMultiple :: Conf -> [FilePath] -> IO()
+processMultiple :: Conf -> [FilePath] -> IO ()
 processMultiple conf haskellFiles = case haskellFiles of
   [] -> hPutStrLn stderr $ errorMsg "no files or directories"
-  nonEmptyFiles -> mapM_ (processOne conf) nonEmptyFiles
+  nonEmptyFiles -> mapM (processOne conf) nonEmptyFiles >>= outputVague . concat
 
 -- | Checks the coding style for a single file.
 -- We are not returning a list of issues for performance reasons!
-processOne :: Conf -> FilePath -> IO ()
+processOne :: Conf -> FilePath -> IO [Issue]
 processOne conf filename = do
   buff <- parseFile filename
   case buff of
     Right lst -> let rs = map getRule rls
                      warnings = sort $ join $ map (\ f -> f lst) rs
-                 in mapM_ (outputOne conf) warnings
-    Left err -> outputOneErr conf err
+                 in mapM_ (outputOne conf) warnings >> return (extractIssue <$> warnings)
+    Left err -> outputOneErr conf err >> return [NotParsable "________.hs"]
   where
     rls = defaultRules -- [Rule]
+
+extractIssue :: Warn -> Issue
+extractIssue Warn{what = issue} = issue
 
 -- | Creates an error message appending it to `Error :`.
 errorMsg :: String -> String

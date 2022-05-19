@@ -97,4 +97,3 @@ showVague issue n =
   where
     code = fst $ getIssueDesc issue
     des = snd $ getIssueDesc issue
-

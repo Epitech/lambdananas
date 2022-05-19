@@ -29,10 +29,13 @@ library
       Output
       Parser
       Rules
+      BadIf
+      Common
   other-modules:
       Paths_haskell_style_checker
   hs-source-dirs:
       src
+      src/rules
   ghc-options: -O3 -Wall
   build-depends:
       base >=4.7 && <5

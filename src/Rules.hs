@@ -23,14 +23,17 @@ module Rules (
 ) where
 
 import Parser
+
 import Language.Haskell.Exts.Syntax hiding (Rule)
 import Language.Haskell.Exts.SrcLoc
 import Control.Monad
 import Control.Monad.Writer
 import Data.Foldable
 
--- | A function that will check a given rule.
-type Check = [Decl SrcSpanInfo] -> [Warn]
+import BadIf
+import Common
+
+checkIfs = BadIf.check
 
 -- | Describes a coding style rule.
 data Rule = Rule { name :: String         -- ^ Rule name
@@ -86,24 +89,17 @@ ruleCheckLines = Rule "check-lines"
 showLong :: Warn -> String
 showLong = show
 
--- | A coding style warning emitted by the checker.
-data Warn = Warn { what :: Issue                -- ^ The issue raised (description can be retrived by 'getIssueDesc')
-                 , _location :: (FilePath, Int) -- ^ The location of the issue
-                 , gravity :: Gravity           -- ^ The gravity of the issue
-                 } deriving Eq
-
--- | All possible issues arising from a code.
-data Issue = BadIf                        -- ^ Nested ifs
-           | BadDo                        -- ^ Useless do
-           | BadReturn                    -- ^ Useless generator
-           | BadGuard                     -- ^ Guard should be a pattern
-           | LineTooLong                  -- ^ Line too long
-           | FunctionTooBig               -- ^ Function too big
-           | NoSig String                 -- ^ No signature
-           | NotParsable FilePath         -- ^ File is not parsable
-           | ForbiddenExt FilePath        -- ^ File contains forbidden extension
-           | Debug String                 -- ^ Debug
-           deriving Eq
+issues :: [(Issue, String, String)]
+issues = [(BadIf, "C1", "nested IFs")
+         ,(BadGuard, "C2", "guards should")
+         ,(BadGuard, "D1", "guards should")
+         ,(BadGuard, "D2", "guards should")
+         ,(BadGuard, "F3", "guards should")
+         ,(BadGuard, "F4", "guards should")
+         ,(BadGuard, "T1", "guards should")
+         ,(BadGuard, "E1", "guards should")
+         ,(BadGuard, "P1", "guards should")
+         ,(BadGuard, "XX", "guards should")]
 
 -- | Retrives a tuple with the code and description of a coding
 -- style issue.
@@ -132,9 +128,6 @@ getIssuesList = [getIssueDesc BadIf
                 , getIssueDesc (NotParsable "some")
                 , getIssueDesc (Debug "debug")
                 ]
-
--- | Describes an 'Issue' gravity.
-data Gravity = Info | Minor | Major deriving Eq
 
 class (Show a) => ShowOpt a where
   -- | Creates a vera compatible output of form:
@@ -168,18 +161,6 @@ instance Ord Warn where
                                             | otherwise = compare s1 s2
 
 ---- RULE CHECKING FUNCTIONS ----
-
-{- CHECK CASCADING IFS -}
-checkIfs :: Check
-checkIfs = join . explore checkIf
-  where checkIf (NExp (If ssi _ ift ife)) | countIfs ift ife >= 1 =
-          [Warn BadIf (getLoc ssi) Major]
-        checkIf _ = []
-        countIfs ifthen ifelse = inspectExpr countIf ifthen <>
-                                 inspectExpr countIf ifelse
-        countIf :: Node -> Sum Int
-        countIf (NExp If{}) = Sum 1
-        countIf _ = Sum 0
 
 {- CHECK USELESS DOs -}
 checkDos :: Check

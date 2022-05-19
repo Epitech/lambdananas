@@ -19,7 +19,9 @@ dependencies:
 - text >= 1.2 && < 2
 
 library:
-  source-dirs: src
+  source-dirs:
+  - src
+  - src/rules
   ghc-options:
   - -O3
   - -Wall

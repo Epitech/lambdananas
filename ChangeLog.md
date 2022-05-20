@@ -26,3 +26,15 @@
 
 - Update CI artifact name
 - Cleaner code
+
+## 2.2.0.0
+
+### Features
+
+- Added more precise parse errors
+- Added dumping parse errors (extension and syntax) to vera logs and argos files
+- Added dumping a vague output to style-student.txt when argos output is enabled (experimental !)
+
+### Miscellaneous
+
+- Update docs & tests

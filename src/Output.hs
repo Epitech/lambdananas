@@ -73,13 +73,14 @@ dumpManifest = foldr mergeLines "" (merge <$> getIssuesList)
     mergeLines e acc = e ++ '\n':acc
 
 -- | Appends a vague description of issues to 'style-student.txt'.
-outputVague :: [Issue] -> IO ()
-outputVague i = appendFile (createArgoFileName "student") (toString $ accumulate i)
+outputVague :: Conf -> [Issue] -> IO ()
+outputVague Conf{mode=Just Argos} i = appendFile (createArgoFileName "student") (toString $ accumulate i)
   where
     accumulate :: [Issue] -> [(Issue, Int)]
     accumulate = foldr accumulateVague []
     toString :: [(Issue, Int)] -> String
     toString l = concat $ ( \ (issue, x) -> showVague issue x) <$> l
+outputVague _ _ = return ()
 
 accumulateVague :: Issue -> [(Issue, Int)] -> [(Issue, Int)]
 accumulateVague i acc = case lookup i acc of

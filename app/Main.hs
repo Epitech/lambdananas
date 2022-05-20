@@ -38,7 +38,7 @@ loadAll d = join <$> mapM load d
 processMultiple :: Conf -> [FilePath] -> IO ()
 processMultiple conf haskellFiles = case haskellFiles of
   [] -> hPutStrLn stderr $ errorMsg "no files or directories"
-  nonEmptyFiles -> mapM (processOne conf) nonEmptyFiles >>= outputVague . concat
+  nonEmptyFiles -> mapM (processOne conf) nonEmptyFiles >>= (outputVague conf) . concat
 
 -- | Checks the coding style for a single file.
 -- We are not returning a list of issues for performance reasons!

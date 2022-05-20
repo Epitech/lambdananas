@@ -18,7 +18,7 @@ import Parser
 import Data.Maybe
 import Data.List
 
--- | Table of gravities linked to their filepath dump.
+-- | Lookup table of gravities linked to their path.
 -- Used in argos mode only.
 argoOutputFiles :: [(Gravity, FilePath)]
 argoOutputFiles = zip gravities fileNames
@@ -26,12 +26,11 @@ argoOutputFiles = zip gravities fileNames
     fileNames = createArgoFileName <$> ["major", "minor", "info"]
     gravities = [Major, Minor, Info]
 
--- | Given a 'String' creates a 'FilePath' of form :
--- `style-<string>.txt`
-createArgoFileName :: String -> FilePath
+-- | Creates a file name suitable for argos output mode.
+createArgoFileName :: String -> String
 createArgoFileName s = "style-" <> s <> ".txt"
 
--- | Output the result of a single coding style error.
+-- | Output the result of a single coding style issue.
 outputOne :: Conf -> Warn -> IO ()
 outputOne Conf {mode = Just Silent} _ = return ()
 outputOne Conf {mode = Just Argos} w@(Warn _ _ g) =
@@ -73,21 +72,26 @@ dumpManifest = foldr mergeLines "" (merge <$> getIssuesList)
     merge (a, b) = a ++ ':':b
     mergeLines e acc = e ++ '\n':acc
 
--- | Appends a vague description of issues to style-student.txt
+-- | Appends a vague description of issues to 'style-student.txt'.
 outputVague :: [Issue] -> IO ()
-outputVague i = appendFile "style-student.txt" (toString $ accumulate i)
+outputVague i = appendFile (createArgoFileName "student") (toString $ accumulate i)
   where
-    accumulate :: [Issue] -> [(Int, Issue)]
-    accumulate = foldr (\e acc ->  ) []
-    toString :: [(Int, Issue)] -> String
-    toString l = concat $ ( \ (x, issue) -> showVague issue x) <$> l
+    accumulate :: [Issue] -> [(Issue, Int)]
+    accumulate = foldr accumulateVague []
+    toString :: [(Issue, Int)] -> String
+    toString l = concat $ ( \ (issue, x) -> showVague issue x) <$> l
+
+accumulateVague :: Issue -> [(Issue, Int)] -> [(Issue, Int)]
+accumulateVague i acc = case lookup i acc of
+                          Nothing -> (i, 1):acc
+                          Just n -> (i, n + 1):delete (i, n) acc
 
 -- | Creates a vague description of a given issue.
-showVague :: Issue    -- ^ The issue
-          -> Int      -- ^ The number of times it was raised
+showVague :: Issue    -- ^ issue
+          -> Int      -- ^ number of times it was raised
           -> String
 showVague issue n =
-  code ++ " rule has been violated " ++ show n ++ " times: " ++ des ++ '\n'
+  code ++ " rule has been violated " ++ show n ++ " times: " ++ des ++ "\n"
   where
     code = fst $ getIssueDesc issue
     des = snd $ getIssueDesc issue

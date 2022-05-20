@@ -29,8 +29,16 @@ library
       Output
       Parser
       Rules
+      BadDo
+      BadDoReturn
+      BadGuard
       BadIf
       Common
+      Debug
+      ForbiddenExt
+      LineTooLong
+      NoSig
+      NotParsable
   other-modules:
       Paths_haskell_style_checker
   hs-source-dirs:

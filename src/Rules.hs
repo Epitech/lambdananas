@@ -31,9 +31,19 @@ import Control.Monad.Writer
 import Data.Foldable
 
 import BadIf
+import NoSig
+import BadDoReturn
+import BadDo
+import BadGuard
+import LineTooLong
 import Common
 
 checkIfs = BadIf.check
+checkSigs = NoSig.check
+checkReturns = BadDoReturn.check
+checkDos = BadDo.check
+checkGuards = BadGuard.check
+checkLines = LineTooLong.check
 
 -- | Describes a coding style rule.
 data Rule = Rule { name :: String         -- ^ Rule name
@@ -159,121 +169,3 @@ instance Show Warn where
 instance Ord Warn where
   compare (Warn _ (s1,l1) _) (Warn _ (s2,l2) _) | s1 == s2 = compare l1 l2
                                             | otherwise = compare s1 s2
-
----- RULE CHECKING FUNCTIONS ----
-
-{- CHECK USELESS DOs -}
-checkDos :: Check
-checkDos = join . explore checkDo
-  where checkDo (NExp (Do ssi body)) | countGenerators body < 1 =
-                                       [Warn BadDo (getLoc ssi) Major]
-        checkDo _ = []
-        countGenerators = foldMap (countGenerator . NSmt)
-        countGenerator :: Node -> Sum Int
-        countGenerator = checkGen (\ _ isRet ->
-                                     if isRet then Sum 0 else Sum 1)
-
-{- CHECK USELESS Returns -}
-checkReturns :: Check
-checkReturns = join . explore checkReturn
-  where checkReturn (NExp (Do _ body)) =
-          foldMap (badReturns . NSmt) body
-        checkReturn _ = []
-        badReturns = checkGen toWarn
-        toWarn ssi True = [Warn BadReturn (getLoc ssi) Minor]
-        toWarn _ _ = []
-
-{- auxiliary functions for checkDos and checkReturns -}
-checkGen :: Monoid m => (SrcSpanInfo -> Bool -> m) -> Node -> m
-checkGen f (NSmt (Generator ssi _ e1)) = f ssi $ isReturn e1
-checkGen _ _ = mempty
-
-isReturn :: Exp SrcSpanInfo -> Bool
-isReturn (App _ (Var _ (UnQual _ (Ident _ f))) _) = isRetOrPure f
-isReturn (InfixApp _ (Var _ (UnQual _ (Ident _ f))) _ _) = isRetOrPure f
-isReturn (Paren _ e) = isReturn e
-isReturn _ = False
-
-isRetOrPure :: String -> Bool
-isRetOrPure "return" = True
-isRetOrPure "pure" = True
-isRetOrPure _ = False
-
-{- CHECK IF ALL TOP DECLARATION HAS A TYPE SIGNATURE -}
-checkSigs :: Check
-checkSigs lst = join $ map genWarn binds
-  where sigsAndBinds = explore collectSigs lst
-        sigs = foldMap fst sigsAndBinds
-        binds = foldMap getBind sigsAndBinds
-        getBind (_,l) = if null l then [] else [head l]
-        genWarn (fct, ssi) | fct `notElem` sigs =
-                             [Warn (NoSig fct) (getLoc ssi) Minor]
-        genWarn _ = []
-
-collectSigs :: Node -> ([String], [(String, SrcSpanInfo)])
-collectSigs (NDec (TypeSig _ (x:_) _ )) = ([getIdent x],[])
-collectSigs (NDec (PatBind ssi (PVar _ idt) _ _ )) =
-  ([],[(getIdent idt, ssi)])
-collectSigs (NDec (FunBind ssi (Match _ idt _ _ _:_))) =
-  ([],[(getIdent idt, ssi)])
-collectSigs _ = ([],[])
-
-{- CHECK BAD GUARDS -}
-checkGuards :: Check
-checkGuards lst = join $ explore checkGuard lst
-  where checkGuard (NDec (FunBind _ m)) =
-          fold $ zipWith toWarns (vars m) (matchs m)
-        checkGuard _ = []
-        vars match = map (inspectMatch collectVar) match
-        matchs match = map (inspectMatch collectGuards) match
-        collectVar (NPat (PVar _ idt)) = [getIdent idt]
-        collectVar _ = []
-        collectGuards (NSmt (Qualifier _ expr)) = [expr]
-        collectGuards _ = []
-
-toWarns :: [String] -> [Exp SrcSpanInfo] -> [Warn]
-toWarns vars = foldMap (inspectExpr toWarn)
-  where toWarn (NExp (InfixApp ssi e1 e2 e3))
-          | isBadGuard vars e1 e2 e3 = [Warn BadGuard (getLoc ssi) Major]
-        toWarn _ = []
-
-isBadGuard :: [String] -> Exp SrcSpanInfo -> QOp SrcSpanInfo ->
-              Exp SrcSpanInfo -> Bool
-isBadGuard vars e1 e2 e3 | isVar e1 && isEq e2 && isLit e3 = True
-                         | isLit e1 && isEq e2 && isVar e3 = True
-  where isVar (Var _ (UnQual _ (Ident _ x))) | x `elem` vars = True
-        isVar _ = False
-        isEq (QVarOp _ (UnQual _ (Symbol _ "=="))) = True
-        isEq _ = False
-isBadGuard _ _ _ _ = False
-
-isLit :: Exp SrcSpanInfo -> Bool
-isLit Lit{} = True
-isLit Con{} = True
-isLit (App _ Con{} _) = True
-isLit (List _ []) = True
-isLit _ = False
-
-{- CHECK LINES LENGTH AND FUNCTION SIZE -}
-checkLines :: Check
-checkLines lst = uniqWarn $ join $ explore checkLine lst
-  where checkLine (NDec (FunBind _ matches)) = foldMap checkLine' matches
-        checkLine (NDec decl@PatBind{}) = checkLine' decl
-        checkLine _ = []
-        checkLine' decl = uniqFunWarn $ foldMap toWarn decl
-        toWarn ssi@(SrcSpanInfo (SrcSpan _f l1 _c1 l2 c2) _) =
-          [Warn FunctionTooBig (getLoc ssi) Minor | l2-l1 >= 10]
-          ++
-          [Warn LineTooLong (getLoc ssi) Minor | l1==l2 && c2 > 80]
-
-uniqFunWarn :: [Warn] -> [Warn]
-uniqFunWarn [] = []
-uniqFunWarn (w1@(Warn FunctionTooBig _ Info):xs)
-  | FunctionTooBig `elem` map what xs = uniqFunWarn xs
-  | otherwise = w1 : uniqFunWarn xs
-uniqFunWarn (x:xs) = x:uniqFunWarn xs
-
-uniqWarn :: [Warn] -> [Warn]
-uniqWarn [] = []
-uniqWarn (x:xs) | x `elem` xs  = uniqWarn xs
-                | otherwise = x : uniqWarn xs

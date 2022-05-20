@@ -1,7 +1,7 @@
 {-|
-Line too long.
+Line too long or function too long.
 -}
-module LineTooLong (
+module FunctionTooWideOrLarge (
   description,
   hint,
   code,
@@ -9,8 +9,6 @@ module LineTooLong (
 ) where
 
 import Common
-
--- TODO : split this code in half ?
 
 description :: Maybe [String] -> String
 description _ = "line too long"

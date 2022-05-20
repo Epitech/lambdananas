@@ -36,7 +36,7 @@ library
       Common
       Debug
       ForbiddenExt
-      LineTooLong
+      FunctionTooWideOrLarge
       NoSig
       NotParsable
   other-modules:

@@ -83,3 +83,11 @@ $$$ stack run -- -o argos && tail -n 1 style-major.txt
 test/system/examples/ParseError.hs:5:P1
 >>>2
 >>>= 0
+
+# ---- Vague output tests ----
+
+$$$ stack run -- -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
+>>>
+F4 rule has been violated 3 times: function too big
+>>>2
+>>>= 0

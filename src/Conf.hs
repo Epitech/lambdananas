@@ -29,8 +29,9 @@ instance Read OutputModes where
 -- | Holds the command line argument parsing result.
 -- The 'Conf' data aims at replacing the 'Conf' data.
 data Conf = Conf { mode :: Maybe OutputModes
-                 , manifest :: Maybe ManifestDump -- ^ Should a manifest be dumped
-                 , files :: [FilePath] -- ^ Files to be checked
+                 , manifest :: Maybe ManifestDump       -- ^ Should a manifest be dumped
+                 , excludeDirs :: Maybe String
+                 , files :: [FilePath]                  -- ^ Files to be checked
                  }
                  deriving Show
 
@@ -41,6 +42,8 @@ optParser = Conf
                 (long "output" <> short 'o' <> help outputHelp))
             <*> optional (flag NoDump Dump
                 (long "dump-manifest" <> help manifestHelp))
+            <*> optional (strOption
+                (long "excluded-dirs" <> help excludeDirsHelp))
             <*> many (strArgument
                 (metavar "FILE" <> help "Files to search"))
           where
@@ -48,4 +51,5 @@ optParser = Conf
             \can be 'silent', 'argos' or 'vera'"
             manifestHelp = "Dumps a manifest of all errors in the following format \
             \<code>:<description> while ignoring every other options"
+            excludeDirsHelp = "Files and directories to exclude from search"
 

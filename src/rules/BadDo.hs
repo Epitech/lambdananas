@@ -2,25 +2,10 @@
 Bad do.
 -}
 module BadDo (
-  description,
-  hint,
-  code,
   check,
 ) where
 
 import Common
-
-description :: Maybe [String] -> String
-description _ = "useless do"
-
-hint :: String
-hint = "do structures should be avoided when no generator are used"
-
-code :: String
-code = "D1"
-
-gravity :: Gravity
-gravity = Major
 
 check :: Check
 check = join . explore checkDo

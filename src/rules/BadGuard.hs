@@ -2,26 +2,11 @@
 Bad guard.
 -}
 module BadGuard (
-  description,
-  hint,
-  code,
   check,
 ) where
 
 import Common
 import Data.Foldable
-
-description :: Maybe [String] -> String
-description _ = "guard should be a pattern"
-
-hint :: String
-hint = "guard constructs should only be used if it cannot be a pattern match"
-
-code :: String
-code = "C2"
-
-gravity :: Gravity
-gravity = Major
 
 check :: Check
 check lst = join $ explore checkGuard lst

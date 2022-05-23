@@ -2,25 +2,10 @@
 Line too long or function too long.
 -}
 module FunctionTooWideOrLarge (
-  description,
-  hint,
-  code,
   check,
 ) where
 
 import Common
-
-description :: Maybe [String] -> String
-description _ = "line too long"
-
-hint :: String
-hint = "functions should be less than 10 lines and 80 columns"
-
-code :: String
-code = "F3"
-
-gravity :: Gravity
-gravity = Minor
 
 check :: Check
 check lst = uniqWarn $ join $ explore checkLine lst

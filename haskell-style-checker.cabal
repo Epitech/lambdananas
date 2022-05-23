@@ -29,6 +29,7 @@ library
       Output
       Parser
       Rules
+      Warn
       BadDo
       BadDoReturn
       BadGuard

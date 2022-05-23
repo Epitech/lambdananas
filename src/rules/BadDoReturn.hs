@@ -3,25 +3,10 @@ Bad do return.
 (Also named uselessReturn or uselessGenerator through the code).
 -}
 module BadDoReturn (
-  description,
-  hint,
-  code,
   check,
 ) where
 
 import Common
-
-description :: Maybe [String] -> String
-description _ = "useless generator"
-
-hint :: String
-hint = "do structures should not have useless return statements"
-
-code :: String
-code = "D2"
-
-gravity :: Gravity
-gravity = Minor
 
 check :: Check
 check = join . explore checkReturn

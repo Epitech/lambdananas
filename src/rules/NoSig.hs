@@ -2,26 +2,10 @@
 Function has no signature.
 -}
 module NoSig (
-  description,
-  hint,
-  code,
   check,
 ) where
 
 import Common
-
-description :: Maybe [String] -> String
-description (Just (s:_)) = s ++ " has no signature"
-description _ = "function has no signature"
-
-hint :: String
-hint = "top-level declaration has no corresponging type signature"
-
-code :: String
-code = "T1"
-
-gravity :: Gravity
-gravity = Minor
 
 check :: Check
 check lst = join $ map genWarn binds

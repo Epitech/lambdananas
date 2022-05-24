@@ -14,7 +14,7 @@ check = join . explore checkReturn
           foldMap (badReturns . NSmt) body
         checkReturn _ = []
         badReturns = checkGen toWarn
-        toWarn ssi True = [Warn BadReturn (getLoc ssi) gravity]
+        toWarn ssi True = [Warn BadReturn (getLoc ssi) Nothing]
         toWarn _ _ = []
 
 checkGen :: Monoid m => (SrcSpanInfo -> Bool -> m) -> Node -> m

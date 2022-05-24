@@ -35,11 +35,8 @@ library
       BadGuard
       BadIf
       Common
-      Debug
-      ForbiddenExt
       FunctionTooWideOrLarge
       NoSig
-      NotParsable
   other-modules:
       Paths_haskell_style_checker
   hs-source-dirs:

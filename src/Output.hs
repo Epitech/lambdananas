@@ -11,12 +11,13 @@ module Output (
   module Rules,
 ) where
 
+import Data.Maybe
+import Data.List
+
 import Conf
 import Rules
 import Parser
-
-import Data.Maybe
-import Data.List
+import Warn
 
 -- | Lookup table of gravities linked to their path.
 -- Used in argos mode only.
@@ -34,11 +35,11 @@ createArgoFileName s = "style-" <> s <> ".txt"
 outputOne :: Conf -> Warn -> IO ()
 outputOne Conf {mode = Just Silent} _ = return ()
 outputOne Conf {mode = Just Argos} w@(Warn _ _ g) =
-    appendFile atPath $ showArgo w <> "\n"
+    appendFile atPath $ show (Argos, w) <> "\n"
   where
     atPath = fromMaybe errorsPath $ lookup g argoOutputFiles
     errorsPath = createArgoFileName "debug"
-outputOne _ w = putStrLn $ showVera w
+outputOne _ w = putStrLn $ show (Vera, w)
 
 -- TODO : this is very much temporary and should be patched when
 -- switching backend parsing library.

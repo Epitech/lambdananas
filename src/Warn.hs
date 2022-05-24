@@ -3,21 +3,19 @@ Warnings that can be emitted by the rules checker functions.
 -}
 module Warn (
   Issue (..),
-  Warn,
+  Warn (..),
+  Gravity (..),
+  issues,
 ) where
 
 -- | A coding style warning that can be emitted by a rule's check function.
 data Warn = Warn { what :: Issue            -- ^ The issue raised
                  , loc :: (FilePath, Int)   -- ^ The location of the issue
-                 , meta :: Maybe [String]   -- ^ Metadata to pass to the
+                 , meta :: Maybe [String]   -- ^ Metadata to pass to the output 'String'
                  } deriving Eq
 
-instance Show Warn where
-  show (Warn w (f, l)) = f ++ ":" ++ show l ++ ": " ++ show g ++ ":" ++ show w
-    where
-
 instance Ord Warn where
-  compare (Warn _ (s1,l1)) (Warn _ (s2,l2)) | s1 == s2 = compare l1 l2
+  compare (Warn _ (s1,l1) _) (Warn _ (s2,l2) _) | s1 == s2 = compare l1 l2
                                             | otherwise = compare s1 s2
 
 -- | Describes an 'Issue' gravity.
@@ -46,9 +44,6 @@ data IssueData = IssueData { gravity :: Gravity                 -- ^ Gravity of 
                            , code :: String                     -- ^ The code of the issue
                            , desc :: Maybe [String] -> String   -- ^ A function returning a short description and taking metadatas
                            , hint :: String }                   -- ^ A hint about how the student can solve the issue
-
-instance Show Issue where
-  show i = let (idd, msg) = getIssueDesc i in idd ++ " # " ++ msg
 
 type Code = String
 type Hint = String

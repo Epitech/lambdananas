@@ -23,7 +23,7 @@ check lst = join $ explore checkGuard lst
 toWarns :: [String] -> [Exp SrcSpanInfo] -> [Warn]
 toWarns vars = foldMap (inspectExpr toWarn)
   where toWarn (NExp (InfixApp ssi e1 e2 e3))
-          | isBadGuard vars e1 e2 e3 = [Warn BadGuard (getLoc ssi) gravity]
+          | isBadGuard vars e1 e2 e3 = [Warn BadGuard (getLoc ssi) Nothing]
         toWarn _ = []
 
 isBadGuard :: [String] -> Exp SrcSpanInfo -> QOp SrcSpanInfo ->

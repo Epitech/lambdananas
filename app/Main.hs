@@ -9,7 +9,6 @@ import Output
 
 import Control.Monad
 import Data.List
-import System.IO
 import Options.Applicative
 
 main :: IO ()
@@ -36,9 +35,8 @@ loadAll d = join <$> mapM load d
 
 -- | Checks the coding style for a list of files.
 processMultiple :: Conf -> [FilePath] -> IO ()
-processMultiple conf haskellFiles = case haskellFiles of
-  [] -> hPutStrLn stderr $ errorMsg "no files or directories"
-  nonEmptyFiles -> mapM (processOne conf) nonEmptyFiles >>= (outputVague conf) . concat
+processMultiple conf haskellFiles =
+  mapM (processOne conf) haskellFiles >>= (outputVague conf) . concat
 
 -- | Checks the coding style for a single file.
 -- We are not returning a list of issues for performance reasons!

@@ -10,7 +10,7 @@ import Common
 check :: Check
 check = join . explore checkDo
   where checkDo (NExp (Do ssi body)) | countGenerators body < 1 =
-                                       [Warn BadDo (getLoc ssi) gravity]
+                                       [Warn BadDo (getLoc ssi) Nothing]
         checkDo _ = []
         countGenerators = foldMap (countGenerator . NSmt)
         countGenerator :: Node -> Sum Int

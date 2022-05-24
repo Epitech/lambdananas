@@ -14,7 +14,7 @@ check lst = join $ map genWarn binds
         binds = foldMap getBind sigsAndBinds
         getBind (_,l) = if null l then [] else [head l]
         genWarn (fct, ssi) | fct `notElem` sigs =
-                             [Warn (NoSig fct) (getLoc ssi) gravity]
+                             [Warn NoSig (getLoc ssi) Nothing]
         genWarn _ = []
 
 collectSigs :: Node -> ([String], [(String, SrcSpanInfo)])

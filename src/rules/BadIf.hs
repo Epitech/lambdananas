@@ -2,9 +2,6 @@
 Bad ifs.
 -}
 module BadIf (
-  description,
-  hint,
-  code,
   check,
 ) where
 
@@ -13,7 +10,7 @@ import Common
 check :: Check
 check = join . explore checkIf
   where checkIf (NExp (If ssi _ ift ife)) | countIfs ift ife >= 1 =
-          [Warn BadIf (getLoc ssi) gravity]
+          [Warn BadIf (getLoc ssi) Nothing]
         checkIf _ = []
         countIfs ifthen ifelse = inspectExpr countIf ifthen <>
                                  inspectExpr countIf ifelse

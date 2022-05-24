@@ -14,13 +14,13 @@ check lst = uniqWarn $ join $ explore checkLine lst
         checkLine _ = []
         checkLine' decl = uniqFunWarn $ foldMap toWarn decl
         toWarn ssi@(SrcSpanInfo (SrcSpan _f l1 _c1 l2 c2) _) =
-          [Warn FunctionTooBig (getLoc ssi) gravity | l2-l1 >= 10]
+          [Warn FunctionTooBig (getLoc ssi) Nothing | l2-l1 >= 10]
           ++
-          [Warn LineTooLong (getLoc ssi) gravity | l1==l2 && c2 > 80]
+          [Warn LineTooLong (getLoc ssi) Nothing | l1==l2 && c2 > 80]
 
 uniqFunWarn :: [Warn] -> [Warn]
 uniqFunWarn [] = []
-uniqFunWarn (w1@(Warn FunctionTooBig _ Info):xs)
+uniqFunWarn (w1@(Warn FunctionTooBig _ Nothing):xs)
   | FunctionTooBig `elem` map what xs = uniqFunWarn xs
   | otherwise = w1 : uniqFunWarn xs
 uniqFunWarn (x:xs) = x:uniqFunWarn xs

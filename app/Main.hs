@@ -10,6 +10,7 @@ import Output
 import Control.Monad
 import Data.List
 import Options.Applicative
+import Data.Text (pack, split, unpack)
 
 main :: IO ()
 main = execParser options >>= process
@@ -24,19 +25,23 @@ process :: Conf -> IO ()
 process Conf{manifest = Just Dump} =
   putStrLn dumpManifest
 process conf@Conf{files = []} =
-  getContents >>= processMultiple conf . lines
+  getContents >>= loadAll conf . lines >>= processMultiple conf
 process conf@Conf{files = paths} =
-  loadAll paths >>= processMultiple conf
+  loadAll conf paths >>= processMultiple conf
 
 -- | Returns a complete list of paths needing to be checked.
-loadAll :: [FilePath] -- ^ Directories to be loaded
+loadAll :: Conf
+        -> [FilePath] -- ^ Directories to be loaded
         -> IO [FilePath] -- ^ A list of files to be checked
-loadAll d = join <$> mapM load d
+loadAll Conf{excludeDirs = Just f} d =
+  join <$> mapM (load $ unpack <$> split (==':') (pack f)) d
+loadAll Conf{excludeDirs = Nothing} d =
+  join <$> mapM (load []) d
 
 -- | Checks the coding style for a list of files.
 processMultiple :: Conf -> [FilePath] -> IO ()
 processMultiple conf haskellFiles =
-  mapM (processOne conf) haskellFiles >>= (outputVague conf) . concat
+  mapM (processOne conf) haskellFiles >>= outputVague conf . concat
 
 -- | Checks the coding style for a single file.
 -- We are not returning a list of issues for performance reasons!

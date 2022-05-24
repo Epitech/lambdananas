@@ -49,4 +49,4 @@ You can use commands specified by Epitech ($NAME re clean fclean tests_run)
 - Install `shelltest` and run `shelltest -c test` from the root of the repo to run cli tests
 
 ## 📂 Module hierarchy
-![image](https://user-images.githubusercontent.com/102175969/166207033-f2a3fea6-6b36-4664-94b7-4484031bfd8a.png)
+![haskell style checker module tree](https://user-images.githubusercontent.com/102175969/169989347-3fc76e11-eea4-450a-9068-de62d064b911.png)

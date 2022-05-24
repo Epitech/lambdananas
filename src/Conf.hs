@@ -30,7 +30,7 @@ instance Read OutputModes where
 -- The 'Conf' data aims at replacing the 'Conf' data.
 data Conf = Conf { mode :: Maybe OutputModes
                  , manifest :: Maybe ManifestDump       -- ^ Should a manifest be dumped
-                 , excludeDirs :: Maybe String
+                 , excludeDirs :: Maybe String          -- ^ A list of files and directories to be exluded
                  , files :: [FilePath]                  -- ^ Files to be checked
                  }
                  deriving Show

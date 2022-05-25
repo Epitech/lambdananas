@@ -42,3 +42,9 @@ XX:debug
 
 >>>2
 >>>= 0
+
+# Excluding directories with vera
+$$$ stack run -- --exclude "test:src:app:.git:.stack-work" .
+>>>
+>>>2
+>>>= 0

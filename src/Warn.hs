@@ -3,8 +3,10 @@ Warnings that can be emitted by the rules checker functions.
 -}
 module Warn (
   Issue (..),
+  IssueInfo (..),
   Warn (issue, loc, arg),
   makeWarn,
+  unsafeMakeWarn,
   Gravity (..),
   issues,
 ) where
@@ -28,7 +30,7 @@ makeWarn _ _ _= error "invalid Issue/Arg combination"
 -- | 'Warn' dumb constructor. Disables all checks.
 -- Please use 'makeWarn' instead of this.
 unsafeMakeWarn :: Issue -> (FilePath, Int) -> IssueArg -> Warn
-unsafeMakeWarn i l a = Warn i l a
+unsafeMakeWarn = Warn
 
 -- | Enumeration of all possible style issues arising from a program.
 data Issue = BadIf                -- ^ Nested ifs

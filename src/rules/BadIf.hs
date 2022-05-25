@@ -10,7 +10,7 @@ import Common
 check :: Check
 check = join . explore checkIf
   where checkIf (NExp (If ssi _ ift ife)) | countIfs ift ife >= 1 =
-          [Warn BadIf (getLoc ssi) Nothing]
+          [makeWarn BadIf (getLoc ssi) NoArg]
         checkIf _ = []
         countIfs ifthen ifelse = inspectExpr countIf ifthen <>
                                  inspectExpr countIf ifelse

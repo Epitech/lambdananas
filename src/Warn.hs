@@ -2,7 +2,7 @@
 Warnings that can be emitted by the rules checker functions.
 -}
 module Warn (
-  Warn (issue, loc, arg),
+  Warn (..),
   makeWarn,
   unsafeMakeWarn,
   issues,
@@ -28,8 +28,11 @@ makeWarn :: Issue -> (FilePath, Int) -> IssueArg -> Warn
 makeWarn i@NoSig l a@(StringArg _) = Warn i l a
 makeWarn _ _ _= error "invalid Issue/Arg combination"
 
+
+-- Keeping this because it makes it clear that using the
+-- data constructor is not the right way.
 -- | 'Warn' dumb constructor. Disables all checks.
--- Please use 'makeWarn' instead of this.
+-- Only usage should be for dumping manifest.
 unsafeMakeWarn :: Issue -> (FilePath, Int) -> IssueArg -> Warn
 unsafeMakeWarn = Warn
 
@@ -53,7 +56,8 @@ data IssueInfo = IssueInfo { gravity :: Gravity
                            , code :: String
                            -- ^ The code of the issue
                            , showDetails :: IssueArg -> String
-                           -- ^ A function returning a short description and taking metadatas
+                           -- ^ A function returning a short description and taking
+                           -- metadatas
                            , hint :: String
                            -- ^ A hint about how the student can solve the issue
                            }

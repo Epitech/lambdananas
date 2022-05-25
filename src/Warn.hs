@@ -2,13 +2,14 @@
 Warnings that can be emitted by the rules checker functions.
 -}
 module Warn (
-  Issue (..),
-  IssueInfo (..),
   Warn (issue, loc, arg),
   makeWarn,
   unsafeMakeWarn,
-  Gravity (..),
   issues,
+  Issue (..),
+  IssueInfo (..),
+  IssueArg (..),
+  Gravity (..),
 ) where
 
 -- | A coding style warning that can be emitted by a rule's check function.

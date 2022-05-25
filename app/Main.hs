@@ -23,7 +23,7 @@ main = execParser options >>= process
 -- Is called after the cli arguments have been parsed
 process :: Conf -> IO ()
 process Conf{manifest = Just Dump} =
-  putStrLn dumpManifest
+  putStrLn outputManifest
 process conf@Conf{files = []} =
   getContents >>= loadAll conf . lines >>= processMultiple conf
 process conf@Conf{files = paths} =
@@ -49,15 +49,14 @@ processOne :: Conf -> FilePath -> IO [Issue]
 processOne conf filename = do
   buff <- parseFile filename
   case buff of
-    Right lst -> let rs = map getRule rls
-                     warnings = sort $ join $ map (\ f -> f lst) rs
+    Right lst -> let warnings = sort $ join $ map (\ f -> f lst) rls
       in mapM_ (outputOne conf) warnings >> return (extractIssue <$> warnings)
-    Left err -> outputOneErr conf err >> return [NotParsable "________.hs"]
+    Left err -> outputOneErr conf err >> return [NotParsable]
   where
-    rls = defaultRules -- [Rule]
+    rls = defaultRules
 
 extractIssue :: Warn -> Issue
-extractIssue Warn{what = issue} = issue
+extractIssue Warn{issue = i} = i
 
 -- | Creates an error message appending it to `Error :`.
 errorMsg :: String -> String

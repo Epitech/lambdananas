@@ -5,12 +5,15 @@ module Warn (
   Warn (..),
   makeWarn,
   unsafeMakeWarn,
+  lookupIssueInfo,
   issues,
   Issue (..),
   IssueInfo (..),
   IssueArg (..),
   Gravity (..),
 ) where
+
+import Data.Maybe
 
 -- | A coding style warning that can be emitted by a rule's check function.
 data Warn = Warn { issue :: Issue           -- ^ The issue raised
@@ -78,6 +81,9 @@ issues = [(BadIf, dataBadIf),
           (NotParsable, dataNotParsable),
           (ForbiddenExt, dataForbiddenExt),
           (Debug, dataDebug)]
+
+lookupIssueInfo :: Issue -> IssueInfo
+lookupIssueInfo i = fromMaybe dataDebug $ lookup i issues
 
 dataBadIf :: IssueInfo
 dataBadIf = IssueInfo

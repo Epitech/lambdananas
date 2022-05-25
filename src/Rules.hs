@@ -2,23 +2,8 @@
 Coding style rules.
 -}
 module Rules (
-    Check,
-    Rule (..),
-    checkSigs,
-    checkIfs,
-    checkReturns,
-    checkDos,
-    checkGuards,
-    checkLines
+    defaultRules,
 ) where
-
-import Parser
-
-import Language.Haskell.Exts.Syntax hiding (Rule)
-import Language.Haskell.Exts.SrcLoc
-import Control.Monad
-import Control.Monad.Writer
-import Data.Foldable
 
 import BadIf
 import NoSig
@@ -28,20 +13,6 @@ import BadGuard
 import FunctionTooWideOrLarge
 import Common
 
-checkIfs = BadIf.check
-checkSigs = NoSig.check
-checkReturns = BadDoReturn.check
-checkDos = BadDo.check
-checkGuards = BadGuard.check
-checkLines = FunctionTooWideOrLarge.check
-
--- | Describes a coding style rule.
--- A rule can emit one or more 'Warn'.
-data Rule = Rule { name :: String         -- ^ Rule name
-                 , _description :: String -- ^ Rule description
-                 , getRule :: Check       -- ^ Function to check the rule
-                 }
-
-instance Eq Rule where
-  r1 == r2 = name r1 == name r2
-
+defaultRules :: [Check]
+defaultRules = [ NoSig.check, BadIf.check, BadDoReturn.check,
+                 BadDo.check, BadGuard.check, FunctionTooWideOrLarge.check ]

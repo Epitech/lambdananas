@@ -10,7 +10,6 @@ module Warn (
   Gravity (..),
   issues,
 ) where
-import Common (Literal(String))
 
 -- | A coding style warning that can be emitted by a rule's check function.
 data Warn = Warn { issue :: Issue           -- ^ The issue raised

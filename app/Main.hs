@@ -51,7 +51,7 @@ processOne conf filename = do
   case buff of
     Right lst -> let rs = map getRule rls
                      warnings = sort $ join $ map (\ f -> f lst) rs
-                 in mapM_ (outputOne conf) warnings >> return (extractIssue <$> warnings)
+      in mapM_ (outputOne conf) warnings >> return (extractIssue <$> warnings)
     Left err -> outputOneErr conf err >> return [NotParsable "________.hs"]
   where
     rls = defaultRules -- [Rule]

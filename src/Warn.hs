@@ -10,6 +10,7 @@ module Warn (
   Gravity (..),
   issues,
 ) where
+import Common (Literal(String))
 
 -- | A coding style warning that can be emitted by a rule's check function.
 data Warn = Warn { issue :: Issue           -- ^ The issue raised
@@ -47,14 +48,21 @@ data Issue = BadIf                -- ^ Nested ifs
 
 
 -- | Data linked to every issue.
-data IssueInfo = IssueInfo { gravity :: Gravity               -- ^ Gravity of the issue
-                           , code :: String                   -- ^ The code of the issue
-                           , desc :: IssueArg -> String       -- ^ A function returning a short description and taking metadatas
-                           , hint :: String }                 -- ^ A hint about how the student can solve the issue
+data IssueInfo = IssueInfo { gravity :: Gravity
+                           -- ^ Gravity of the issue
+                           , code :: String
+                           -- ^ The code of the issue
+                           , showDetails :: IssueArg -> String
+                           -- ^ A function returning a short description and taking metadatas
+                           , hint :: String
+                           -- ^ A hint about how the student can solve the issue
+                           }
 
 -- | Arguments to be given to an issue.
 data IssueArg = NoArg | StringArg String deriving (Show, Eq)
 
+-- | Describes a lookup table linking 'Issue' to
+-- their corresponding 'IssueInfo'.
 issues :: [(Issue, IssueInfo)]
 issues = [(BadIf, dataBadIf),
           (BadDo, dataBadDo),
@@ -114,7 +122,7 @@ dataNoSig = IssueInfo
   Minor
   "T1"
   description
-  "top-level declaration has no corresponging type signature"
+  "top-level declaration has no corresponding type signature"
   where
     description (StringArg s) = s ++ " has no signature"
     description _ = "function has no signature"

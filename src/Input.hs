@@ -9,7 +9,7 @@ import System.Directory
 import System.FilePath.Posix
 import Control.Monad
 
-type ManualExclusions = [String]
+type ManualExclusions = [FilePath]
 
 -- | A list of directories to be ignored.
 defaultExclusions :: [String]
@@ -19,11 +19,13 @@ defaultExclusions = ["tests", "test", "bonus", ".stack-work", ".git"]
 -- of all files inside recursively. Given a file, will
 -- return it as a single element list.
 load :: ManualExclusions -> FilePath -> IO [FilePath]
-load excluded f = doesDirectoryExist f >>=
-                    \ isDir -> if isDir && ignore f
-                               then loadDir excluded f
-                               else return [f]
-  where ignore fl = takeFileName fl `notElem` defaultExclusions <> excluded
+load excluded filename = doesDirectoryExist filename >>=
+                    \ isDir -> if isDir && not (isExcluded excluded filename)
+                               then loadDir excluded filename
+                               else return [filename]
+  where
+    isExcluded [] f =  takeFileName f `elem` defaultExclusions
+    isExcluded ex f =  takeFileName f `elem` ex
 
 -- | Given a 'FilePath' returns all haskell files found recursively.
 -- example: `File.hs` gives `[File.hs]`

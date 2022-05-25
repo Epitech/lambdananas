@@ -43,13 +43,15 @@ optParser = Conf
             <*> optional (flag NoDump Dump
                 (long "dump-manifest" <> help manifestHelp))
             <*> optional (strOption
-                (long "excluded-dirs" <> help excludeDirsHelp))
+                (long "exclude" <> metavar "FILE" <> help excludeDirsHelp))
             <*> many (strArgument
                 (metavar "FILE" <> help "Files to search"))
           where
-            outputHelp = "Outputs the coding style issues in a specific way, \
-            \can be 'silent', 'argos' or 'vera'"
-            manifestHelp = "Dumps a manifest of all errors in the following format \
-            \<code>:<description> while ignoring every other options"
-            excludeDirsHelp = "Files and directories to exclude from search"
+            outputHelp = "Outputs the coding style issues in a specific way,\
+            \ can be 'silent', 'argos' or 'vera'"
+            manifestHelp = "Dumps a manifest of all errors in the following\
+            \ format <code>:<description> while ignoring every other options"
+            excludeDirsHelp = "Directories to exclude from search - if you\
+            \ exclude a directory you should not give any files of this\
+            \ directory as argument - use find for more fine grained control"
 

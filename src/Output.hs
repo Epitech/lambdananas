@@ -90,7 +90,7 @@ showVague i n =
     issueCode = code $ lookupIssueInfo i
     details = (showDetails $ lookupIssueInfo i) NoArg
 
--- | Produce a warning in argos format
+-- | Produce a warning in argos format.
 showArgos :: Warn -> String
 showArgos w@Warn {issue = i} =
     filename ++ ':':show issueLine ++ ':':issueCode
@@ -100,13 +100,13 @@ showArgos w@Warn {issue = i} =
     issueLine = snd $ loc w
     filename = fst $ loc w
 
--- | Produce a warning in vera format
+-- | Produce a warning in vera format.
 showVera :: Warn -> String
 showVera w@Warn {issue = i, arg = a} =
     filename ++ ':':issueLine ++ ':':issueGravity ++ ':':' ':issueCode ++
     " # " ++ issueDesc
   where
-   info = lookupIssueInfo i
+    info = lookupIssueInfo i
     issueDesc = showDetails info a
     issueCode = code info
     issueLine = show $ snd $ loc w

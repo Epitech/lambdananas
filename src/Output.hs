@@ -90,6 +90,7 @@ accumulateVague i acc = case lookup i acc of
                           Nothing -> (i, 1):acc
                           Just n -> (i, n + 1):delete (i, n) acc
 
+-- | Produce a warning in argos format
 showArgos :: Warn -> String
 showArgos w@Warn {issue = i} =
     filename ++ ':':show issueLine ++ ':':issueCode
@@ -99,6 +100,7 @@ showArgos w@Warn {issue = i} =
     issueLine = snd $ loc w
     filename = fst $ loc w
 
+-- | Produce a warning in vera format
 showVera :: Warn -> String
 showVera w@Warn {issue = i, arg = a} =
     filename ++ ':':issueLine ++ ':':issueGravity ++ ':':' ':issueCode ++

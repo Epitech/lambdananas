@@ -38,3 +38,13 @@
 ### Miscellaneous
 
 - Update docs & tests
+
+## 2.3.0.0
+
+### Features
+
+- Added excluding directories (be sure to read how it works with --help, it could not work as you think)
+
+### Miscellaneous
+
+- Update code structure to allow for easier add of new Issues and Warn creation

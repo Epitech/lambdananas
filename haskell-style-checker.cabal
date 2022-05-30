@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           haskell-style-checker
-version:        2.2.0.0
+version:        2.3.0.0
 description:    Please see the README on GitHub at <https://github.com/Epitech/haskell-style-checker#readme>
 homepage:       https://github.com/Epitech/haskell-style-checker#readme
 bug-reports:    https://github.com/Epitech/haskell-style-checker/issues

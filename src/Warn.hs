@@ -19,7 +19,7 @@ import Data.Maybe
 data Warn = Warn { issue :: Issue           -- ^ The issue raised
                  , loc :: (FilePath, Int)   -- ^ The location of the issue
                  , arg :: IssueArg          -- ^ Arguments to pass to the output functions
-                 } deriving Eq
+                 } deriving (Eq, Show)
 
 instance Ord Warn where
   compare (Warn _ (s1,l1) _) (Warn _ (s2,l2) _) | s1 == s2 = compare l1 l2
@@ -50,7 +50,7 @@ data Issue = BadIf                -- ^ Nested ifs
            | NotParsable          -- ^ File is not parsable
            | ForbiddenExt         -- ^ File contains forbidden extension
            | Debug                -- ^ Debug
-           deriving Eq
+           deriving (Eq, Show)
 
 
 -- | Data linked to every issue.

@@ -1,7 +1,13 @@
-import Test.Hspec
 import Parser
-import Rules
-import Language.Haskell.Exts.Syntax
+import Common
+import qualified BadDo (check)
+import qualified BadDoReturn (check)
+import qualified BadGuard (check)
+import qualified BadIf (check)
+import qualified FunctionTooWideOrLarge (check)
+import qualified NoSig (check)
+
+import Test.Hspec
 import Control.Monad
 
 appliedTo :: Check -> [String] -> Either ParseError [Warn]
@@ -18,18 +24,18 @@ main = hspec $ do
 
   describe "checkSigs" $ do
     it "should detect a function with no signature" $
-      checkSigs
+      NoSig.check
       `appliedTo` ["f x = 42"]
-      `shouldBe` Right [Warn (NoSig "f") (".", 1) Minor]
+      `shouldBe` Right [Warn NoSig (".", 1) (StringArg "f")]
 
     it "should stay silent if all functions have signature" $
-      checkSigs
+      NoSig.check
       `appliedTo` ["f :: Int -> Int",
                    "f x = 42"]
       `shouldBe` Right []
 
     it "should work on multiple functions" $
-      checkSigs
+      NoSig.check
       `appliedTo` [ "f1 :: Int -> Int",
                     "f1 x = 42",
                     "",
@@ -39,46 +45,46 @@ main = hspec $ do
                     "",
                     "a :: Int",
                     "a = 42" ]
-      `shouldBe` Right [Warn (NoSig "f2") (".", 4) Minor,
-                        Warn (NoSig "f3") (".", 6) Minor]
+      `shouldBe` Right [Warn NoSig (".", 4) (StringArg "f2"),
+                        Warn NoSig (".", 6) (StringArg "f3")]
 
   describe "checkIfs" $ do
     it "should detect nested ifs" $
-      checkIfs
+      BadIf.check
       `appliedTo` ["f x = if x > 10",
                    "      then if x < 100",
                    "          then True",
                    "          else False",
                    "     else False"]
-      `shouldBe` Right [Warn BadIf (".", 1) Major]
+      `shouldBe` Right [Warn BadIf (".", 1) NoArg]
 
     it "should be silent if only one if" $
-      checkIfs
+      BadIf.check
       `appliedTo` ["f x = if x > 10",
                    "      then True",
                    "      else False"]
       `shouldBe` Right []
 
     it "should detect nested ifs even if nested in parenthesis" $
-      checkIfs
+      BadIf.check
       `appliedTo` ["f x = if x > 10",
                    "      then (if x < 100",
                    "            then True",
                    "            else False)",
                    "     else False"]
-      `shouldBe` Right [Warn BadIf (".", 1) Major]
+      `shouldBe` Right [Warn BadIf (".", 1) NoArg]
 
   describe "checkDos" $ do
     it "should detect useless usage of do" $
-      checkDos
+      BadDo.check
       `appliedTo` ["f x y = do",
                    "        let a = x * x",
                    "        let b = y * y",
                    "        a + b"]
-      `shouldBe` Right [Warn BadDo (".", 1) Major]
+      `shouldBe` Right [Warn BadDo (".", 1) NoArg]
 
     it "should stay silent on allowed usage of do" $
-      checkDos
+      BadDo.check
       `appliedTo` ["f = do",
                    "    a <- getLine",
                    "    b <- getLine",
@@ -86,25 +92,25 @@ main = hspec $ do
       `shouldBe` Right []
 
     it "should detect bad returns" $
-      checkDos
+      BadDo.check
       `appliedTo` ["f x y = do",
                    "    a <- return (x * x)",
                    "    b <- return (y * y)",
                    "    return a + b"]
-      `shouldBe` Right [Warn BadDo (".", 1) Major]
+      `shouldBe` Right [Warn BadDo (".", 1) NoArg]
 
   describe "checkReturns" $ do
     it "should detect bad returns" $
-      checkReturns
+      BadDoReturn.check
       `appliedTo` ["f x y = do",
                    "    a <- return (x * x)",
                    "    b <- return (y * y)",
                    "    return a + b"]
-      `shouldBe` Right [Warn BadReturn (".", 2) Minor,
-                        Warn BadReturn (".", 3) Minor]
+      `shouldBe` Right [Warn BadReturn (".", 2) NoArg,
+                        Warn BadReturn (".", 3) NoArg]
 
     it "should stay silent on good generators and returns" $
-      checkReturns
+      BadDoReturn.check
       `appliedTo` ["f = do",
                    "    a <- getLine",
                    "    b <- getLine",
@@ -113,35 +119,35 @@ main = hspec $ do
 
   describe "checkGuards" $ do
     it "should detect guards which should be pattern matches" $
-      checkGuards
+      BadGuard.check
       `appliedTo` ["f x | x == 0 = True",
                    "    | 1 == x = False",
                    "    | otherwise = True"]
-      `shouldBe` Right [Warn BadGuard (".", 1) Major,
-                        Warn BadGuard (".", 2) Major]
+      `shouldBe` Right [Warn BadGuard (".", 1) NoArg,
+                        Warn BadGuard (".", 2) NoArg]
 
     it "should stay silent on good guards" $
-      checkGuards
+      BadGuard.check
       `appliedTo` ["f x | null x = True",
                    "    | length x == 1 = False",
                    "    | otherwise = True"]
       `shouldBe` Right []
 
     it "should work on constructors" $
-      checkGuards
+      BadGuard.check
       `appliedTo` ["f (x:xs) | xs == [] = True",
                    "         | Just 1 == x = False",
                    "         | otherwise = True"]
-      `shouldBe` Right [Warn BadGuard (".", 1) Major,
-                        Warn BadGuard (".", 2) Major]
+      `shouldBe` Right [Warn BadGuard (".", 1) NoArg,
+                        Warn BadGuard (".", 2) NoArg]
 
   describe "checkLines" $ do
     it "should detect too long functions" $
-      checkLines
+      FunctionTooWideOrLarge.check
       `appliedTo` (["f 0 = "] ++ ["" | _ <- [1..10] ] ++ ["    True"])
-      `shouldBe` Right [Warn FunctionTooBig (".", 1) Minor]
+      `shouldBe` Right [Warn FunctionTooBig (".", 1) NoArg]
 
     it "should detect too long lines" $
-      checkLines
+      FunctionTooWideOrLarge.check
       `appliedTo` ["f 0 = " ++ [' ' | _ <- [1..70] ] ++ "    True"]
-      `shouldBe` Right [Warn LineTooLong (".", 1) Minor]
+      `shouldBe` Right [Warn LineTooLong (".", 1) NoArg]

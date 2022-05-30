@@ -11,7 +11,7 @@ check :: Check
 check = join . explore checkDo
   where checkDo (NExp (Do ssi body)) | countGenerators body < 1 =
                                        [makeWarn BadDo (getLoc ssi) NoArg]
-        heckDo _ = []
+        checkDo _ = []
         countGenerators = foldMap (countGenerator . NSmt)
         countGenerator :: Node -> Sum Int
         countGenerator = checkGen (\ _ isRet ->

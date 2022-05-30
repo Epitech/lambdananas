@@ -48,7 +48,7 @@ outputOne _ w = putStrLn $ showVera w
 outputOneErr :: Conf -> ParseError -> IO ()
 outputOneErr Conf {mode = Just Silent} _ =
   return ()
-outputOneErr Conf {mode = Just Argos} (ParseError filename loc _ text)
+outputOneErr Conf {mode = Just Argos} (ParseError filename l _ text)
     | "Parse error:" `isPrefixOf` text = appendFile atPath $
       showArgos notParsableIssue <> "\n"
     -- everything not a parse error is an extension error
@@ -57,21 +57,21 @@ outputOneErr Conf {mode = Just Argos} (ParseError filename loc _ text)
   where
     atPath = fromMaybe errorsPath $ lookup Major argoOutputFiles
     errorsPath = createArgoFileName "debug"
-    notParsableIssue = makeWarn NotParsable (filename, loc) $ StringArg filename
-    forbiddenExtIssue = makeWarn ForbiddenExt (filename, loc) $ StringArg filename
-outputOneErr _ (ParseError filename loc _ text)
-    | "Parse error:" `isPrefixOf` text = putStrLn $ showVera issue
+    notParsableIssue = makeWarn NotParsable (filename, l) $ StringArg filename
+    forbiddenExtIssue = makeWarn ForbiddenExt (filename, l) $ StringArg filename
+outputOneErr _ (ParseError filename l _ text)
+    | "Parse error:" `isPrefixOf` text = putStrLn $ showVera i
     -- everything not a parse error is an extension error
     | otherwise = putStrLn $ showDetails (lookupIssueInfo ForbiddenExt) (StringArg filename)
   where
-    issue = makeWarn NotParsable (filename, loc) $ StringArg filename
+    i = makeWarn NotParsable (filename, l) $ StringArg filename
 
 -- | Dumps a manifest of all coding style issues in format
 -- `<code>:<description>`.
 outputManifest :: String
-outputManifest = foldr mergeLines "" (merge <$> issues)
+outputManifest = foldr mergeLines "" (createLine <$> issues)
   where
-    merge (_, IssueInfo {code = c, showDetails = d}) = c ++ ':':d NoArg
+    createLine (_, IssueInfo {code = c, showDetails = d}) = c ++ ':':d NoArg
     mergeLines e acc = e ++ '\n':acc
 
 -- | Appends a vague description of issues to 'style-student.txt'.

@@ -6,6 +6,7 @@ module Output (
   outputOneErr,
   outputVague,
   outputManifest,
+  mkArgosFileName,
   module Parser,
   module Rules,
   module Warn,
@@ -21,15 +22,15 @@ import Data.List
 
 -- | Lookup table of gravities linked to their path.
 -- Used in argos mode only.
-argoOutputFiles :: [(Gravity, FilePath)]
-argoOutputFiles = zip gravities fileNames
+argosGravityFiles :: [(Gravity, FilePath)]
+argosGravityFiles = zip gravities fileNames
   where
-    fileNames = createArgoFileName <$> ["major", "minor", "info"]
+    fileNames = mkArgosFileName <$> ["major", "minor", "info"]
     gravities = [Major, Minor, Info]
 
 -- | Creates a file name suitable for argos output mode.
-createArgoFileName :: String -> String
-createArgoFileName s = "style-" <> s <> ".txt"
+mkArgosFileName :: String -> String
+mkArgosFileName s = "style-" <> s <> ".txt"
 
 -- | Output the result of a single coding style issue.
 outputOne :: Conf -> Warn -> IO ()
@@ -37,9 +38,9 @@ outputOne Conf {mode = Just Silent} _ = return ()
 outputOne Conf {mode = Just Argos} w@Warn {issue = i} =
     appendFile atPath $ showArgos w <> "\n"
   where
-    atPath = fromMaybe errorsPath $ lookup (getGravity i) argoOutputFiles
+    atPath = fromMaybe errorsPath $ lookup (getGravity i) argosGravityFiles
     getGravity a = case lookupIssueInfo a of IssueInfo {gravity=g} -> g
-    errorsPath = createArgoFileName "debug"
+    errorsPath = mkArgosFileName "debug"
 outputOne _ w = putStrLn $ showVera w
 
 -- TODO : this is very much temporary and should be patched when
@@ -55,8 +56,8 @@ outputOneErr Conf {mode = Just Argos} (ParseError filename l _ text)
     | otherwise = appendFile "banned_funcs" $
       showArgos forbiddenExtIssue <> "\n"
   where
-    atPath = fromMaybe errorsPath $ lookup Major argoOutputFiles
-    errorsPath = createArgoFileName "debug"
+    atPath = fromMaybe errorsPath $ lookup Major argosGravityFiles
+    errorsPath = mkArgosFileName "debug"
     notParsableIssue = makeWarn NotParsable (filename, l) $ StringArg filename
     forbiddenExtIssue = makeWarn ForbiddenExt (filename, l) $ StringArg filename
 outputOneErr _ (ParseError filename l _ text)

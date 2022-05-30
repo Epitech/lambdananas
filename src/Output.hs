@@ -69,26 +69,22 @@ outputOneErr _ (ParseError filename l _ text)
 -- | Dumps a manifest of all coding style issues in format
 -- `<code>:<description>`.
 outputManifest :: String
-outputManifest = foldr mergeLines "" (createLine <$> issues)
+outputManifest = intercalate "\n" (createLine <$> issues)
   where
     createLine (_, IssueInfo {code = c, showDetails = d}) = c ++ ':':d NoArg
-    mergeLines e acc = e ++ '\n':acc
 
 -- | Appends a vague description of issues to 'style-student.txt'.
-outputVague :: Conf -> [Issue] -> IO ()
-outputVague _ [] = return ()
-outputVague Conf{mode=Just Argos} i = appendFile (createArgoFileName "student") (toString $ accumulate i)
-  where
-    accumulate :: [Issue] -> [(Issue, Int)]
-    accumulate = foldr accumulateVague []
-    toString :: [(Issue, Int)] -> String
-    toString l = concat $ ( \ (i', x) -> showVague i' x) <$> l
-outputVague _ _ = return ()
 
-accumulateVague :: Issue -> [(Issue, Int)] -> [(Issue, Int)]
-accumulateVague i acc = case lookup i acc of
-                          Nothing -> (i, 1):acc
-                          Just n -> (i, n + 1):delete (i, n) acc
+
+-- | Creates a vague description of a given issue.
+showVague :: Issue    -- ^ issue
+          -> Int      -- ^ number of times it was raised
+          -> String
+showVague i n =
+  issueCode ++ " rule has been violated " ++ show n ++ " times: " ++ details ++ "\n"
+  where
+    issueCode = code $ lookupIssueInfo i
+    details = (showDetails $ lookupIssueInfo i) NoArg
 
 -- | Produce a warning in argos format
 showArgos :: Warn -> String
@@ -112,13 +108,3 @@ showVera w@Warn {issue = i, arg = a} =
     issueLine = show $ snd $ loc w
     issueGravity = show $ gravity info
     filename = fst $ loc w
-
--- | Creates a vague description of a given issue.
-showVague :: Issue    -- ^ issue
-          -> Int      -- ^ number of times it was raised
-          -> String
-showVague i n =
-  issueCode ++ " rule has been violated " ++ show n ++ " times: " ++ details ++ "\n"
-  where
-    issueCode = code $ lookupIssueInfo i
-    details = (showDetails $ lookupIssueInfo i) NoArg

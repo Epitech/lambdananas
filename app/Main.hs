@@ -40,8 +40,11 @@ loadAll Conf{excludeDirs = Nothing} d =
 
 -- | Checks the coding style for a list of files.
 processMultiple :: Conf -> [FilePath] -> IO ()
+processMultiple conf@Conf {mode = Just Argos} haskellFiles =
+  let f = mkArgosFileName "student" in
+    mapM (processOne conf) haskellFiles >>= appendFile f . outputVague . concat
 processMultiple conf haskellFiles =
-  mapM (processOne conf) haskellFiles >>= outputVague conf . concat
+  mapM_ (processOne conf) haskellFiles
 
 -- | Checks the coding style for a single file.
 -- We are not returning a list of issues for performance reasons!
@@ -54,9 +57,7 @@ processOne conf filename = do
     Left err -> outputOneErr conf err >> return [NotParsable]
   where
     rls = defaultRules
-
-extractIssue :: Warn -> Issue
-extractIssue Warn{issue = i} = i
+    extractIssue Warn{issue = i} = i
 
 -- | Creates an error message appending it to `Error :`.
 errorMsg :: String -> String

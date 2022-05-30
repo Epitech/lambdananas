@@ -74,7 +74,11 @@ outputManifest = intercalate "\n" (createLine <$> issues)
     createLine (_, IssueInfo {code = c, showDetails = d}) = c ++ ':':d NoArg
 
 -- | Appends a vague description of issues to 'style-student.txt'.
-
+outputVague :: [Issue] -> String
+outputVague i = intercalate "\n" $ uncurry showVague . count <$> occurenceList
+  where
+    count (x, _, _) = (x, length $ filter (== x) i)
+    occurenceList = [(x, y, 0 :: Int)| (x, y) <- issues]
 
 -- | Creates a vague description of a given issue.
 showVague :: Issue    -- ^ issue
@@ -102,7 +106,7 @@ showVera w@Warn {issue = i, arg = a} =
     filename ++ ':':issueLine ++ ':':issueGravity ++ ':':' ':issueCode ++
     " # " ++ issueDesc
   where
-    info = lookupIssueInfo i
+   info = lookupIssueInfo i
     issueDesc = showDetails info a
     issueCode = code info
     issueLine = show $ snd $ loc w

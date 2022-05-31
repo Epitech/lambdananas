@@ -5,7 +5,6 @@ test/system/examples/UselessDo.hs
 $$$ stack run
 >>>
 test/system/examples/UselessDo.hs:4: MAJOR:D1 # useless do
->>>2
 >>>= 0
 
 <<<
@@ -13,7 +12,6 @@ test/system/examples/UselessReturn.hs
 $$$ stack run
 >>>
 test/system/examples/UselessReturn.hs:8: MINOR:D2 # useless generator
->>>2
 >>>= 0
 
 <<<
@@ -21,7 +19,6 @@ test/system/examples/NestedIfs.hs
 $$$ stack run
 >>>
 test/system/examples/NestedIfs.hs:8: MAJOR:C1 # nested ifs
->>>2
 >>>= 0
 
 <<<
@@ -29,7 +26,6 @@ test/system/examples/NoCorrespondingSig.hs
 $$$ stack run
 >>>
 test/system/examples/NoCorrespondingSig.hs:3: MINOR:T1 # main has no signature
->>>2
 >>>= 0
 
 <<<
@@ -38,7 +34,6 @@ $$$ stack run
 >>>
 test/system/examples/ReplacableGuards.hs:8: MAJOR:C2 # guard should be a pattern
 test/system/examples/ReplacableGuards.hs:9: MAJOR:C2 # guard should be a pattern
->>>2
 >>>= 0
 
 <<<
@@ -47,7 +42,6 @@ $$$ stack run
 >>>
 test/system/examples/FunctionTooBig.hs:4: MINOR:F3 # line too long
 test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
->>>2
 >>>= 0
 
 #---- Parse failures with vera output mode ----
@@ -57,7 +51,6 @@ test/system/examples/ForbiddenExtension.hs
 $$$ stack run
 >>>
 test/system/examples/ForbiddenExtension.hs contains forbidden extensions
->>>2
 >>>= 0
 
 <<<
@@ -65,7 +58,6 @@ test/system/examples/ParseError.hs
 $$$ stack run
 >>>
 test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError.hs is not parsable
->>>2
 >>>= 0
 
 #---- Parse failures with argos output mode ----
@@ -73,7 +65,6 @@ test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError
 $$$ stack run -- -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
 >>>
 test/system/examples/ForbiddenExtension.hs:24:E1
->>>2
 >>>= 0
 
 <<<
@@ -81,7 +72,6 @@ test/system/examples/ParseError.hs
 $$$ stack run -- -o argos && tail -n 1 style-major.txt
 >>>
 test/system/examples/ParseError.hs:5:P1
->>>2
 >>>= 0
 
 # ---- Vague output tests ----
@@ -89,5 +79,4 @@ test/system/examples/ParseError.hs:5:P1
 $$$ stack run -- -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
 >>>
 F4 rule has been violated 3 times: function too big
->>>2
 >>>= 0

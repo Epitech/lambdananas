@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
+exit_status=0
 
 if ! command -v shelltest &> /dev/null
 then
@@ -8,6 +10,8 @@ then
     exit
 else
     echo "shelltest will run on all .test files of the test/ directory"
-    shelltest test/
+    stack build --exec "shelltest test/"
+    exit_status=$?
     rm -f style-minor.txt style-major.txt style-info.txt style-student.txt banned_funcs > /dev/null
+    exit $exit_status
 fi

@@ -104,7 +104,7 @@ showArgos w@Warn {issue = i} =
 -- | Produce a warning in vera format.
 showVera :: Warn -> String
 showVera w@Warn {issue = i, arg = a} =
-    filename ++ ':':issueLine ++ ':':issueGravity ++ ':':' ':issueCode ++
+    filename ++ ':':issueLine ++ ':':' ':issueGravity ++ ':':issueCode ++
     " # " ++ issueDesc
   where
     info = lookupIssueInfo i

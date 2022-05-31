@@ -98,7 +98,7 @@ dataBadIf :: IssueInfo
 dataBadIf = IssueInfo
   Major
   "C1"
-  (const "nested if")
+  (const "nested ifs")
   "ifs constructs should not be nested"
 
 dataBadDo :: IssueInfo
@@ -163,8 +163,8 @@ dataNotParsable = IssueInfo
   description
   "all files must be parsable without extensions"
   where
-    description (StringArg s) = s ++ " could not be parsed"
-    description _ = "a file could not be parsed"
+    description (StringArg s) = s ++ " is not parsable"
+    description _ = "a file is not parsable"
 
 dataDebug :: IssueInfo
 dataDebug = IssueInfo

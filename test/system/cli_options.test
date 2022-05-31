@@ -29,17 +29,16 @@ test/system/examples/UselessDo.hs:4:D1
 # Dumping issue manifest
 $$$ stack run -- --dump-manifest
 >>>
-C1:nested IFs
-C2:guard should be a pattern
-D1:useless DO
+C1:nested ifs
+D1:useless do
 D2:useless generator
+C2:guard should be a pattern
 F3:line too long
 F4:function too big
-T1:some function has no signature
-E1:some file contains forbidden extension
-P1:some file is not parsable
-XX:debug
-
+T1:function has no signature
+P1:a file is not parsable
+E1:a file contains forbidden extensions
+XX:debug rule left empty
 >>>2
 >>>= 0
 

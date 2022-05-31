@@ -48,3 +48,11 @@
 ### Miscellaneous
 
 - Update code structure to allow for easier add of new Issues and Warn creation
+
+## 2.3.1.0
+
+### Fixes
+
+- Fix Warn formatting regressions due to broken CI
+- Fix vague output creating a style-student.txt file even when there is no errors
+

@@ -4,7 +4,7 @@
 test/system/examples/UselessDo.hs
 $$$ stack run
 >>>
-test/system/examples/UselessDo.hs:4: MAJOR:D1 # useless DO
+test/system/examples/UselessDo.hs:4: MAJOR:D1 # useless do
 >>>2
 >>>= 0
 
@@ -20,7 +20,7 @@ test/system/examples/UselessReturn.hs:8: MINOR:D2 # useless generator
 test/system/examples/NestedIfs.hs
 $$$ stack run
 >>>
-test/system/examples/NestedIfs.hs:8: MAJOR:C1 # nested IFs
+test/system/examples/NestedIfs.hs:8: MAJOR:C1 # nested ifs
 >>>2
 >>>= 0
 
@@ -56,7 +56,7 @@ test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
 test/system/examples/ForbiddenExtension.hs
 $$$ stack run
 >>>
-test/system/examples/ForbiddenExtension.hs file contains forbidden extension
+test/system/examples/ForbiddenExtension.hs contains forbidden extensions
 >>>2
 >>>= 0
 
@@ -64,7 +64,7 @@ test/system/examples/ForbiddenExtension.hs file contains forbidden extension
 test/system/examples/ParseError.hs
 $$$ stack run
 >>>
-test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError.hs file is not parsable
+test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError.hs is not parsable
 >>>2
 >>>= 0
 

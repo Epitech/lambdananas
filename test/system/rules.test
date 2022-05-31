@@ -62,21 +62,21 @@ test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError
 
 #---- Parse failures with argos output mode ----
 
-$$$ stack run -- -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
+$$$ ./haskell-style-checker-exe -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
 >>>
 test/system/examples/ForbiddenExtension.hs:24:E1
 >>>= 0
 
 <<<
 test/system/examples/ParseError.hs
-$$$ stack run -- -o argos && tail -n 1 style-major.txt
+$$$ ./haskell-style-checker-exe -o argos && tail -n 1 style-major.txt
 >>>
 test/system/examples/ParseError.hs:5:P1
 >>>= 0
 
 # ---- Vague output tests ----
 
-$$$ stack run -- -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
+$$$ ./haskell-style-checker-exe -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
 >>>
 F4 rule has been violated 3 times: function too big
 >>>= 0

@@ -9,5 +9,5 @@ then
 else
     echo "shelltest will run on all .test files of the test/ directory"
     shelltest test/
-    rm -f style-minor.txt style-major.txt style-info.txt banned_funcs > /dev/null
+    rm -f style-minor.txt style-major.txt style-info.txt style-student.txt banned_funcs > /dev/null
 fi

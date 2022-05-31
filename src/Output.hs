@@ -20,6 +20,8 @@ import Warn
 import Data.Maybe
 import Data.List
 
+import Debug.Trace
+
 -- | Lookup table of gravities linked to their path.
 -- Used in argos mode only.
 argosGravityFiles :: [(Gravity, FilePath)]
@@ -76,8 +78,10 @@ outputManifest = intercalate "\n" (createLine <$> issues)
 
 -- | Appends a vague description of issues to 'style-student.txt'.
 outputVague :: [Issue] -> String
-outputVague i = intercalate "\n" $ uncurry showVague . count <$> occurenceList
+outputVague i = (++ "\n") . intercalate "\n" $ uncurry showVague <$>
+    removeNoOccurences (count <$> occurenceList)
   where
+    removeNoOccurences l = filter (\(_, y) -> y /= 0) l
     count (x, _, _) = (x, length $ filter (== x) i)
     occurenceList = [(x, y, 0 :: Int)| (x, y) <- issues]
 
@@ -86,7 +90,7 @@ showVague :: Issue    -- ^ issue
           -> Int      -- ^ number of times it was raised
           -> String
 showVague i n =
-  issueCode ++ " rule has been violated " ++ show n ++ " times: " ++ details ++ "\n"
+  issueCode ++ " rule has been violated " ++ show n ++ " times: " ++ details
   where
     issueCode = code $ lookupIssueInfo i
     details = (showDetails $ lookupIssueInfo i) NoArg

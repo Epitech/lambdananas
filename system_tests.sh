@@ -7,7 +7,7 @@ then
     echo "shelltestrunner could not be found"
     echo "make sure the executable is in your PATH"
     echo "you can download it using 'stack install shelltestrunner-1.9'"
-    exit
+    exit 1
 else
     echo "shelltest will run on all .test files of the test/ directory"
     stack build --exec "shelltest test/"

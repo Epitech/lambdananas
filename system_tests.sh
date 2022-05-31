@@ -5,7 +5,8 @@ exit_status=1
 if command -v shelltest
 then
     echo "shelltest will run on all .test files of the test/ directory"
-    stack build --exec "shelltest test/"
+    stack build 2> /dev/null
+    shelltest test/
     exit_status=$?
     rm -f style-minor.txt style-major.txt style-info.txt style-student.txt banned_funcs > /dev/null
     exit $exit_status

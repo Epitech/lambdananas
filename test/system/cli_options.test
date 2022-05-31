@@ -46,4 +46,5 @@ XX:debug rule left empty
 $$$ stack run -- --exclude "test:src:app:.git:.stack-work" .
 >>>
 >>>2
+plouf
 >>>= 0

@@ -7,7 +7,7 @@ $$$ ./haskell-style-checker-exe test/system/examples/Correct.hs
 # Invoquing with correct file in standard input
 <<<
 test/system/examples/Correct.hs
-$$$ stack run
+$$$ ./haskell-style-checker-exe
 >>>= 0
 
 # Invoquing with correct file as argument and flawed file in standard input

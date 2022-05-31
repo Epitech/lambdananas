@@ -1,7 +1,7 @@
 # --- CLI option tests  ---
 
 # Invoquing with correct file as argument
-$$$ stack run -- test/system/examples/Correct.hs
+$$$ ./haskell-style-checker-exe test/system/examples/Correct.hs
 >>>= 0
 
 # Invoquing with correct file in standard input
@@ -13,17 +13,17 @@ $$$ stack run
 # Invoquing with correct file as argument and flawed file in standard input
 <<<
 test/system/examples/UselessDo.hs
-$$$ stack run -- test/system/examples/Correct.hs
+$$$ ./haskell-style-checker-exe test/system/examples/Correct.hs
 >>>= 0
 
 # Invoquing with argos output
-$$$ stack run -- -o argos test/system/examples/UselessDo.hs && tail -n 1 style-major.txt
+$$$ ./haskell-style-checker-exe -o argos test/system/examples/UselessDo.hs && tail -n 1 style-major.txt
 >>>
 test/system/examples/UselessDo.hs:4:D1
 >>>= 0
 
 # Dumping issue manifest
-$$$ stack run -- --dump-manifest
+$$$ ./haskell-style-checker-exe --dump-manifest
 >>>
 C1:nested ifs
 D1:useless do
@@ -38,7 +38,6 @@ XX:debug rule left empty
 >>>= 0
 
 # Excluding directories with vera
-$$$ stack run -- --exclude "test:src:app:.git:.stack-work" .
+$$$ ./haskell-style-checker-exe --exclude "test:src:app:.git:.stack-work" .
 >>>
-plouf
 >>>= 0

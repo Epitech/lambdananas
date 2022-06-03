@@ -75,7 +75,16 @@ jobs:
         key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
         restore-keys: |
           ${{ runner.os }}-stack
+    - uses: actions/cache@v3
+      id: cache-shelltest
+      with:
+        path: |
+          ~/.local/bin/shelltest
+        key: ${{ runner.os }}-system-tests-${{ hashFiles('system_tests.sh') }}
+        restore-keys: |
+          ${{ runner.os }}-stack
     - name: Install shelltestrunner
+      if: steps.cache-shelltest.outputs.cache-hit != 'true'
       run: stack install shelltestrunner-1.9
     - name: Run system tests
       run: ./system_tests.sh

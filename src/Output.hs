@@ -20,8 +20,6 @@ import Warn
 import Data.Maybe
 import Data.List
 
-import Debug.Trace
-
 -- | Lookup table of gravities linked to their path.
 -- Used in argos mode only.
 argosGravityFiles :: [(Gravity, FilePath)]

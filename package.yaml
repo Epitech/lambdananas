@@ -1,10 +1,10 @@
-name:                haskell-style-checker
+name:                lambdananas
 version:             2.3.1.0
-github:              "Epitech/haskell-style-checker"
+github:              "Epitech/lambdananas"
 license:             BSD3
 author:              ["Arthur Soulié", "Marc Planard"]
 maintainer:          "arthur2.soulie@epitech.eu"
-description:         Please see the README on GitHub at <https://github.com/Epitech/haskell-style-checker#readme>
+description:         Please see the README on GitHub at <https://github.com/Epitech/lambdananas#readme>
 extra-source-files:
 - README.md
 - ChangeLog.md
@@ -27,7 +27,7 @@ library:
   - -Wall
 
 executables:
-  haskell-style-checker-exe:
+  lambdananas-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -37,7 +37,7 @@ executables:
     - -O3
     - -Wall
     dependencies:
-    - haskell-style-checker
+    - lambdananas
 
 tests:
   integration-tests:
@@ -48,5 +48,5 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - haskell-style-checker
+    - lambdananas
     - hspec >= 2.7

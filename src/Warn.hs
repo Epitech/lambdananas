@@ -58,6 +58,7 @@ data Issue = BadIf                -- ^ Nested ifs
            | NoSig                -- ^ No signature
            | NotParsable          -- ^ File is not parsable
            | ForbiddenExt         -- ^ File contains forbidden extension
+           | BadHeader             -- ^ File has no header
            | Debug                -- ^ Debug
            deriving (Eq, Show)
 
@@ -89,6 +90,7 @@ issues = [(BadIf, dataBadIf),
           (NoSig, dataNoSig),
           (NotParsable, dataNotParsable),
           (ForbiddenExt, dataForbiddenExt),
+          (BadHeader, dataBadHeader),
           (Debug, dataDebug)]
 
 lookupIssueInfo :: Issue -> IssueInfo
@@ -165,6 +167,16 @@ dataNotParsable = IssueInfo
   where
     description (StringArg s) = s ++ " is not parsable"
     description _ = "a file is not parsable"
+
+dataBadHeader :: IssueInfo
+dataBadHeader = IssueInfo
+  Major
+  "H1"
+  description
+  "all files must have a well formated Epitech header"
+  where
+    description (StringArg s) = s ++ " has a badly formatted Epitech header"
+    description _ = "a file has a badly formatted Epitech header"
 
 dataDebug :: IssueInfo
 dataDebug = IssueInfo

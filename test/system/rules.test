@@ -2,35 +2,35 @@
 
 <<<
 test/system/examples/UselessDo.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/UselessDo.hs:4: MAJOR:D1 # useless do
 >>>= 0
 
 <<<
 test/system/examples/UselessReturn.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/UselessReturn.hs:8: MINOR:D2 # useless generator
 >>>= 0
 
 <<<
 test/system/examples/NestedIfs.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/NestedIfs.hs:8: MAJOR:C1 # nested ifs
 >>>= 0
 
 <<<
 test/system/examples/NoCorrespondingSig.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/NoCorrespondingSig.hs:3: MINOR:T1 # main has no signature
 >>>= 0
 
 <<<
 test/system/examples/ReplacableGuards.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/ReplacableGuards.hs:8: MAJOR:C2 # guard should be a pattern
 test/system/examples/ReplacableGuards.hs:9: MAJOR:C2 # guard should be a pattern
@@ -38,7 +38,7 @@ test/system/examples/ReplacableGuards.hs:9: MAJOR:C2 # guard should be a pattern
 
 <<<
 test/system/examples/FunctionTooBig.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/FunctionTooBig.hs:4: MINOR:F3 # line too long
 test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
@@ -48,35 +48,35 @@ test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
 
 <<<
 test/system/examples/ForbiddenExtension.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/ForbiddenExtension.hs contains forbidden extensions
 >>>= 0
 
 <<<
 test/system/examples/ParseError.hs
-$$$ ./haskell-style-checker-exe
+$$$ ./lambdananas-exe
 >>>
 test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError.hs is not parsable
 >>>= 0
 
 #---- Parse failures with argos output mode ----
 
-$$$ ./haskell-style-checker-exe -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
+$$$ ./lambdananas-exe -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
 >>>
 test/system/examples/ForbiddenExtension.hs:24:E1
 >>>= 0
 
 <<<
 test/system/examples/ParseError.hs
-$$$ ./haskell-style-checker-exe -o argos && tail -n 1 style-major.txt
+$$$ ./lambdananas-exe -o argos && tail -n 1 style-major.txt
 >>>
 test/system/examples/ParseError.hs:5:P1
 >>>= 0
 
 # ---- Vague output tests ----
 
-$$$ ./haskell-style-checker-exe -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
+$$$ ./lambdananas-exe -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
 >>>
 F4 rule has been violated 3 times: function too big
 >>>= 0

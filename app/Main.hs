@@ -3,6 +3,12 @@ Main module for the haskell style checker program.
 -}
 module Main where
 
+import ParserWrapper
+
+main :: IO ()
+main = parseFile "app/Main.hs"
+
+{-
 import Conf
 import Input
 import Output
@@ -66,4 +72,4 @@ processOne conf filename = do
 -- | Creates an error message appending it to `Error :`.
 errorMsg :: String -> String
 errorMsg = (++) "Error: "
-
+-}

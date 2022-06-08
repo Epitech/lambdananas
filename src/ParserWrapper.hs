@@ -1,26 +1,25 @@
 {-|
 Parsing wrapper and inspection functions.
 -}
-module Parser (
-  parseFile,
-  Node (..),
-  explore,
-  getLoc,
-  inspectMatch,
-  inspectExpr,
-  getIdent,
-  parseHS,
+module ParserWrapper (
   ParseError (..),
+  parseFile,
 ) where
 
 import Common (Literal(String))
 
+import Lexer
+import Parser
+import DynFlags
+
+{-
 data Node = NExp (Exp SrcSpanInfo)
           | NBin (Binds SrcSpanInfo)
           | NSmt (Stmt SrcSpanInfo)
           | NDec (Decl SrcSpanInfo)
           | NPat (Pat SrcSpanInfo)
           deriving (Eq, Show)
+          -}
 
 data ParseError = ParseError { file :: String
                              , line :: Int
@@ -34,12 +33,22 @@ instance Show ParseError where
 -- | Parse a file.
 -- Basically a wrapper around 'parseHS'.
 parseFile :: FilePath -- ^ File to be parsed
-          -> IO (Either ParseError [Decl SrcSpanInfo]) -- ^ An error or a list of top level declarations
-parseFile filename = do
-    s <- readFile filename
-    return $ parseHS filename s
+          -> IO (Either ParseError String) -- ^ An error or a list of top level declarations
+parseFile filename = case runParser fakeFlags filename parseModule of
+    POk state mod -> Right $ test state mod
+    _ -> Left ParseError filename 0 0 "Could not parse"
 
 
+-- | Parse a string.
+runParser :: DynFlags -> String -> P a -> ParseResult a
+runParser flags str parser = unP parser parserState
+  where
+    filename = "<interactive>"
+    location = mkRealSrcLoc (mkFastString filename) 1 1
+    buffer = stringToStringBuffer str
+    parserState = mkPState flags buffer location
+
+{-
 -- | Parse a string.
 parseHS :: FilePath -- ^ Name of the parsed file
         -> String -- ^ Content of the parsed file
@@ -133,3 +142,4 @@ inspectBinds :: Monoid a => (Node -> a) -> Binds SrcSpanInfo -> a
 inspectBinds f (BDecls _ lst) = foldMap (inspectDecl f) lst
 inspectBinds _ _ = mempty --trace ("BINDS: "++showS b) mempty
                                               inspectExpr f expr
+                                              -}

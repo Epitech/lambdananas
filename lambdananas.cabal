@@ -27,7 +27,7 @@ library
       Conf
       Input
       Output
-      Parser
+      ParserWrapper
       Rules
       Warn
       BadDo

@@ -59,7 +59,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-stack
     - name: Run integration tests
-      run: stack test haskell-style-checker:integration-tests
+      run: stack test lambdananas:integration-tests
 
   system:
     name: System tests
@@ -106,7 +106,7 @@ jobs:
     - name: Building
       run: stack build
     - name: Install to current directory
-      run: cp $(stack path --local-install-root)/bin/haskell-style-checker-exe ${{ env.NAME }}
+      run: cp $(stack path --local-install-root)/bin/lambdananas-exe ${{ env.NAME }}
     - name: Compressing and stripping binary
       uses: crazy-max/ghaction-upx@v1
       with:

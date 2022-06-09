@@ -19,7 +19,7 @@ $$$ ./lambdananas-exe test/system/examples/Correct.hs
 # Invoquing with argos output
 $$$ ./lambdananas-exe -o argos test/system/examples/UselessDo.hs && tail -n 1 style-major.txt
 >>>
-test/system/examples/UselessDo.hs:4:D1
+test/system/examples/UselessDo.hs:10:D1
 >>>= 0
 
 # Dumping issue manifest
@@ -34,6 +34,7 @@ F4:function too big
 T1:function has no signature
 P1:a file is not parsable
 E1:a file contains forbidden extensions
+H1:a file has a badly formatted Epitech header
 XX:debug rule left empty
 >>>= 0
 

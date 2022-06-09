@@ -12,7 +12,7 @@ then
       style-major.txt \
       style-info.txt \
       style-student.txt \
-      haskell-style-checker-exe \
+      lambdananas-exe \
       banned_funcs > /dev/null
     exit $exit_status
 else

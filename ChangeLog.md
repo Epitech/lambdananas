@@ -56,3 +56,13 @@
 - Fix Warn formatting regressions due to broken CI
 - Fix vague output creating a style-student.txt file even when there is no errors
 
+## 2.4.0.0
+
+### Features
+
+- Added bad or wrongly formatted Epitech header style error
+- Renamed the project fully to lambdananas
+
+### Fixes
+
+- Fix CI launch and cache error on system tests

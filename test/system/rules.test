@@ -4,44 +4,44 @@
 test/system/examples/UselessDo.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/UselessDo.hs:4: MAJOR:D1 # useless do
+test/system/examples/UselessDo.hs:10: MAJOR:D1 # useless do
 >>>= 0
 
 <<<
 test/system/examples/UselessReturn.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/UselessReturn.hs:8: MINOR:D2 # useless generator
+test/system/examples/UselessReturn.hs:14: MINOR:D2 # useless generator
 >>>= 0
 
 <<<
 test/system/examples/NestedIfs.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/NestedIfs.hs:8: MAJOR:C1 # nested ifs
+test/system/examples/NestedIfs.hs:14: MAJOR:C1 # nested ifs
 >>>= 0
 
 <<<
 test/system/examples/NoCorrespondingSig.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/NoCorrespondingSig.hs:3: MINOR:T1 # main has no signature
+test/system/examples/NoCorrespondingSig.hs:9: MINOR:T1 # main has no signature
 >>>= 0
 
 <<<
 test/system/examples/ReplacableGuards.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/ReplacableGuards.hs:8: MAJOR:C2 # guard should be a pattern
-test/system/examples/ReplacableGuards.hs:9: MAJOR:C2 # guard should be a pattern
+test/system/examples/ReplacableGuards.hs:14: MAJOR:C2 # guard should be a pattern
+test/system/examples/ReplacableGuards.hs:15: MAJOR:C2 # guard should be a pattern
 >>>= 0
 
 <<<
 test/system/examples/FunctionTooBig.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/FunctionTooBig.hs:4: MINOR:F3 # line too long
-test/system/examples/FunctionTooBig.hs:7: MINOR:F4 # function too big
+test/system/examples/FunctionTooBig.hs:10: MINOR:F3 # line too long
+test/system/examples/FunctionTooBig.hs:13: MINOR:F4 # function too big
 >>>= 0
 
 #---- Parse failures with vera output mode ----
@@ -57,21 +57,21 @@ test/system/examples/ForbiddenExtension.hs contains forbidden extensions
 test/system/examples/ParseError.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/ParseError.hs:5: MAJOR:P1 # test/system/examples/ParseError.hs is not parsable
+test/system/examples/ParseError.hs:11: MAJOR:P1 # test/system/examples/ParseError.hs is not parsable
 >>>= 0
 
 #---- Parse failures with argos output mode ----
 
 $$$ ./lambdananas-exe -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
 >>>
-test/system/examples/ForbiddenExtension.hs:24:E1
+test/system/examples/ForbiddenExtension.hs:31:E1
 >>>= 0
 
 <<<
 test/system/examples/ParseError.hs
 $$$ ./lambdananas-exe -o argos && tail -n 1 style-major.txt
 >>>
-test/system/examples/ParseError.hs:5:P1
+test/system/examples/ParseError.hs:11:P1
 >>>= 0
 
 # ---- Vague output tests ----
@@ -79,4 +79,15 @@ test/system/examples/ParseError.hs:5:P1
 $$$ ./lambdananas-exe -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
 >>>
 F4 rule has been violated 3 times: function too big
+>>>= 0
+
+# ---- Bad header tests ----
+
+$$$ ./haskell-style-checker-exe test/system/examples/NoHeader.hs
+>>>
+test/system/examples/NoHeader.hs:1: MAJOR:H1 # test/system/examples/NoHeader.hs has a badly formatted Epitech header
+>>>= 0
+
+$$$ ./haskell-style-checker-exe test/system/examples/BadHeader.hs
+>>>
 >>>= 0

@@ -1,3 +1,10 @@
+{-
+-- EPITECH PROJECT, 2022
+-- foo
+-- File description:
+-- bar
+-}
+
 {-# LANGUAGE DeriveFoldable #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NPlusKPatterns #-}

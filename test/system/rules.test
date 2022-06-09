@@ -90,4 +90,5 @@ test/system/examples/NoHeader.hs:1: MAJOR:H1 # test/system/examples/NoHeader.hs 
 
 $$$ ./lambdananas-exe test/system/examples/BadHeader.hs
 >>>
+test/system/examples/BadHeader.hs:1: MAJOR:H1 # test/system/examples/BadHeader.hs has a badly formatted Epitech header
 >>>= 0

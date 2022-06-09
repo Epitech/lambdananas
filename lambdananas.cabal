@@ -33,6 +33,7 @@ library
       BadDo
       BadDoReturn
       BadGuard
+      BadHeader
       BadIf
       Common
       FunctionTooWideOrLarge

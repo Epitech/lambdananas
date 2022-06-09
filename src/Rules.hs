@@ -11,8 +11,10 @@ import BadDoReturn
 import BadDo
 import BadGuard
 import FunctionTooWideOrLarge
+import BadHeader
 import Common
 
 defaultRules :: [Check]
 defaultRules = [ NoSig.check, BadIf.check, BadDoReturn.check,
-                 BadDo.check, BadGuard.check, FunctionTooWideOrLarge.check ]
+                 BadDo.check, BadGuard.check, FunctionTooWideOrLarge.check,
+                 BadHeader.check ]

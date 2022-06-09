@@ -8,7 +8,7 @@ module BadDo (
 import Common
 
 check :: Check
-check = join . explore checkDo
+check (lst, _, _) = (join . explore checkDo) lst
   where checkDo (NExp (Do ssi body)) | countGenerators body < 1 =
                                        [makeWarn BadDo (getLoc ssi) NoArg]
         checkDo _ = []

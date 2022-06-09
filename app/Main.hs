@@ -41,7 +41,8 @@ loadAll Conf{excludeDirs = Nothing} d =
 -- | Checks the coding style for a list of files.
 processMultiple :: Conf -> [FilePath] -> IO ()
 processMultiple conf@Conf {mode = Just Argos} haskellFiles =
-    mapM (processOne conf) haskellFiles >>= appendIfNotEmpty f . outputVague . concat
+    mapM (processOne conf) haskellFiles >>=
+    appendIfNotEmpty f . outputVague . concat
   where
     f = mkArgosFileName "student"
     appendIfNotEmpty _ "" = return ()

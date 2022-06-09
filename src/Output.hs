@@ -59,11 +59,13 @@ outputOneErr Conf {mode = Just Argos} (ParseError filename l _ text)
     atPath = fromMaybe errorsPath $ lookup Major argosGravityFiles
     errorsPath = mkArgosFileName "debug"
     notParsableIssue = makeWarn NotParsable (filename, l) $ StringArg filename
-    forbiddenExtIssue = makeWarn ForbiddenExt (filename, l) $ StringArg filename
+    forbiddenExtIssue = makeWarn ForbiddenExt (filename, l)
+      $ StringArg filename
 outputOneErr _ (ParseError filename l _ text)
     | "Parse error:" `isPrefixOf` text = putStrLn $ showVera i
     -- everything not a parse error is an extension error
-    | otherwise = putStrLn $ showDetails (lookupIssueInfo ForbiddenExt) (StringArg filename)
+    | otherwise = putStrLn $ showDetails (lookupIssueInfo ForbiddenExt)
+      (StringArg filename)
   where
     i = makeWarn NotParsable (filename, l) $ StringArg filename
 

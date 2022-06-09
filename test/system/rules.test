@@ -83,11 +83,11 @@ F4 rule has been violated 3 times: function too big
 
 # ---- Bad header tests ----
 
-$$$ ./haskell-style-checker-exe test/system/examples/NoHeader.hs
+$$$ ./lambdananas-exe test/system/examples/NoHeader.hs
 >>>
 test/system/examples/NoHeader.hs:1: MAJOR:H1 # test/system/examples/NoHeader.hs has a badly formatted Epitech header
 >>>= 0
 
-$$$ ./haskell-style-checker-exe test/system/examples/BadHeader.hs
+$$$ ./lambdananas-exe test/system/examples/BadHeader.hs
 >>>
 >>>= 0

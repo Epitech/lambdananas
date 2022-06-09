@@ -8,7 +8,7 @@ module NoSig (
 import Common
 
 check :: Check
-check lst = join $ map genWarn binds
+check (lst, _, _) = join $ map genWarn binds
   where sigsAndBinds = explore collectSigs lst
         sigs = foldMap fst sigsAndBinds
         binds = foldMap getBind sigsAndBinds

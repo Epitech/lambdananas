@@ -37,6 +37,7 @@ makeWarn i@FunctionTooBig l NoArg = Warn i l NoArg
 makeWarn i@NoSig l a@(StringArg _) = Warn i l a
 makeWarn i@NotParsable l a@(StringArg _) = Warn i l a
 makeWarn i@ForbiddenExt l a@(StringArg _) = Warn i l a
+makeWarn i@BadHeader l a@(StringArg _) = Warn i l a
 makeWarn i@Debug l a@(StringArg _) = Warn i l a
 makeWarn _ _ _= error "invalid Issue/Arg combination"
 

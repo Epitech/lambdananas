@@ -3,7 +3,7 @@ Warnings that can be emitted by the rules checker functions.
 -}
 module Warn (
   Warn (..),
-  makeWarn,
+  mkWarn,
   unsafeMakeWarn,
   lookupIssueInfo,
   issues,

@@ -1,51 +1,30 @@
-{-# OPTIONS_GHC -Wno-missing-fields#-}
 -- Is required since we do not initialise the totality of 'Settings'
 
 module ParserSettings (
-  parserSettings,
+  parserFlags,
 ) where
 
-import Settings
-import ToolSettings
-import FileSettings
-import GhcNameVersion
-import PlatformConstants
-import Fingerprint
-import GHC.Platform
-import GHC.Version
+import Lexer
+import EnumSet
+import Module
+import GHC.LanguageExtensions
+import DynFlags hiding (warningFlags)
 
--- | A Settings structure used to create dynflags.
--- This is copied from the miniHlint example.
--- See : https://github.com/digital-asset/ghc-lib/blob/master/examples/mini-hlint/src/Main.hs
-parserSettings :: Settings
-parserSettings = Settings
-  { sGhcNameVersion = ghcNameVersion
-  , sFileSettings = fileSettings
-  , sTargetPlatform = platform
-  , sPlatformMisc = platformMisc
-  , sPlatformConstants = platformConstants
-  , sToolSettings = toolSettings
-  , sRawSettings = []
-  }
-  where
-    toolSettings = ToolSettings {
-      toolSettings_opt_P_fingerprint=fingerprint0
-      }
-    fileSettings = FileSettings {}
-    platformMisc = PlatformMisc {}
-    ghcNameVersion = GhcNameVersion {
-      ghcNameVersion_programName = "ghc",
-      ghcNameVersion_projectVersion = cProjectVersion
-    }
-    platform = Platform {
-      platformWordSize = PW8,
-      platformMini = PlatformMini {platformMini_arch=ArchUnknown, platformMini_os=OSUnknown},
-      platformUnregisterised=True
-    }
-    platformConstants = PlatformConstants {
-          pc_DYNAMIC_BY_DEFAULT = False,
-          pc_WORD_SIZE = 8
-    }
+-- | Extensions to authorize while parsing
+authorizedExtensions :: [Extension]
+authorizedExtensions = [TemplateHaskell]
 
+-- | Warning flags to check for while parsing
+warningFlags :: [WarningFlag]
+warningFlags = []
 
-
+-- | Flags to be given to the parser via 'mkPStatePure'
+parserFlags :: ParserFlags
+parserFlags = mkParserFlags'
+  (fromList warningFlags)
+  (fromList authorizedExtensions)
+  mainUnitId
+  False
+  False
+  True
+  False

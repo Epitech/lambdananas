@@ -10,7 +10,6 @@ import Common (Literal(String))
 
 import Lexer
 import Parser
-import DynFlags
 import ParserSettings
 import SrcLoc
 import FastString
@@ -40,24 +39,21 @@ parseFile :: FilePath                       -- ^ File to be parsed
           -> IO (Either ParseError String)  -- ^ An error or a list of top level declarations
 parseFile file = do
     content <- readFile file
-    case runParser file flags content parseModule of
+    case runParser file content parseModule of
       POk _ _ -> return $ Right "parsed"
       _ -> return $ Left $ ParseError file 0 0 "Could not parse"
-  where
-    flags = defaultDynFlags parserSettings $ LlvmConfig [] []
 
 
 -- | Parse a string.
 runParser :: FilePath -- ^ Name of the parsed file
-          -> DynFlags -- ^ Flags
           -> String   -- ^ String to parse
           -> P a      -- ^ Kind of parser to use
           -> ParseResult a
-runParser file flags str parser = unP parser parserState
+runParser file str parser = unP parser parserState
   where
     location = mkRealSrcLoc (mkFastString file) 1 1
     content = stringToStringBuffer str
-    parserState = mkPState flags content location
+    parserState = mkPStatePure parserFlags content location
 
 {-
 -- | Parse a string.

@@ -6,7 +6,11 @@ module Main where
 import ParserWrapper
 
 main :: IO ()
-main = parseFile "app/Main.hs"
+main = do
+  res <- parseFile "app/Main.hs"
+  case res of
+    Right s -> putStrLn s
+    Left _ -> error "fail"
 
 {-
 import Conf

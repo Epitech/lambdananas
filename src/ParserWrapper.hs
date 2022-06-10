@@ -11,6 +11,10 @@ import Common (Literal(String))
 import Lexer
 import Parser
 import DynFlags
+import ParserSettings
+import SrcLoc
+import FastString
+import StringBuffer
 
 {-
 data Node = NExp (Exp SrcSpanInfo)
@@ -21,7 +25,7 @@ data Node = NExp (Exp SrcSpanInfo)
           deriving (Eq, Show)
           -}
 
-data ParseError = ParseError { file :: String
+data ParseError = ParseError { filename :: String
                              , line :: Int
                              , column :: Int
                              , desc :: String
@@ -32,21 +36,28 @@ instance Show ParseError where
 
 -- | Parse a file.
 -- Basically a wrapper around 'parseHS'.
-parseFile :: FilePath -- ^ File to be parsed
-          -> IO (Either ParseError String) -- ^ An error or a list of top level declarations
-parseFile filename = case runParser fakeFlags filename parseModule of
-    POk state mod -> Right $ test state mod
-    _ -> Left ParseError filename 0 0 "Could not parse"
+parseFile :: FilePath                       -- ^ File to be parsed
+          -> IO (Either ParseError String)  -- ^ An error or a list of top level declarations
+parseFile file = do
+    content <- readFile file
+    case runParser file flags content parseModule of
+      POk _ _ -> return $ Right "parsed"
+      _ -> return $ Left $ ParseError file 0 0 "Could not parse"
+  where
+    flags = defaultDynFlags parserSettings $ LlvmConfig [] []
 
 
 -- | Parse a string.
-runParser :: DynFlags -> String -> P a -> ParseResult a
-runParser flags str parser = unP parser parserState
+runParser :: FilePath -- ^ Name of the parsed file
+          -> DynFlags -- ^ Flags
+          -> String   -- ^ String to parse
+          -> P a      -- ^ Kind of parser to use
+          -> ParseResult a
+runParser file flags str parser = unP parser parserState
   where
-    filename = "<interactive>"
-    location = mkRealSrcLoc (mkFastString filename) 1 1
-    buffer = stringToStringBuffer str
-    parserState = mkPState flags buffer location
+    location = mkRealSrcLoc (mkFastString file) 1 1
+    content = stringToStringBuffer str
+    parserState = mkPState flags content location
 
 {-
 -- | Parse a string.

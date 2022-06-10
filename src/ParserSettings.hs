@@ -2,7 +2,7 @@
 -- Is required since we do not initialise the totality of 'Settings'
 
 module ParserSettings (
-  settings,
+  parserSettings,
 ) where
 
 import Settings
@@ -17,8 +17,8 @@ import GHC.Version
 -- | A Settings structure used to create dynflags.
 -- This is copied from the miniHlint example.
 -- See : https://github.com/digital-asset/ghc-lib/blob/master/examples/mini-hlint/src/Main.hs
-settings :: Settings
-settings = Settings
+parserSettings :: Settings
+parserSettings = Settings
   { sGhcNameVersion = ghcNameVersion
   , sFileSettings = fileSettings
   , sTargetPlatform = platform
@@ -34,8 +34,8 @@ settings = Settings
     fileSettings = FileSettings {}
     platformMisc = PlatformMisc {}
     ghcNameVersion = GhcNameVersion {
-      ghcNameVersion_programName="ghc",
-      ghcNameVersion_projectVersion=cProjectVersion
+      ghcNameVersion_programName = "ghc",
+      ghcNameVersion_projectVersion = cProjectVersion
     }
     platform = Platform {
       platformWordSize = PW8,

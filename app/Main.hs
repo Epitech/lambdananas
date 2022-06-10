@@ -4,13 +4,28 @@ Main module for the haskell style checker program.
 module Main where
 
 import ParserWrapper
+import NoSig
+import Warn
 
 main :: IO ()
 main = do
   res <- parseFile "app/Main.hs"
   case res of
-    Right s -> putStrLn s
+    Right a -> mapM_ putStrLn $ showVera <$> check a
     Left _ -> error "fail"
+
+-- | Produce a warning in vera format.
+showVera :: Warn -> String
+showVera w@Warn {issue = i, arg = a} =
+    filename ++ ':':issueLine ++ ':':' ':issueGravity ++ ':':issueCode ++
+    " # " ++ issueDesc
+  where
+    info = lookupIssueInfo i
+    issueDesc = showDetails info a
+    issueCode = code info
+    issueLine = show $ snd $ loc w
+    issueGravity = show $ gravity info
+    filename = fst $ loc w
 
 {-
 import Conf

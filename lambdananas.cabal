@@ -29,6 +29,7 @@ library
       ParserSettings
       ParserWrapper
       Warn
+      NoSig
   other-modules:
       Paths_lambdananas
   hs-source-dirs:

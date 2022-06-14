@@ -7,7 +7,6 @@ import ParserWrapper
 import NoSig
 import Warn
 
-main :: IO ()
 main = do
   res <- parseFile "app/Main.hs"
   case res of

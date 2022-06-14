@@ -29,6 +29,7 @@ library
       ParserSettings
       ParserWrapper
       Warn
+      Common
       NoSig
   other-modules:
       Paths_lambdananas

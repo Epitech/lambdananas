@@ -100,7 +100,7 @@ lookupIssueInfo i = fromMaybe dataDebug $ lookup i issues
 dataBadIf :: IssueInfo
 dataBadIf = IssueInfo
   Major
-  "C1"
+  "C4"
   (const "nested ifs")
   "ifs constructs should not be nested"
 
@@ -121,7 +121,7 @@ dataBadReturn = IssueInfo
 dataBadGuard :: IssueInfo
 dataBadGuard = IssueInfo
   Major
-  "C2"
+  "C5"
   (const "guard should be a pattern")
   "guard constructs should only be used if it cannot be a pattern match"
 
@@ -129,14 +129,14 @@ dataLineTooLong :: IssueInfo
 dataLineTooLong = IssueInfo
   Minor
   "F3"
-  (const "line too long")
+  (const "too long line")
   "lines should be less than 80 columns wide"
 
 dataFunctionTooBig :: IssueInfo
 dataFunctionTooBig = IssueInfo
   Minor
   "F4"
-  (const "function too big")
+  (const "too long function")
   "every functions definitions should be less than 10 lines"
 
 dataNoSig :: IssueInfo

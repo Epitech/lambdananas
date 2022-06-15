@@ -66,3 +66,9 @@
 ### Fixes
 
 - Fix CI launch and cache error on system tests
+
+## 2.4.1.0
+
+### Fixes
+
+- Merged some error codes and descriptions with C coding style

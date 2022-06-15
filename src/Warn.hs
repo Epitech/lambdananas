@@ -141,7 +141,7 @@ dataFunctionTooBig = IssueInfo
 
 dataNoSig :: IssueInfo
 dataNoSig = IssueInfo
-  Minor
+  Major
   "T1"
   description
   "top-level declaration has no corresponding type signature"

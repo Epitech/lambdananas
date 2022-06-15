@@ -172,9 +172,9 @@ dataNotParsable = IssueInfo
 dataBadHeader :: IssueInfo
 dataBadHeader = IssueInfo
   Major
-  "H1"
+  "G1"
   description
-  "all files must have a well formated Epitech header"
+  "file must start with a correctly formatted Epitech standard header"
   where
     description (StringArg s) = s ++ " has a badly formatted Epitech header"
     description _ = "a file has a badly formatted Epitech header"

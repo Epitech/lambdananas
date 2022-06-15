@@ -7,14 +7,14 @@ module Output (
   outputVague,
   outputManifest,
   mkArgosFileName,
-  module Parser,
+  module ParserWrapper,
   module Rules,
   module Warn,
 ) where
 
 import Conf
 import Rules
-import Parser
+import ParserWrapper
 import Warn
 
 import Data.Maybe
@@ -49,25 +49,8 @@ outputOne _ w = putStrLn $ showVera w
 outputOneErr :: Conf -> ParseError -> IO ()
 outputOneErr Conf {mode = Just Silent} _ =
   return ()
-outputOneErr Conf {mode = Just Argos} (ParseError filename l _ text)
-    | "Parse error:" `isPrefixOf` text = appendFile atPath $
-      showArgos notParsableIssue <> "\n"
-    -- everything not a parse error is an extension error
-    | otherwise = appendFile "banned_funcs" $
-      showArgos forbiddenExtIssue <> "\n"
-  where
-    atPath = fromMaybe errorsPath $ lookup Major argosGravityFiles
-    errorsPath = mkArgosFileName "debug"
-    notParsableIssue = makeWarn NotParsable (filename, l) $ StringArg filename
-    forbiddenExtIssue = makeWarn ForbiddenExt (filename, l)
-      $ StringArg filename
-outputOneErr _ (ParseError filename l _ text)
-    | "Parse error:" `isPrefixOf` text = putStrLn $ showVera i
-    -- everything not a parse error is an extension error
-    | otherwise = putStrLn $ showDetails (lookupIssueInfo ForbiddenExt)
-      (StringArg filename)
-  where
-    i = makeWarn NotParsable (filename, l) $ StringArg filename
+outputOneErr Conf {mode = Just Argos} _ =
+  return ()
 
 -- | Dumps a manifest of all coding style issues in format
 -- `<code>:<description>`.

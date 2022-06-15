@@ -3,30 +3,6 @@ Main module for the haskell style checker program.
 -}
 module Main where
 
-import ParserWrapper
-import NoSig
-import Warn
-
-main = do
-  res <- parseFile "app/Main.hs"
-  case res of
-    Right a -> mapM_ putStrLn $ showVera <$> check a
-    Left _ -> error "fail"
-
--- | Produce a warning in vera format.
-showVera :: Warn -> String
-showVera w@Warn {issue = i, arg = a} =
-    filename ++ ':':issueLine ++ ':':' ':issueGravity ++ ':':issueCode ++
-    " # " ++ issueDesc
-  where
-    info = lookupIssueInfo i
-    issueDesc = showDetails info a
-    issueCode = code info
-    issueLine = show $ snd $ loc w
-    issueGravity = show $ gravity info
-    filename = fst $ loc w
-
-{-
 import Conf
 import Input
 import Output
@@ -36,7 +12,6 @@ import Data.List
 import Options.Applicative
 import Data.Text (pack, split, unpack)
 
-main :: IO ()
 main = execParser options >>= process
   where
     options = info (optParser <**> helper)
@@ -90,4 +65,3 @@ processOne conf filename = do
 -- | Creates an error message appending it to `Error :`.
 errorMsg :: String -> String
 errorMsg = (++) "Error: "
--}

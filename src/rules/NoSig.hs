@@ -17,6 +17,7 @@ check m = join $ genWarns <$> binds
     genWarns (RealSrcSpan l, e) = if elem e (join $ collectSigs <$> unL (hsmodDecls m))
       then []
       else [mkWarn NoSig (mF m, srcSpanStartLine l) (StringArg $ unpackFS e)]
+    genWarns _ = [mkWarn Debug (mF m, 0) (StringArg "Failure")]
 
 collectSigs :: HsDecl GhcPs -> [FastString]
 collectSigs (SigD _ t) = id' $ unL $ idList t

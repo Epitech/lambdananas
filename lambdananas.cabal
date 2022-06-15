@@ -26,8 +26,10 @@ library
   exposed-modules:
       Conf
       Input
+      Output
       ParserSettings
       ParserWrapper
+      Rules
       Warn
       Common
       NoSig

@@ -12,6 +12,7 @@ import Data.List
 import Options.Applicative
 import Data.Text (pack, split, unpack)
 
+main :: IO ()
 main = execParser options >>= process
   where
     options = info (optParser <**> helper)

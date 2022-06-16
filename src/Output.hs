@@ -14,7 +14,7 @@ module Output (
 
 import Conf
 import Rules
-import ParserWrapper
+import ParserWrapper hiding (filename)
 import Warn
 
 import Data.Maybe
@@ -23,9 +23,9 @@ import Data.List
 -- | Lookup table of gravities linked to their path.
 -- Used in argos mode only.
 argosGravityFiles :: [(Gravity, FilePath)]
-argosGravityFiles = zip gravities fileNames
+argosGravityFiles = zip gravities filenames
   where
-    fileNames = mkArgosFileName <$> ["major", "minor", "info"]
+    filenames = mkArgosFileName <$> ["major", "minor", "info"]
     gravities = [Major, Minor, Info]
 
 -- | Creates a file name suitable for argos output mode.
@@ -47,9 +47,7 @@ outputOne _ w = putStrLn $ showVera w
 -- switching backend parsing library.
 -- | Outputs a single error when the file could not be parsed.
 outputOneErr :: Conf -> ParseError -> IO ()
-outputOneErr Conf {mode = Just Silent} _ =
-  return ()
-outputOneErr Conf {mode = Just Argos} _ =
+outputOneErr _ _ =
   return ()
 
 -- | Dumps a manifest of all coding style issues in format

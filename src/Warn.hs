@@ -27,19 +27,19 @@ instance Ord Warn where
 -- | 'Warn' smart constructor.
 -- Checks that there is no wrong Issue / Arg combination.
 -- See https://wiki.haskell.org/Smart_constructors
-makeWarn :: Issue -> (FilePath, Int) -> IssueArg -> Warn
-makeWarn i@BadIf l NoArg = Warn i l NoArg
-makeWarn i@BadDo l NoArg = Warn i l NoArg
-makeWarn i@BadReturn l NoArg = Warn i l NoArg
-makeWarn i@BadGuard l NoArg = Warn i l NoArg
-makeWarn i@LineTooLong l NoArg = Warn i l NoArg
-makeWarn i@FunctionTooBig l NoArg = Warn i l NoArg
-makeWarn i@NoSig l a@(StringArg _) = Warn i l a
-makeWarn i@NotParsable l a@(StringArg _) = Warn i l a
-makeWarn i@ForbiddenExt l a@(StringArg _) = Warn i l a
-makeWarn i@BadHeader l a@(StringArg _) = Warn i l a
-makeWarn i@Debug l a@(StringArg _) = Warn i l a
-makeWarn _ _ _= error "invalid Issue/Arg combination"
+mkWarn :: Issue -> (FilePath, Int) -> IssueArg -> Warn
+mkWarn i@BadIf l NoArg = Warn i l NoArg
+mkWarn i@BadDo l NoArg = Warn i l NoArg
+mkWarn i@BadReturn l NoArg = Warn i l NoArg
+mkWarn i@BadGuard l NoArg = Warn i l NoArg
+mkWarn i@LineTooLong l NoArg = Warn i l NoArg
+mkWarn i@FunctionTooBig l NoArg = Warn i l NoArg
+mkWarn i@NoSig l a@(StringArg _) = Warn i l a
+mkWarn i@NotParsable l a@(StringArg _) = Warn i l a
+mkWarn i@ForbiddenExt l a@(StringArg _) = Warn i l a
+mkWarn i@BadHeader l a@(StringArg _) = Warn i l a
+mkWarn i@Debug l a@(StringArg _) = Warn i l a
+mkWarn _ _ _= error "invalid Issue/Arg combination"
 
 
 -- Keeping this because it makes it clear that using the

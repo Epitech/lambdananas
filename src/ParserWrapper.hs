@@ -6,8 +6,6 @@ module ParserWrapper (
   parseFile,
 ) where
 
-import Common (Literal(String))
-
 import Lexer
 import Parser
 import ParserSettings

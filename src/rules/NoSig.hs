@@ -10,14 +10,14 @@ import RdrName
 import FastString
 import OccName
 
-check :: HsModule GhcPs -> [Warn]
-check m = join $ genWarns <$> binds
+check :: ParseSuccess -> [Warn]
+check m = genWarns =<< binds
   where
-    binds = join $ collectBind <$> unL (hsmodDecls m)
-    genWarns (RealSrcSpan l, e) = if elem e (join $ collectSigs <$> unL (hsmodDecls m))
+    binds = collectBind =<< unL (hsmodDecls $ pt m)
+    genWarns (RealSrcSpan l, e) = if e `elem` (collectSigs =<< unL (hsmodDecls $ pt m))
       then []
-      else [mkWarn NoSig (mF m, srcSpanStartLine l) (StringArg $ unpackFS e)]
-    genWarns _ = [mkWarn Debug (mF m, 0) (StringArg "Failure")]
+      else [mkWarn NoSig (mF $ pt m, srcSpanStartLine l) (StringArg $ unpackFS e)]
+    genWarns _ = [mkWarn Debug (mF $ pt m, 0) (StringArg "Failure")]
 
 collectSigs :: HsDecl GhcPs -> [FastString]
 collectSigs (SigD _ t) = id' $ unL $ idList t

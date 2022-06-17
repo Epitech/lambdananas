@@ -8,5 +8,5 @@ module Rules (
 import NoSig
 import Common
 
-defaultRules :: [HsModule GhcPs -> [Warn]]
+defaultRules :: [ParseSuccess -> [Warn]]
 defaultRules = [ NoSig.check ]

@@ -5,6 +5,8 @@ module Common (
   unL,
   mF,
   internalFail,
+  ParseSuccess (..),
+  ParseError (..),
   module Warn,
   module GHC.Hs,
   module Control.Monad,
@@ -18,6 +20,21 @@ import Data.Maybe
 import SrcLoc
 import GHC.Hs hiding (NoSig)
 import FastString
+import ApiAnnotation
+
+-- | Wrapper around a parse tree and comments produced by a successful parsing.
+data ParseSuccess = ParseSuccess { pt :: HsModule GhcPs
+                                 , comments :: [Located AnnotationComment]
+                                 }
+
+-- | Represents a failed parsing with location of the failure.
+data ParseError = ParseError { filename :: String
+                             , line :: Int
+                             , column :: Int
+                             } deriving Eq
+
+instance Show ParseError where
+  show (ParseError f l c) = "Failed to parse at : " ++ f ++ ' ':show l ++ ':':show c
 
 -- | Message to show on internal failures.
 internalFail :: String

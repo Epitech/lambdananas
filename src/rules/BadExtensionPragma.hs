@@ -20,35 +20,35 @@ authorizedExtensions = [TemplateHaskell]
 check :: ParseSuccess -> [Warn]
 check m = genWarn =<< (extensions <$> comments m)
   where
-    extensions :: Located AnnotationComment -> [Located [Extension]]
+    extensions :: Located AnnotationComment -> Located (Maybe [Extension])
     extensions a = languagePragmas $ blocks <$> a
     blocks :: AnnotationComment -> Maybe String
     blocks (AnnBlockComment s) = Just s
     blocks _ = Nothing
 
-genWarn :: [Located [Extension]] -> [Warn]
-genWarn pragmas = gen =<< pragmas
-  where
-    gen :: Located [Extension] -> [Warn]
-    gen e = extensionListWarn e <> unauthorizedExtension e
-    extensionListWarn :: Located [Extension] -> [Warn]
-    extensionListWarn z@(L _ e)
-      | length e > 1 = [mkWarn ForbiddenPragmaList (exL z) (StringArg $ fst $ exL z)]
-      | otherwise = []
-    unauthorizedExtension :: Located [Extension] -> [Warn]
-    unauthorizedExtension z@(L _ [e])
-      | e `notElem` authorizedExtensions = [mkWarn BadLangPragma (exL z) (DoubleStringArg (fst $ exL z) (show e))]
-      | otherwise = []
-    unauthorizedExtension _ = []
+genWarn :: Located (Maybe [Extension]) -> [Warn]
+genWarn p = extensionListWarn p <> unauthorizedExtension p
 
--- TODO : fix prototype should return Located [Extension] 1/pragma
+extensionListWarn :: Located (Maybe [Extension]) -> [Warn]
+extensionListWarn z@(L _ (Just e))
+  | length e > 1 =
+    [mkWarn ForbiddenPragmaList (exL z) (StringArg $ fst $ exL z)]
+  | otherwise =
+    []
+extensionListWarn _ = []
+
+unauthorizedExtension :: Located (Maybe [Extension]) -> [Warn]
+unauthorizedExtension z@(L _ (Just [e]))
+  | e `notElem` authorizedExtensions =
+    [mkWarn BadLangPragma (exL z) (DoubleStringArg (fst $ exL z) (show e))]
+  | otherwise =
+    []
+unauthorizedExtension _ = []
+
 -- TODO : Add the regex based match
-languagePragmas :: Located (Maybe String) -> [Located [Extension]]
-languagePragmas (L l (Just s)) = [L l [(getExt s)]]
-languagePragmas _ = []
-
-getExt :: String -> Extension
-getExt s = case elemIndex s (show <$> enumFrom Cpp) of
-            Nothing -> GADTs
-            Just i -> toEnum i
-
+languagePragmas :: Located (Maybe String) -> Located (Maybe [Extension])
+languagePragmas s = parse <$> s
+  where
+    parse :: Maybe String -> Maybe [Extension]
+    parse (Just _) = Just [GADTs]
+    parse Nothing = Nothing

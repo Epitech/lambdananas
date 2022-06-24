@@ -7,11 +7,11 @@
 
 {-# LANGUAGE DeriveFoldable #-}
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE NPlusKPatterns #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE NPlusKPatterns,GADTs #-}
 
 module Main where
 
+-- test
 import System.Environment
 import Text.Read
 import Data.Maybe

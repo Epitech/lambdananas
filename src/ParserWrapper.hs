@@ -23,7 +23,7 @@ parseFile file = do
     content <- readFile file
     case runParser file content parseModule of
       POk s (L _ m) ->
-        return $ Right $ ParseSuccess m (snd =<< annotations_comments s)
+        return $ Right $ ParseSuccess m $ comment_q s
       PFailed PState {loc = l} ->
         return $ Left $ ParseError file (srcLocLine l) (srcLocCol l)
 

@@ -36,11 +36,11 @@ mkWarn i@LineTooLong l NoArg = Warn i l NoArg
 mkWarn i@FunctionTooBig l NoArg = Warn i l NoArg
 mkWarn i@NoSig l a@(StringArg _) = Warn i l a
 mkWarn i@NotParsable l a@(StringArg _) = Warn i l a
-mkWarn i@ForbiddenExt l a@(StringArg _) = Warn i l a
+mkWarn i@BadLangPragma l a@(DoubleStringArg _ _) = Warn i l a
+mkWarn i@ForbiddenPragmaList l a@(StringArg _) = Warn i l a
 mkWarn i@BadHeader l a@(StringArg _) = Warn i l a
 mkWarn i@Debug l a@(StringArg _) = Warn i l a
 mkWarn _ _ _= error "invalid Issue/Arg combination"
-
 
 -- Keeping this because it makes it clear that using the
 -- data constructor is not the right way.
@@ -58,11 +58,11 @@ data Issue = BadIf                -- ^ Nested ifs
            | FunctionTooBig       -- ^ Function too big
            | NoSig                -- ^ No signature
            | NotParsable          -- ^ File is not parsable
-           | ForbiddenExt         -- ^ File contains forbidden extension
-           | BadHeader             -- ^ File has no header
+           | BadHeader            -- ^ File has no header or wrong header format
+           | BadLangPragma        -- ^ Language pragma is unauthorized
+           | ForbiddenPragmaList  -- ^ Language pragma list is forbidden
            | Debug                -- ^ Debug
            deriving (Eq, Show)
-
 
 -- | Data linked to every issue.
 data IssueInfo = IssueInfo { gravity :: Gravity
@@ -77,7 +77,10 @@ data IssueInfo = IssueInfo { gravity :: Gravity
                            }
 
 -- | Arguments to be given to an issue.
-data IssueArg = NoArg | StringArg String deriving (Show, Eq)
+data IssueArg = NoArg
+              | StringArg String
+              | DoubleStringArg String String
+              deriving (Show, Eq)
 
 -- | Describes a lookup table linking 'Issue' to
 -- their corresponding 'IssueInfo'.
@@ -90,7 +93,8 @@ issues = [(BadIf, dataBadIf),
           (FunctionTooBig, dataFunctionTooBig),
           (NoSig, dataNoSig),
           (NotParsable, dataNotParsable),
-          (ForbiddenExt, dataForbiddenExt),
+          (BadLangPragma, dataBadLangPragma),
+          (ForbiddenPragmaList, dataForbiddenPragmaList),
           (BadHeader, dataBadHeader),
           (Debug, dataDebug)]
 
@@ -149,16 +153,6 @@ dataNoSig = IssueInfo
     description (StringArg s) = s ++ " has no signature"
     description _ = "function has no signature"
 
-dataForbiddenExt :: IssueInfo
-dataForbiddenExt = IssueInfo
-  Major
-  "E1"
-  description
-  "line too long"
-  where
-    description (StringArg s) = s ++ " contains forbidden extensions"
-    description _ = "a file contains forbidden extensions"
-
 dataNotParsable :: IssueInfo
 dataNotParsable = IssueInfo
   Major
@@ -178,6 +172,29 @@ dataBadHeader = IssueInfo
   where
     description (StringArg s) = s ++ " has a badly formatted Epitech header"
     description _ = "a file has a badly formatted Epitech header"
+
+dataBadLangPragma :: IssueInfo
+dataBadLangPragma = IssueInfo
+  Major
+  "E1"
+  description
+  "unauthorized extension in a LANGUAGE pragma - \
+  \check your subject for authorized extensions"
+  where
+    description (DoubleStringArg s e) =
+      s ++ " contains forbidden extension " ++ e ++ " in LANGUAGE pragma"
+    description _ =
+      "a file contains forbidden extension in LANGUAGE pragma"
+
+dataForbiddenPragmaList :: IssueInfo
+dataForbiddenPragmaList = IssueInfo
+  Major
+  "E2"
+  description
+  "usage of a list of extensions forbidden usage of LANGUAGE pragma list"
+  where
+    description (StringArg s) = s ++ " contains a LANGUAGE pragma list"
+    description _ = "a file contains a LANGUAGE pragma list"
 
 dataDebug :: IssueInfo
 dataDebug = IssueInfo

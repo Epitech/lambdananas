@@ -4,6 +4,7 @@ Common imports for all rules to use.
 module Common (
   unL,
   mF,
+  exL,
   internalFail,
   ParseSuccess (..),
   ParseError (..),
@@ -11,6 +12,7 @@ module Common (
   module GHC.Hs,
   module Control.Monad,
   module SrcLoc,
+  module ApiAnnotation,
 ) where
 
 import Warn
@@ -45,6 +47,14 @@ unL :: [Located a] -> [a]
 unL l = extract <$> l
   where
     extract (L _ a) = a
+
+-- | Extracts the location informations.
+exL :: Located a -> (String, Int)
+exL (L (RealSrcSpan s) _) = (f, l)
+  where
+    l = srcSpanStartLine s
+    f = unpackFS $ srcSpanFile s
+exL _ = ("unknown", 0)
 
 -- | Get a file name from a 'HsModule'.
 mF :: HsModule GhcPs -> String

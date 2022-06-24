@@ -31,6 +31,7 @@ library
       ParserWrapper
       Rules
       Warn
+      BadExtensionPragma
       Common
       NoSig
   other-modules:

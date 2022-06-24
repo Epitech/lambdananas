@@ -6,7 +6,8 @@ module Rules (
 ) where
 
 import NoSig
+import BadExtensionPragma
 import Common
 
 defaultRules :: [ParseSuccess -> [Warn]]
-defaultRules = [ NoSig.check ]
+defaultRules = [ NoSig.check, BadExtensionPragma.check ]

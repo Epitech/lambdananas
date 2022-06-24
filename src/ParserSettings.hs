@@ -1,5 +1,6 @@
--- Is required since we do not initialise the totality of 'Settings'
-
+{-|
+Parser settings.
+-}
 module ParserSettings (
   parserFlags,
 ) where
@@ -10,10 +11,6 @@ import Module
 import GHC.LanguageExtensions
 import DynFlags hiding (warningFlags)
 
--- | Extensions to authorize while parsing
-authorizedExtensions :: [Extension]
-authorizedExtensions = [TemplateHaskell]
-
 -- | Warning flags to check for while parsing
 warningFlags :: [WarningFlag]
 warningFlags = []
@@ -22,7 +19,7 @@ warningFlags = []
 parserFlags :: ParserFlags
 parserFlags = mkParserFlags'
   (fromList warningFlags)
-  (fromList authorizedExtensions)
+  (fromList $ enumFrom Cpp)
   mainUnitId
   False
   False

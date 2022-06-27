@@ -193,8 +193,10 @@ dataForbiddenPragmaList = IssueInfo
   description
   "usage of a list of extensions forbidden usage of LANGUAGE pragma list"
   where
-    description (StringArg s) = s ++ " contains a LANGUAGE pragma list"
-    description _ = "a file contains a LANGUAGE pragma list"
+    description (StringArg s) = s ++
+      " contains a LANGUAGE pragma with a list of extensions"
+    description _ =
+      "a file contains a LANGUAGE pragma with a list of extensions"
 
 dataDebug :: IssueInfo
 dataDebug = IssueInfo

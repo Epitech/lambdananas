@@ -15,7 +15,7 @@ import Text.Regex.TDFA
 -- | Extensions to authorize.
 -- Any other extensions will generate a 'BadExtensionPragma' warning.
 authorizedExtensions :: [Extension]
-authorizedExtensions = [TemplateHaskell]
+authorizedExtensions = [ TemplateHaskell, OverloadedStrings, GADTs ]
 
 -- | Check function.
 -- After a successful parsing returns a list of zero or more 'Warn'.
@@ -28,25 +28,12 @@ check m = genWarn =<< (blockComments <$> comments m)
     blocks (AnnBlockComment s) = Just s
     blocks _ = Nothing
 
+-- TODO : fix nothing abuses
+-- | Generate a warning given a list of extensions or nothing if parsing failed.
 genWarn :: Located (Maybe [Extension]) -> [Warn]
 genWarn p = extensionListWarn p <> unauthorizedExtension p
 
-extensionListWarn :: Located (Maybe [Extension]) -> [Warn]
-extensionListWarn z@(L _ (Just e))
-  | length e > 1 =
-    [mkWarn ForbiddenPragmaList (exL z) (StringArg $ fst $ exL z)]
-  | otherwise =
-    []
-extensionListWarn _ = []
-
-unauthorizedExtension :: Located (Maybe [Extension]) -> [Warn]
-unauthorizedExtension z@(L _ (Just [e]))
-  | e `notElem` authorizedExtensions =
-    [mkWarn BadLangPragma (exL z) (DoubleStringArg (fst $ exL z) (show e))]
-  | otherwise =
-    []
-unauthorizedExtension _ = []
-
+-- | Parses a list of pragmas as 'String' to 'Extension'.
 languagePragma :: Located (Maybe String) -> Located (Maybe [Extension])
 languagePragma s = parse <$> s
   where
@@ -57,6 +44,26 @@ languagePragma s = parse <$> s
     fun Nothing Nothing = Nothing
     fun Nothing _ = Nothing
 
+-- | Reports a 'ForbiddenPragmaList' when more than one extension is found in a LANGUAGE pragma.
+extensionListWarn :: Located (Maybe [Extension]) -> [Warn]
+extensionListWarn z@(L _ (Just e))
+  | length e > 1 =
+    [mkWarn ForbiddenPragmaList (exL z) (StringArg $ fst $ exL z)]
+  | otherwise =
+    []
+extensionListWarn _ = []
+
+-- | Reports a 'BadLangPragma' when a forbidden extension is used.
+unauthorizedExtension :: Located (Maybe [Extension]) -> [Warn]
+unauthorizedExtension z@(L _ (Just [e]))
+  | e `notElem` authorizedExtensions =
+    [mkWarn BadLangPragma (exL z) (DoubleStringArg (fst $ exL z) (show e))]
+  | otherwise =
+    []
+unauthorizedExtension _ = []
+
+-- | Parses a LANGUAGE pragma 'String' to a list of 'Extension'.
+-- If the parsing fails, returns 'Nothing'.
 parsePragma :: String -> [Maybe Extension]
 parsePragma s
   | s =~ "{-# *LANGUAGE (([A-Za-z])+ *,? *)+ *#-}" =

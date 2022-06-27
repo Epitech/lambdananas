@@ -20,10 +20,10 @@ authorizedExtensions = [TemplateHaskell]
 -- | Check function.
 -- After a successful parsing returns a list of zero or more 'Warn'.
 check :: ParseSuccess -> [Warn]
-check m = genWarn =<< (extensions <$> comments m)
+check m = genWarn =<< (blockComments <$> comments m)
   where
-    extensions :: Located AnnotationComment -> Located (Maybe [Extension])
-    extensions a = languagePragma $ blocks <$> a
+    blockComments :: Located AnnotationComment -> Located (Maybe [Extension])
+    blockComments a = languagePragma $ blocks <$> a
     blocks :: AnnotationComment -> Maybe String
     blocks (AnnBlockComment s) = Just s
     blocks _ = Nothing
@@ -59,8 +59,13 @@ languagePragma s = parse <$> s
 
 parsePragma :: String -> [Maybe Extension]
 parsePragma s
-  | s =~ "{-# *LANGUAGE (([A-Za-z])+ *,? *)+ *#-}" = toExt <$> (getAllTextMatches (s =~ "[a-zA-Z]+") :: [String])
-  | otherwise = []
+  | s =~ "{-# *LANGUAGE (([A-Za-z])+ *,? *)+ *#-}" =
+    toExt <$> filter removeLang (getAllTextMatches (s =~ "[a-zA-Z]+") :: [String])
+  | otherwise =
+    []
   where
     toExt :: String -> Maybe Extension
-    toExt e = e `elemIndex` (show <$> enumFrom Cpp) >>= (\z -> Just $ toEnum z)
+    toExt e = e `elemIndex` (show <$> enumFrom Cpp) >>= Just . toEnum
+    removeLang :: String -> Bool
+    removeLang "LANGUAGE" = False
+    removeLang _ = True

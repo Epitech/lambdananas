@@ -8,6 +8,7 @@
 {-# LANGUAGE DeriveFoldable #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NPlusKPatterns,GADTs #-}
+{-#LANGUAGE TemplateHaskell#-}
 
 module Main where
 

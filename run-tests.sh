@@ -6,7 +6,7 @@ if command -v shelltest
 then
     echo "shelltest will run on all .test files of the test/ directory"
     stack install --local-bin-path .
-    shelltest test/
+    shelltest -j 4 test/
     exit_status=$?
     rm -f style-minor.txt \
       style-major.txt \

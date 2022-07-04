@@ -1,0 +1,6 @@
+<<<
+test/system/examples/UselessDo.hs
+$$$ ./lambdananas-exe
+>>>
+test/system/examples/UselessDo.hs:10: MAJOR:D1 # useless do
+>>>= 0

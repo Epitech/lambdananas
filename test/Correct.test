@@ -1,3 +1,2 @@
-# Invoquing with correct file as argument
 $$$ ./lambdananas-exe test/Correct.hs
 >>>= 0

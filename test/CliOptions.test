@@ -1,25 +1,25 @@
 # --- CLI option tests  ---
 
 # Invoquing with correct file as argument
-$$$ ./lambdananas-exe test/system/examples/Correct.hs
+$$$ ./lambdananas-exe test/Correct.hs
 >>>= 0
 
 # Invoquing with correct file in standard input
 <<<
-test/system/examples/Correct.hs
+test/Correct.hs
 $$$ ./lambdananas-exe
 >>>= 0
 
 # Invoquing with correct file as argument and flawed file in standard input
 <<<
-test/system/examples/UselessDo.hs
-$$$ ./lambdananas-exe test/system/examples/Correct.hs
+test/UselessDo.hs
+$$$ ./lambdananas-exe test/Correct.hs
 >>>= 0
 
 # Invoquing with argos output
-$$$ ./lambdananas-exe -o argos test/system/examples/UselessDo.hs && tail -n 1 style-major.txt
+$$$ ./lambdananas-exe -o argos test/UselessDo.hs && tail -n 1 style-major.txt
 >>>
-test/system/examples/UselessDo.hs:10:D1
+test/UselessDo.hs:10:D1
 >>>= 0
 
 # Dumping issue manifest

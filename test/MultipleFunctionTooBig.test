@@ -1,4 +1,4 @@
-$$$ ./lambdananas-exe -o argos test/system/examples/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
+$$$ ./lambdananas-exe -o argos test/MultipleFunctionTooBig.hs && tail -n 1 style-student.txt
 >>>
 F4 rule has been violated 3 times: too long function
 >>>= 0

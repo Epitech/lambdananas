@@ -1,8 +1,8 @@
 <<<
-test/system/examples/ReplacableGuards.hs
+test/ReplacableGuards.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/ReplacableGuards.hs:14: MAJOR:C5 # guard should be a pattern
-test/system/examples/ReplacableGuards.hs:15: MAJOR:C5 # guard should be a pattern
+test/ReplacableGuards.hs:14: MAJOR:C5 # guard should be a pattern
+test/ReplacableGuards.hs:15: MAJOR:C5 # guard should be a pattern
 >>>= 0
 

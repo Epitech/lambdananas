@@ -1,7 +1,7 @@
 <<<
-test/system/examples/FunctionTooBig.hs
+test/FunctionTooBig.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/FunctionTooBig.hs:10: MINOR:F3 # too long line
-test/system/examples/FunctionTooBig.hs:13: MINOR:F4 # too long function
+test/FunctionTooBig.hs:10: MINOR:F3 # too long line
+test/FunctionTooBig.hs:13: MINOR:F4 # too long function
 >>>= 0

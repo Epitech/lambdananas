@@ -5,10 +5,8 @@
 -- bar
 -}
 
-{-# LANGUAGE DeriveFoldable #-}
-{-#LANGUAGE TemplateHaskell#-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE GADTs#-}
+{-# LANGUAGE DeriveFoldable, TemplateHaskell,GADTs#-}
+{-# LANGUAGE LambdaCase, DisambiguateRecordFields,InstanceSigs#-}
 
 module Main where
 

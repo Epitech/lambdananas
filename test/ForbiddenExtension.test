@@ -2,12 +2,8 @@
 test/ForbiddenExtension.hs
 $$$ ./lambdananas-exe
 >>>
-test/ForbiddenExtension.hs contains forbidden extensions
+test/ForbiddenExtension.hs:8: MAJOR:E1 # test/ForbiddenExtension.hs contains forbidden extension DeriveFoldable in LANGUAGE pragma
+test/ForbiddenExtension.hs:9: MAJOR:E1 # test/ForbiddenExtension.hs contains forbidden extension TemplateHaskell in LANGUAGE pragma
+test/ForbiddenExtension.hs:11: MAJOR:E1 # test/ForbiddenExtension.hs contains forbidden extension GADTs in LANGUAGE pragma
 >>>= 0
-
-$$$ ./lambdananas-exe -o argos test/ForbiddenExtension.hs && tail -n 1 banned_funcs
->>>
-test/ForbiddenExtension.hs:31:E1
->>>= 0
-
 

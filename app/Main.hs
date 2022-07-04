@@ -20,7 +20,7 @@ main = execParser options >>= process
             <> header "Haskell Style Checker - An EPITECH Haskell Linter")
 
 -- | Top level compute function.
--- Is called after the cli arguments have been parsed
+-- Is called after the cli arguments have been parsed.
 process :: Conf -> IO ()
 process Conf{manifest = Just Dump} =
   putStrLn outputManifest

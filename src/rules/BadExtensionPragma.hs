@@ -15,7 +15,7 @@ import Text.Regex.TDFA
 -- | Extensions to authorize.
 -- Any other extensions will generate a 'BadExtensionPragma' warning.
 authorizedExtensions :: [Extension]
-authorizedExtensions = [ TemplateHaskell, OverloadedStrings, GADTs ]
+authorizedExtensions = [ LambdaCase ]
 
 -- | Check function.
 -- After a successful parsing returns a list of zero or more 'Warn'.

@@ -6,9 +6,9 @@ if command -v shelltest
 then
     echo "shelltest will run on all .test files of the test/ directory"
     stack install --local-bin-path .
-    if [ "$1" = '-p' ]
-    then shelltest -c -j 4 test/
-    else shelltest test/
+    if [ "$1" = '-ci' ]
+    then shelltest test/
+    else shelltest -c -j 4 test/
     fi
     exit_status=$?
     rm -f style-minor.txt \

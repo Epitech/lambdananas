@@ -27,44 +27,10 @@ jobs:
     - name: Build
       run: stack build --test --no-run-tests
 
-  unit:
-    name: Unit tests
+  tests:
+    name: end to end tests
     runs-on: ubuntu-20.04
     needs: build
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.stack
-          .stack-work
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - name: Run unit tests
-      run: echo "not implemented yet"
-
-  integration:
-    name: Integration tests
-    runs-on: ubuntu-20.04
-    needs: [unit, build]
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.stack
-          .stack-work
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - name: Run integration tests
-      run: stack test lambdananas:integration-tests
-
-  system:
-    name: System tests
-    runs-on: ubuntu-20.04
-    needs: [unit, integration, build]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v3
@@ -87,7 +53,7 @@ jobs:
       if: steps.cache-shelltest.outputs.cache-hit != 'true'
       run: stack install shelltestrunner-1.9
     - name: Run system tests
-      run: ./system_tests.sh
+      run: ./system_tests.sh -ci
 
   artifacts:
     name: Upload artifact

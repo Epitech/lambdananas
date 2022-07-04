@@ -1,0 +1,6 @@
+<<<
+test/system/examples/UselessReturn.hs
+$$$ ./lambdananas-exe
+>>>
+test/system/examples/UselessReturn.hs:14: MINOR:D2 # useless generator
+>>>= 0

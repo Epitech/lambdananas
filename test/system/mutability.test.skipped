@@ -1,2 +1,0 @@
-stack run -- -d "" -f test/examples/MutableVariables.hs
->>>= 0

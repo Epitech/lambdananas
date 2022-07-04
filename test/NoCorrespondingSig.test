@@ -1,0 +1,6 @@
+<<<
+test/system/examples/NoCorrespondingSig.hs
+$$$ ./lambdananas-exe
+>>>
+test/system/examples/NoCorrespondingSig.hs:9: MAJOR:T1 # main has no signature
+>>>= 0

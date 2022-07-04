@@ -1,0 +1,6 @@
+<<<
+test/system/examples/NestedIfs.hs
+$$$ ./lambdananas-exe
+>>>
+test/system/examples/NestedIfs.hs:14: MAJOR:C4 # nested ifs
+>>>= 0

@@ -1,0 +1,3 @@
+# Invoquing with correct file as argument
+$$$ ./lambdananas-exe test/system/examples/Correct.hs
+>>>= 0

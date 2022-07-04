@@ -1,13 +1,13 @@
 <<<
-test/system/examples/ForbiddenExtension.hs
+test/ForbiddenExtension.hs
 $$$ ./lambdananas-exe
 >>>
-test/system/examples/ForbiddenExtension.hs contains forbidden extensions
+test/ForbiddenExtension.hs contains forbidden extensions
 >>>= 0
 
-$$$ ./lambdananas-exe -o argos test/system/examples/ForbiddenExtension.hs && tail -n 1 banned_funcs
+$$$ ./lambdananas-exe -o argos test/ForbiddenExtension.hs && tail -n 1 banned_funcs
 >>>
-test/system/examples/ForbiddenExtension.hs:31:E1
+test/ForbiddenExtension.hs:31:E1
 >>>= 0
 
 

@@ -166,7 +166,7 @@ dataNotParsable = IssueInfo
 dataBadHeader :: IssueInfo
 dataBadHeader = IssueInfo
   Major
-  "G1"
+  "O6"
   description
   "file must start with a correctly formatted Epitech standard header"
   where

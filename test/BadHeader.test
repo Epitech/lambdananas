@@ -1,4 +1,4 @@
 $$$ ./lambdananas-exe test/BadHeader.hs
 >>>
-test/BadHeader.hs:1: MAJOR:G1 # test/BadHeader.hs has a badly formatted Epitech header
+test/BadHeader.hs:1: MAJOR:O6 # test/BadHeader.hs has a badly formatted Epitech header
 >>>= 0

@@ -1,6 +1,4 @@
-# --- CLI option tests  ---
-
 $$$ ./lambdananas-exe test/NoHeader.hs
 >>>
-test/NoHeader.hs:1: MAJOR:G1 # test/NoHeader.hs has a badly formatted Epitech header
+test/NoHeader.hs:1: MAJOR:O6 # test/NoHeader.hs has a badly formatted Epitech header
 >>>= 0

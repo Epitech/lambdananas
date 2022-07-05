@@ -33,8 +33,9 @@ F3:too long line
 F4:too long function
 T1:function has no signature
 P1:a file is not parsable
-E1:a file contains forbidden extensions
-G1:a file has a badly formatted Epitech header
+E1:a file contains forbidden extension in LANGUAGE pragma
+E2:a file contains a LANGUAGE pragma with a list of extensions
+O6:a file has a badly formatted Epitech header
 XX:debug rule left empty
 >>>= 0
 

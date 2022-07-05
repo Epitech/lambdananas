@@ -1,0 +1,4 @@
+$$$ ./lambdananas-exe test/AlmostBadHeader.hs
+>>>
+test/AlmostBadHeader.hs:1: MAJOR:O6 # test/AlmostBadHeader.hs has a badly formatted Epitech header
+>>>= 0

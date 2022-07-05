@@ -31,6 +31,7 @@ library
       ParserWrapper
       Rules
       Warn
+      BadDo
       BadExtensionPragma
       BadHeader
       Common

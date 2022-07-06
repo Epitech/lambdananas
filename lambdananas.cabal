@@ -35,6 +35,8 @@ library
       BadExtensionPragma
       BadHeader
       Common
+      NoExportDecl
+      NoModuleDecl
       NoSig
   other-modules:
       Paths_lambdananas

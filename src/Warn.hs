@@ -39,6 +39,8 @@ mkWarn i@NotParsable l a@(StringArg _) = Warn i l a
 mkWarn i@BadLangPragma l a@(DoubleStringArg _ _) = Warn i l a
 mkWarn i@ForbiddenPragmaList l a@(StringArg _) = Warn i l a
 mkWarn i@BadHeader l a@(StringArg _) = Warn i l a
+mkWarn i@NoExportDecl l a@(StringArg _) = Warn i l a
+mkWarn i@NoModuleDecl l a@(StringArg _) = Warn i l a
 mkWarn i@Debug l a@(StringArg _) = Warn i l a
 mkWarn _ _ _= error "invalid Issue/Arg combination"
 
@@ -61,6 +63,8 @@ data Issue = BadIf                -- ^ Nested ifs
            | BadHeader            -- ^ File has no header or wrong header format
            | BadLangPragma        -- ^ Language pragma is unauthorized
            | ForbiddenPragmaList  -- ^ Language pragma list is forbidden
+           | NoExportDecl         -- ^ No export declaration in module
+           | NoModuleDecl         -- ^ No module declaration in file
            | Debug                -- ^ Debug
            deriving (Eq, Show)
 
@@ -96,6 +100,8 @@ issues = [(BadIf, dataBadIf),
           (BadLangPragma, dataBadLangPragma),
           (ForbiddenPragmaList, dataForbiddenPragmaList),
           (BadHeader, dataBadHeader),
+          (NoExportDecl, dataNoExportDecl),
+          (NoModuleDecl, dataNoModuleDecl),
           (Debug, dataDebug)]
 
 lookupIssueInfo :: Issue -> IssueInfo
@@ -197,6 +203,30 @@ dataForbiddenPragmaList = IssueInfo
       " contains a LANGUAGE pragma with a list of extensions"
     description _ =
       "a file contains a LANGUAGE pragma with a list of extensions"
+
+dataNoExportDecl :: IssueInfo
+dataNoExportDecl = IssueInfo
+  Major
+  "O5"
+  description
+  "any module except the Main module must export at least one declaration"
+  where
+    description (StringArg s) = s ++
+      " module does export any declarations"
+    description _ =
+      "a file's module does export any declarations"
+
+dataNoModuleDecl :: IssueInfo
+dataNoModuleDecl = IssueInfo
+  Major
+  "O7"
+  description
+  "every module is expected to have a \"module ... where\" module declaration"
+  where
+    description (StringArg s) = s ++
+      " does not declare a module"
+    description _ =
+      "a file does not declare a module"
 
 dataDebug :: IssueInfo
 dataDebug = IssueInfo

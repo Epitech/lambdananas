@@ -36,6 +36,8 @@ P1:a file is not parsable
 E1:a file contains forbidden extension in LANGUAGE pragma
 E2:a file contains a LANGUAGE pragma with a list of extensions
 O6:a file has a badly formatted Epitech header
+O5:a file's module does export any declarations
+O7:a file does not declare a module
 XX:debug rule left empty
 >>>= 0
 

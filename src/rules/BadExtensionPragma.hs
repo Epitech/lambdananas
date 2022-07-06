@@ -12,6 +12,8 @@ import Data.List
 import Data.Maybe
 import Text.Regex.TDFA
 
+import Debug.Trace
+
 -- | Extensions to authorize.
 -- Any other extensions will generate a 'BadExtensionPragma' warning.
 authorizedExtensions :: [Extension]
@@ -28,10 +30,11 @@ check m = genWarn =<< (blockComments <$> comments m)
     blocks (AnnBlockComment s) = Just s
     blocks _ = Nothing
 
--- TODO : fix nothing abuses
--- | Generate a warning given a list of extensions or nothing if parsing failed.
+-- | Generates a warning for every given extension list.
 genWarn :: Located (Maybe [Extension]) -> [Warn]
 genWarn p = extensionListWarn p <> unauthorizedExtension p
+  where
+    ext (L _ e) = show e
 
 -- | Parses a list of pragmas as 'String' to 'Extension'.
 languagePragma :: Located (Maybe String) -> Located (Maybe [Extension])
@@ -55,12 +58,16 @@ extensionListWarn _ = []
 
 -- | Reports a 'BadLangPragma' when a forbidden extension is used.
 unauthorizedExtension :: Located (Maybe [Extension]) -> [Warn]
-unauthorizedExtension z@(L _ (Just [e]))
-  | e `notElem` authorizedExtensions =
-    [mkWarn BadLangPragma (exL z) (DoubleStringArg (fst $ exL z) (show e))]
-  | otherwise =
-    []
+unauthorizedExtension b@(L _ (Just a)) = isUnauthorized =<< a
+  where
+    isUnauthorized :: Extension -> [Warn]
+    isUnauthorized e
+      | e `notElem` authorizedExtensions =
+        [mkWarn BadLangPragma (exL b) (DoubleStringArg (fst $ exL b) (show e))]
+      | otherwise =
+        []
 unauthorizedExtension _ = []
+
 
 -- | Parses a LANGUAGE pragma 'String' to a list of 'Extension'.
 -- If the parsing fails, returns 'Nothing'.

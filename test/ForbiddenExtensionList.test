@@ -3,7 +3,11 @@ test/ForbiddenExtensionList.hs
 $$$ ./lambdananas-exe
 >>>
 test/ForbiddenExtensionList.hs:8: MAJOR:E2 # test/ForbiddenExtensionList.hs contains a LANGUAGE pragma with a list of extensions
-test/ForbiddenExtension.hs:8: MAJOR:E1 # test/ForbiddenExtension.hs contains forbidden extension DeriveFoldable in LANGUAGE pragma
-test/ForbiddenExtensionList.hs:8: MAJOR:E2 # test/ForbiddenExtensionList.hs contains a LANGUAGE pragma with a list of extensions
+test/ForbiddenExtensionList.hs:8: MAJOR:E1 # test/ForbiddenExtensionList.hs contains forbidden extension DeriveFoldable in LANGUAGE pragma
+test/ForbiddenExtensionList.hs:8: MAJOR:E1 # test/ForbiddenExtensionList.hs contains forbidden extension TemplateHaskell in LANGUAGE pragma
+test/ForbiddenExtensionList.hs:8: MAJOR:E1 # test/ForbiddenExtensionList.hs contains forbidden extension GADTs in LANGUAGE pragma
+test/ForbiddenExtensionList.hs:9: MAJOR:E2 # test/ForbiddenExtensionList.hs contains a LANGUAGE pragma with a list of extensions
+test/ForbiddenExtensionList.hs:9: MAJOR:E1 # test/ForbiddenExtensionList.hs contains forbidden extension DisambiguateRecordFields in LANGUAGE pragma
+test/ForbiddenExtensionList.hs:9: MAJOR:E1 # test/ForbiddenExtensionList.hs contains forbidden extension InstanceSigs in LANGUAGE pragma
 >>>= 0
 

@@ -8,4 +8,4 @@ module BadDo (
 import Common
 
 check :: ParseSuccess -> [Warn]
-check m = hsmodDecls $ pt m
+check _ = []

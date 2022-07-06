@@ -1,0 +1,6 @@
+<<<
+test/NoModuleDecl.hs
+$$$ ./lambdananas-exe
+>>>
+test/NoModuleDecl.hs:1: MAJOR:O6 # test/NoModuleDecl.hs does not declare a module
+>>>= 0

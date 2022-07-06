@@ -1,0 +1,6 @@
+<<<
+test/NoExportDecl.hs
+$$$ ./lambdananas-exe
+>>>
+test/NoExportDecl.hs:1: MAJOR:O5 # test/NoExportDecl.hs does export any declarations
+>>>= 0

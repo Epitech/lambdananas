@@ -32,9 +32,12 @@ library
       Rules
       Warn
       BadDo
+      BadDoReturn
       BadExtensionPragma
       BadHeader
+      BadIf
       Common
+      FunctionTooWideOrLarge
       NoExportDecl
       NoModuleDecl
       NoSig

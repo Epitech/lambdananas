@@ -1,8 +1,7 @@
 {-|
-Bad do.
+Bad guard.
 -}
-
-module BadDo (
+module BadGuard (
   check,
 ) where
 

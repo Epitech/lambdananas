@@ -5,16 +5,26 @@ module Rules (
     defaultRules,
 ) where
 
-import NoSig
+import BadDo
+import BadDoReturn
 import BadExtensionPragma
+import BadGuard
 import BadHeader
+import BadIf
+import FunctionTooWideOrLarge
 import NoExportDecl
 import NoModuleDecl
+import NoSig
 import Common
 
 defaultRules :: [ParseSuccess -> [Warn]]
-defaultRules = [ NoSig.check
+defaultRules = [ BadDo.check
+               , BadDoReturn.check
                , BadExtensionPragma.check
+               , BadGuard.check
+               , BadHeader.check
+               , BadIf.check
+               , FunctionTooWideOrLarge.check
                , NoExportDecl.check
                , NoModuleDecl.check
-               , BadHeader.check ]
+               , NoSig.check ]

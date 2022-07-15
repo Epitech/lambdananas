@@ -100,49 +100,49 @@ lookupIssueInfo i = fromMaybe dataDebug $ lookup i issues
 dataBadIf :: IssueInfo
 dataBadIf = IssueInfo
   Major
-  "C4"
+  "H-C4"
   (const "nested ifs")
   "ifs constructs should not be nested"
 
 dataBadDo :: IssueInfo
 dataBadDo = IssueInfo
   Major
-  "D1"
+  "H-D1"
   (const "useless do")
   "do structures should be avoided when no generator are used"
 
 dataBadReturn :: IssueInfo
 dataBadReturn = IssueInfo
   Minor
-  "D2"
+  "H-D2"
   (const "useless generator")
   "do structures should not have useless return statements"
 
 dataBadGuard :: IssueInfo
 dataBadGuard = IssueInfo
   Major
-  "C5"
+  "H-C5"
   (const "guard should be a pattern")
   "guard constructs should only be used if it cannot be a pattern match"
 
 dataLineTooLong :: IssueInfo
 dataLineTooLong = IssueInfo
   Minor
-  "F3"
+  "H-F3"
   (const "too long line")
   "lines should be less than 80 columns wide"
 
 dataFunctionTooBig :: IssueInfo
 dataFunctionTooBig = IssueInfo
   Minor
-  "F4"
+  "H-F4"
   (const "too long function")
   "every functions definitions should be less than 10 lines"
 
 dataNoSig :: IssueInfo
 dataNoSig = IssueInfo
   Major
-  "T1"
+  "H-T1"
   description
   "top-level declaration has no corresponding type signature"
   where
@@ -152,7 +152,7 @@ dataNoSig = IssueInfo
 dataForbiddenExt :: IssueInfo
 dataForbiddenExt = IssueInfo
   Major
-  "E1"
+  "H-E1"
   description
   "line too long"
   where
@@ -162,7 +162,7 @@ dataForbiddenExt = IssueInfo
 dataNotParsable :: IssueInfo
 dataNotParsable = IssueInfo
   Major
-  "P1"
+  "H-P1"
   description
   "all files must be parsable without extensions"
   where
@@ -172,7 +172,7 @@ dataNotParsable = IssueInfo
 dataBadHeader :: IssueInfo
 dataBadHeader = IssueInfo
   Major
-  "G1"
+  "H-G1"
   description
   "file must start with a correctly formatted Epitech standard header"
   where
@@ -182,7 +182,7 @@ dataBadHeader = IssueInfo
 dataDebug :: IssueInfo
 dataDebug = IssueInfo
   Info
-  "XX"
+  "H-XX"
   description
   "debug rule found something, this should not happen!"
   where

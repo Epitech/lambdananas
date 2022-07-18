@@ -41,12 +41,12 @@ quite understand...
 
 ### Using make
 
-You can use commands specified by Epitech ($NAME re clean fclean tests_run)
+You can use commands specified by EPITECH ($NAME re clean fclean tests_run).
 
 ## 🔧 Tests
 
-- Run `stack test` to run all integration and unit tests
-- Install `shelltest` and run `shelltest -c test` from the root of the repo to run cli tests
+- Install `shelltest` from [here](https://hackage.haskell.org/package/shelltestrunner) (installing via stack is recommended)
+- Run `./run-test.sh` (you might want to tweak the script to use less cores)
 
 ## 🚚 Deploy
 

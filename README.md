@@ -48,5 +48,23 @@ You can use commands specified by Epitech ($NAME re clean fclean tests_run)
 - Run `stack test` to run all integration and unit tests
 - Install `shelltest` and run `shelltest -c test` from the root of the repo to run cli tests
 
+## 🚚 Deploy
+
+You should ship a new version of the project when new features or fixes are introduced to the project. 
+
+### Versions
+
+As git recommends, we follow the [semantic versioning](https://semver.org/) system for project versions. The last digit in cabal packages is always left empty.
+
+### Procedure
+
+- Update the cabal file version
+- Update the `Changelog.md` file (take exemple on the previous logs)
+- Make a new commit or merge commits to the main branch
+- Be sure the CI passed without errors
+- Create a new release draft (releases -> Draft a new release)
+- Copy the changelog from your `Changelog.md` file and modify them to be like other release changelogs
+- Download the binary artifact from the CI, extract it and upload it to the release (🛑 upload the binary and ONLY the binary)
+
 ## 📂 Module hierarchy
 ![haskell style checker module tree](https://user-images.githubusercontent.com/102175969/169989347-3fc76e11-eea4-450a-9068-de62d064b911.png)

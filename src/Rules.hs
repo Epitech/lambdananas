@@ -11,7 +11,6 @@ import BadExtensionPragma
 import BadGuard
 import BadHeader
 import BadIf
-import FunctionTooWideOrLarge
 import NoExportDecl
 import NoModuleDecl
 import NoSig
@@ -24,7 +23,6 @@ defaultRules = [ BadDo.check
                , BadGuard.check
                , BadHeader.check
                , BadIf.check
-               , FunctionTooWideOrLarge.check
                , NoExportDecl.check
                , NoModuleDecl.check
                , NoSig.check ]

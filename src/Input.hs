@@ -9,11 +9,12 @@ import System.Directory
 import System.FilePath.Posix
 import Control.Monad
 
-type ManualExclusions = [FilePath]
-
--- | A list of directories to be ignored.
+-- | The list of directories to be ignored by default.
 defaultExclusions :: [String]
 defaultExclusions = ["tests", "test", "bonus", ".stack-work", ".git"]
+
+-- | Just to make functions clearer.
+type ManualExclusions = [FilePath]
 
 -- | If the given 'FilePath' is a directory, returns a list
 -- of all files inside recursively. Given a file, will

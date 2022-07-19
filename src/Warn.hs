@@ -59,7 +59,7 @@ data Issue = BadIf                -- ^ Nested ifs
            | NoSig                -- ^ No signature
            | NotParsable          -- ^ File is not parsable
            | ForbiddenExt         -- ^ File contains forbidden extension
-           | BadHeader             -- ^ File has no header
+           | BadHeader            -- ^ File has no header
            | Debug                -- ^ Debug
            deriving (Eq, Show)
 
@@ -96,6 +96,17 @@ issues = [(BadIf, dataBadIf),
 
 lookupIssueInfo :: Issue -> IssueInfo
 lookupIssueInfo i = fromMaybe dataDebug $ lookup i issues
+
+-- | Describes an 'Issue' gravity.
+data Gravity = Info | Minor | Major deriving Eq
+
+instance Show Gravity where
+  show Info = "INFO"
+  show Minor = "MINOR"
+  show Major = "MAJOR"
+
+-- Data Section
+-- You can configure the 'IssueInfos' for each 'Issue'.
 
 dataBadIf :: IssueInfo
 dataBadIf = IssueInfo
@@ -189,10 +200,3 @@ dataDebug = IssueInfo
     description (StringArg s) = s
     description _ = "debug rule left empty"
 
--- | Describes an 'Issue' gravity.
-data Gravity = Info | Minor | Major deriving Eq
-
-instance Show Gravity where
-  show Info = "INFO"
-  show Minor = "MINOR"
-  show Major = "MAJOR"

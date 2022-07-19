@@ -89,11 +89,11 @@ inspectStmt :: Monoid a => (Node -> a) -> Stmt SrcSpanInfo -> a
 inspectStmt f s@(Qualifier _ e) = f (NSmt s) <> inspectExpr f e
 inspectStmt f s@(Generator _ _e1 e2) = f (NSmt s) <> inspectExpr f e2
 inspectStmt f s@(LetStmt _ b) = f (NSmt s) <> inspectBinds f b
-inspectStmt _ _ = mempty --trace (showS s) mempty
+inspectStmt _ _ = mempty
 
 inspectBinds :: Monoid a => (Node -> a) -> Binds SrcSpanInfo -> a
 inspectBinds f (BDecls _ lst) = foldMap (inspectDecl f) lst
-inspectBinds _ _ = mempty --trace ("BINDS: "++showS b) mempty
+inspectBinds _ _ = mempty
 
 inspectRhs :: Monoid a => (Node -> a) -> Rhs SrcSpanInfo -> a
 inspectRhs f (UnGuardedRhs _ expr) = inspectExpr f expr
@@ -118,7 +118,7 @@ inspectMatch f (Match _ _ ps a Nothing) = inspectPats f ps <>
 inspectMatch f (Match _ _ ps a (Just l)) = inspectPats f ps <>
                                            inspectRhs f a <>
                                            inspectBinds f l
-inspectMatch _ _ = mempty --trace (showS m) undefined
+inspectMatch _ _ = mempty
 
 inspectDecl :: Monoid a => (Node -> a) -> Decl SrcSpanInfo -> a
 inspectDecl f d@(PatBind _ (PVar _ _) a _) = f (NDec d) <> inspectRhs f a

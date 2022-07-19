@@ -43,8 +43,9 @@ outputOne Conf {mode = Just Argos} w@Warn {issue = i} =
     errorsPath = mkArgosFileName "debug"
 outputOne _ w = putStrLn $ showVera w
 
--- TODO : this is very much temporary and should be patched when
--- switching backend parsing library.
+-- NOTE : I know the following function is crap.
+-- It disgusts me.
+-- But without a switch of library I cannot do better.
 -- | Outputs a single error when the file could not be parsed.
 outputOneErr :: Conf -> ParseError -> IO ()
 outputOneErr Conf {mode = Just Silent} _ =
@@ -69,14 +70,14 @@ outputOneErr _ (ParseError filename l _ text)
   where
     i = makeWarn NotParsable (filename, l) $ StringArg filename
 
--- | Dumps a manifest of all coding style issues in format
+-- | Generates a manifest of all coding style issues in format
 -- `<code>:<description>`.
 outputManifest :: String
 outputManifest = intercalate "\n" (createLine <$> issues)
   where
     createLine (_, IssueInfo {code = c, showDetails = d}) = c ++ ':':d NoArg
 
--- | Appends a vague description of issues to 'style-student.txt'.
+-- | Appends a vague description of given 'Issue' to `$PWD/style-student.txt` file.
 outputVague :: [Issue] -> String
 outputVague i = (++ "\n") . intercalate "\n" $ uncurry showVague <$>
     removeNoOccurences (count <$> occurenceList)

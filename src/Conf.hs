@@ -1,5 +1,5 @@
 {-|
-CLI argument configuration.
+CLI argument parser configuration.
 -}
 module Conf (
   Conf (..),
@@ -11,14 +11,14 @@ module Conf (
 import Options.Applicative
 
 -- | Enumerate the different coding style error output modes.
-data OutputModes = Silent -- ^ Do not output anything (usefull for tests maybe ?)
-                 | Argos -- ^ Output to style-(minor|major|info).txt (compatible with argos output)
-                 | Vera -- ^ Output everything to stdout (compatible with vera++ output)
+data OutputModes = Silent -- ^ Do not output anything
+                 | Argos  -- ^ Output to style-(minor|major|info).txt (compatible with argos output)
+                 | Vera   -- ^ Output everything to stdout (compatible with vera++ output)
                  deriving Show
 
-data ManifestDump = Dump -- ^ Dump a manifest of all error codes and their descriptions
-              | NoDump -- ^ Do not dump (default)
-              deriving Show
+data ManifestDump = Dump    -- ^ Dump a manifest of all error codes and their descriptions
+                  | NoDump  -- ^ Do not dump (default)
+                  deriving Show
 
 instance Read OutputModes where
   readsPrec _ "silent" = [(Silent, "")]
@@ -29,13 +29,13 @@ instance Read OutputModes where
 -- | Holds the command line argument parsing result.
 -- The 'Conf' data aims at replacing the 'Conf' data.
 data Conf = Conf { mode :: Maybe OutputModes
-                 , manifest :: Maybe ManifestDump       -- ^ Should a manifest be dumped
-                 , excludeDirs :: Maybe String          -- ^ A list of files and directories to be exluded
-                 , files :: [FilePath]                  -- ^ Files to be checked
+                 , manifest :: Maybe ManifestDump   -- ^ Should a manifest be dumped
+                 , excludeDirs :: Maybe String      -- ^ A list of files and directories to be exluded
+                 , files :: [FilePath]              -- ^ Files to be checked
                  }
                  deriving Show
 
--- | Create a 'Conf when the returned parser is ran.
+-- | Creates a 'Conf' when the returned parser is ran.
 optParser :: Parser Conf
 optParser = Conf
             <$> optional (option auto

@@ -72,3 +72,9 @@
 ### Fixes
 
 - Merged some error codes and descriptions with C coding style
+
+## 2.4.2.0
+
+### Fixes
+
+- Prefix rules with 'H-'

@@ -1,6 +1,10 @@
-{-|
-Parsing wrapper and inspection functions.
+{-
+-- EPITECH PROJECT, 2022
+-- Lambdananas
+-- File description:
+-- Parsing wrapper and inspection functions.
 -}
+
 module Parser (
   parseFile,
   Node (..),

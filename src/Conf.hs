@@ -1,6 +1,10 @@
-{-|
-CLI argument parser configuration.
+{-
+-- EPITECH PROJECT, 2022
+-- Lambdananas
+-- File description:
+-- CLI argument parser configuration.
 -}
+
 module Conf (
   Conf (..),
   OutputModes (..),
@@ -46,12 +50,15 @@ optParser = Conf
                 (long "exclude" <> metavar "FILE" <> help excludeDirsHelp))
             <*> many (strArgument
                 (metavar "FILE" <> help "Files to search"))
-          where
-            outputHelp = "Outputs the coding style issues in a specific way,\
+
+outputHelp :: String
+outputHelp = "Outputs the coding style issues in a specific way,\
             \ can be 'silent', 'argos' or 'vera'"
-            manifestHelp = "Dumps a manifest of all errors in the following\
+manifestHelp :: String
+manifestHelp = "Dumps a manifest of all errors in the following\
             \ format <code>:<description> while ignoring every other options"
-            excludeDirsHelp = "Directories to exclude from search - if you\
+excludeDirsHelp :: String
+excludeDirsHelp = "Directories to exclude from search - if you\
             \ exclude a directory you should not give any files of this\
             \ directory as argument - use find for more fine grained control"
 

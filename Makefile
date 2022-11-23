@@ -1,23 +1,23 @@
 #
 #
 
-NAME=hsc
+NAME=lambdananas
 CP=cp
 
-BIN_PATH=`stack path --local-install-root`/bin/haskell-style-checker-exe
+BIN_PATH=`stack path --local-install-root`/bin/lambdananas-exe
 INSTALL_PATH=$(HOME)/bin/
 
 SRC = app/Main.hs $(wildcard src/*.hs)
 
 $(NAME): $(SRC)
 	stack build
-	cp $(BIN_PATH) $(NAME)
+	$(CP) $(BIN_PATH) $(NAME)
 
 all: $(NAME)
 
 install: $(NAME)
 	upx --best $(NAME) || true
-	cp $(NAME) $(INSTALL_PATH)
+	$(CP) $(NAME) $(INSTALL_PATH)
 
 tests_run:
 	stack test

@@ -1,6 +1,10 @@
-{-|
-Describes input operations on folders and files.
+{-
+-- EPITECH PROJECT, 2022
+-- Lambdananas
+-- File description:
+-- Describes input operations on folders and files.
 -}
+
 module Input (
   load,
 ) where

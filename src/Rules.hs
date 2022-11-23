@@ -1,6 +1,10 @@
-{-|
-Coding style rules.
+{-
+-- EPITECH PROJECT, 2022
+-- Lambdananas
+-- File description:
+-- Coding style rules.
 -}
+
 module Rules (
     defaultRules,
 ) where

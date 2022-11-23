@@ -1,6 +1,10 @@
-{-|
-Warnings that can be emitted by the rules checker functions.
+{-
+-- EPITECH PROJECT, 2022
+-- Lambdananas
+-- File description:
+-- Warnings that can be emitted by the rules checker functions.
 -}
+
 module Warn (
   Warn (..),
   makeWarn,
@@ -82,17 +86,27 @@ data IssueArg = NoArg | StringArg String deriving (Show, Eq)
 -- | Describes a lookup table linking 'Issue' to
 -- their corresponding 'IssueInfo'.
 issues :: [(Issue, IssueInfo)]
-issues = [(BadIf, dataBadIf),
-          (BadDo, dataBadDo),
-          (BadReturn, dataBadReturn),
-          (BadGuard, dataBadGuard),
-          (LineTooLong, dataLineTooLong),
-          (FunctionTooBig, dataFunctionTooBig),
-          (NoSig, dataNoSig),
-          (NotParsable, dataNotParsable),
-          (ForbiddenExt, dataForbiddenExt),
-          (BadHeader, dataBadHeader),
-          (Debug, dataDebug)]
+issues = issuesBad ++ issuesFunctions ++ issuesMisc
+
+issuesBad :: [(Issue, IssueInfo)]
+issuesBad = [ (BadIf, dataBadIf)
+            , (BadDo, dataBadDo)
+            , (BadReturn, dataBadReturn)
+            , (BadGuard, dataBadGuard)
+            ]
+            
+issuesFunctions :: [(Issue, IssueInfo)]
+issuesFunctions = [ (LineTooLong, dataLineTooLong)
+                  , (FunctionTooBig, dataFunctionTooBig)
+                  , (NoSig, dataNoSig)
+                  ]
+                  
+issuesMisc :: [(Issue, IssueInfo)]
+issuesMisc = [ (NotParsable, dataNotParsable)
+             , (ForbiddenExt, dataForbiddenExt)
+             , (BadHeader, dataBadHeader)
+             , (Debug, dataDebug)
+             ]
 
 lookupIssueInfo :: Issue -> IssueInfo
 lookupIssueInfo i = fromMaybe dataDebug $ lookup i issues

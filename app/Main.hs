@@ -1,6 +1,10 @@
-{-|
-Main module for the haskell style checker program.
+{-
+-- EPITECH PROJECT, 2022
+-- Lambdananas
+-- File description:
+-- Main module for the haskell style checker program.
 -}
+
 module Main where
 
 import Conf

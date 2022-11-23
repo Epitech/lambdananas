@@ -1,6 +1,10 @@
-{-|
-Higher level module for style checker computations.
+{-
+-- EPITECH PROJECT, 2022
+-- Lambdananas
+-- File description:
+-- Higher level module for style checker computations.
 -}
+
 module Output (
   outputOne,
   outputOneErr,
@@ -52,16 +56,13 @@ outputOneErr Conf {mode = Just Silent} _ =
   return ()
 outputOneErr Conf {mode = Just Argos} (ParseError filename l _ text)
     | "Parse error:" `isPrefixOf` text = appendFile atPath $
-      showArgos notParsableIssue <> "\n"
+      showArgos (notParsableIssue filename l) <> "\n"
     -- everything not a parse error is an extension error
     | otherwise = appendFile "banned_funcs" $
-      showArgos forbiddenExtIssue <> "\n"
+      showArgos (forbiddenExtIssue filename l) <> "\n"
   where
     atPath = fromMaybe errorsPath $ lookup Major argosGravityFiles
-    errorsPath = mkArgosFileName "debug"
-    notParsableIssue = makeWarn NotParsable (filename, l) $ StringArg filename
-    forbiddenExtIssue = makeWarn ForbiddenExt (filename, l)
-      $ StringArg filename
+    errorsPath = mkArgosFileName "debug"                    
 outputOneErr _ (ParseError filename l _ text)
     | "Parse error:" `isPrefixOf` text = putStrLn $ showVera i
     -- everything not a parse error is an extension error
@@ -69,6 +70,11 @@ outputOneErr _ (ParseError filename l _ text)
       (StringArg filename)
   where
     i = makeWarn NotParsable (filename, l) $ StringArg filename
+
+notParsableIssue :: String -> Int -> Warn
+notParsableIssue f l = makeWarn NotParsable (f, l) $ StringArg f
+forbiddenExtIssue :: String -> Int -> Warn
+forbiddenExtIssue f l = makeWarn ForbiddenExt (f, l) $ StringArg f
 
 -- | Generates a manifest of all coding style issues in format
 -- `<code>:<description>`.

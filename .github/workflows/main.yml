@@ -13,11 +13,11 @@ env:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v3
     - uses: mstksg/setup-stack@v1
+    - uses: actions/cache@v3
       with:
         path: |
           ~/.stack
@@ -34,6 +34,7 @@ jobs:
     needs: build
     steps:
     - uses: actions/checkout@v2
+    - uses: mstksg/setup-stack@v1      
     - uses: actions/cache@v3
       with:
         path: |
@@ -51,6 +52,7 @@ jobs:
     needs: [unit, build]
     steps:
     - uses: actions/checkout@v2
+    - uses: mstksg/setup-stack@v1      
     - uses: actions/cache@v3
       with:
         path: |
@@ -68,6 +70,7 @@ jobs:
     needs: [unit, integration, build]
     steps:
     - uses: actions/checkout@v2
+    - uses: mstksg/setup-stack@v1
     - uses: actions/cache@v3
       with:
         path: |
@@ -96,6 +99,7 @@ jobs:
     needs: build
     steps:
     - uses: actions/checkout@v2
+    - uses: mstksg/setup-stack@v1      
     - uses: actions/cache@v3
       with:
         path: |

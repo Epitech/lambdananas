@@ -11,6 +11,6 @@ jobs:
     - uses: actions/setup-haskell@v1
       with:
         ghc-version: 8.8.3
-        stack-version: 2.7.5
         enable-stack: true
+        stack-version: 'latest'
     - run: stack build --test

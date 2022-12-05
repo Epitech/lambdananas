@@ -22,12 +22,13 @@ import Data.Maybe
 -- | A coding style warning that can be emitted by a rule's check function.
 data Warn = Warn { issue :: Issue           -- ^ The issue raised
                  , loc :: (FilePath, Int)   -- ^ The location of the issue
-                 , arg :: IssueArg          -- ^ Arguments to pass to the output functions
+                 , arg :: IssueArg          -- ^ Arguments to pass to
+                                            --   the output functions
                  } deriving (Eq, Show)
 
 instance Ord Warn where
   compare (Warn _ (s1,l1) _) (Warn _ (s2,l2) _) | s1 == s2 = compare l1 l2
-                                            | otherwise = compare s1 s2
+                                                | otherwise = compare s1 s2
 -- | 'Warn' smart constructor.
 -- Checks that there is no wrong Issue / Arg combination.
 -- See https://wiki.haskell.org/Smart_constructors
@@ -74,10 +75,11 @@ data IssueInfo = IssueInfo { gravity :: Gravity
                            , code :: String
                            -- ^ The code of the issue
                            , showDetails :: IssueArg -> String
-                           -- ^ A function returning a short description and taking
-                           -- metadatas
+                           -- ^ A function returning a short description
+                           --   and taking metadatas
                            , hint :: String
-                           -- ^ A hint about how the student can solve the issue
+                           -- ^ A hint about how the student can solve
+                           --   the issue
                            }
 
 -- | Arguments to be given to an issue.
@@ -138,14 +140,14 @@ dataBadDo = IssueInfo
 
 dataBadReturn :: IssueInfo
 dataBadReturn = IssueInfo
-  Minor
+  Major
   "H-D2"
   (const "useless generator")
   "do structures should not have useless return statements"
 
 dataBadGuard :: IssueInfo
 dataBadGuard = IssueInfo
-  Major
+  Minor
   "H-C5"
   (const "guard should be a pattern")
   "guard constructs should only be used if it cannot be a pattern match"
@@ -179,7 +181,7 @@ dataForbiddenExt = IssueInfo
   Major
   "H-E1"
   description
-  "line too long"
+  "contains forbidden extensions"
   where
     description (StringArg s) = s ++ " contains forbidden extensions"
     description _ = "a file contains forbidden extensions"

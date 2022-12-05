@@ -1,127 +1,14 @@
 name: CI
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-
-env:
-  NAME: lambdananas
+on: [push, pull_request]
 
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
-    - uses: mstksg/setup-stack@v1
-    - uses: actions/cache@v3
+    - uses: actions/setup-haskell@v1
       with:
-        path: |
-          ~/.stack
-          .stack-work
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - name: Build
-      run: stack build --test --no-run-tests
-
-  unit:
-    name: Unit tests
-    runs-on: ubuntu-20.04
-    needs: build
-    steps:
-    - uses: actions/checkout@v2
-    - uses: mstksg/setup-stack@v1      
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.stack
-          .stack-work
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - name: Run unit tests
-      run: echo "not implemented yet"
-
-  integration:
-    name: Integration tests
-    runs-on: ubuntu-20.04
-    needs: [unit, build]
-    steps:
-    - uses: actions/checkout@v2
-    - uses: mstksg/setup-stack@v1      
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.stack
-          .stack-work
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - name: Run integration tests
-      run: stack test lambdananas:integration-tests
-
-  system:
-    name: System tests
-    runs-on: ubuntu-20.04
-    needs: [unit, integration, build]
-    steps:
-    - uses: actions/checkout@v2
-    - uses: mstksg/setup-stack@v1
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.stack
-          .stack-work
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - uses: actions/cache@v3
-      id: cache-shelltest
-      with:
-        path: |
-          ~/.local/bin/shelltest
-        key: ${{ runner.os }}-system-tests-${{ hashFiles('system_tests.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - name: Install shelltestrunner
-      if: steps.cache-shelltest.outputs.cache-hit != 'true'
-      run: stack install shelltestrunner-1.9
-    - name: Run system tests
-      run: ./system_tests.sh
-
-  artifacts:
-    name: Upload artifact
-    runs-on: ubuntu-20.04
-    needs: build
-    steps:
-    - uses: actions/checkout@v2
-    - uses: mstksg/setup-stack@v1      
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.stack
-          .stack-work
-        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-stack
-    - name: Building
-      run: stack build
-    - name: Install to current directory
-      run: cp $(stack path --local-install-root)/bin/lambdananas-exe ${{ env.NAME }}
-    - name: Compressing and stripping binary
-      uses: crazy-max/ghaction-upx@v1
-      with:
-        version: latest
-        files: |
-          ${{ env.NAME }}
-        args: --best
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ env.NAME }}
-        path: ${{ env.NAME }}
-
+        ghc-version: 8.8.3
+    - run: stack build --test

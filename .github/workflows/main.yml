@@ -12,4 +12,4 @@ jobs:
           # cabal-version: 'latest'. Omitted, but defaults to 'latest'
           enable-stack: true
           stack-version: 'latest'
-      - run: stack build
+      - run: stack --system-ghc build

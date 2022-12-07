@@ -12,5 +12,8 @@ jobs:
           # cabal-version: 'latest'. Omitted, but defaults to 'latest'
           enable-stack: true
           stack-version: 'latest'
-      - run: sudo apt-get install -y libgmp-dev
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libgmp-dev
+          version: 1.0          
       - run: stack --system-ghc build

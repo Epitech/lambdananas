@@ -16,4 +16,7 @@ jobs:
         with:
           packages: libgmp-dev
           version: 1.0          
-      - run: stack --system-ghc build
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install libgmp-dev
+          stack --system-ghc build

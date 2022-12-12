@@ -33,4 +33,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all run_tests clean fclean re
+.PHONY: all tests_run clean fclean re

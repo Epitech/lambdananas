@@ -1,8 +1,8 @@
 on: [push]
-name: build
+name: Lambdananas Tests
 jobs:
-  runhaskell:
-    name: Lambdananas Tests
+  lambdananas:
+    name: Unit Tests
     runs-on: ubuntu-latest # or macOS-latest, or windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -12,8 +12,11 @@ jobs:
           # cabal-version: 'latest'. Omitted, but defaults to 'latest'
           enable-stack: true
           stack-version: 'latest'
-      - run: |
+      - name: install deps
+        run: |
           sudo apt-get update -qq
           sudo apt-get install libgmp-dev -qq
-          stack test
+      - name: stack test
+        run: stack test
+           
           

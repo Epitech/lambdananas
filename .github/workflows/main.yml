@@ -16,6 +16,8 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install libgmp-dev -qq
+      - name: stack build
+        run: stack --system-ghc build
       - name: stack test
         run: stack --system-ghc test
            

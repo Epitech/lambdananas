@@ -59,7 +59,7 @@ main = hspec $ do
                    "          then True",
                    "          else False",
                    "     else False"]
-      `shouldBe` Right [Warn BadIf (".", 1) NoArg]
+      `shouldBe` Right [Warn BadIf (",", 1) NoArg]
 
     it "should be silent if only one if" $
       BadIf.check

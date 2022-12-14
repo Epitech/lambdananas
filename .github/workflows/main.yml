@@ -3,7 +3,7 @@ name: Lambdananas Tests
 jobs:
   lambdananas:
     name: Unit Tests
-    runs-on: ubuntu-latest # or macOS-latest, or windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: haskell/actions/setup@v2
@@ -15,5 +15,13 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install libgmp-dev -qq
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.stack
+            .stack-work
+          key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-stack          
       - name: stack test
         run: stack --system-ghc test

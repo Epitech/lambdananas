@@ -56,3 +56,42 @@ jobs:
       - name: stack test
         run: stack test
  
+  artifacts:
+    name: Upload artifact
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: haskell/actions/setup@v2
+        with:
+          ghc-version: '8.8.4'
+          enable-stack: true
+          stack-version: 'latest'
+      - name: install deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install libgmp-dev -qq
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.stack
+            .stack-work
+          key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-stack          
+      - name: stack build
+        run: stack build
+      - name: Install to current directory
+        run: cp $(stack path --local-install-root)/bin/lambdananas-exe ${{ env.NAME }}
+      - name: Compressing and stripping binary
+        uses: crazy-max/ghaction-upx@v1
+        with:
+          version: latest
+          files: |
+            ${{ env.NAME }}
+          args: --best
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ env.NAME }}
+          path: ${{ env.NAME }}

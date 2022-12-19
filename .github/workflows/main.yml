@@ -58,7 +58,7 @@ jobs:
  
   artifacts:
     name: Upload artifact
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/checkout@v3

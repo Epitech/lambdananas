@@ -53,6 +53,6 @@ jobs:
           key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
           restore-keys: |
             ${{ runner.os }}-stack          
-      - name: stack build
+      - name: stack test
         run: stack test
  

@@ -8,7 +8,7 @@ module FunctionTooWideOrLarge (
 import Common
 
 check :: Check
-check (lst, _, _) = uniqWarn $ join $ explore checkLine lst
+check (lst, _, _, _) = uniqWarn $ join $ explore checkLine lst
   where checkLine (NDec (FunBind _ matches)) = foldMap checkLine' matches
         checkLine (NDec decl@PatBind{}) = checkLine' decl
         checkLine _ = []

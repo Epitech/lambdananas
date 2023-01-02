@@ -79,9 +79,9 @@ forbiddenExtIssue f l = makeWarn ForbiddenExt (f, l) $ StringArg f
 -- | Generates a manifest of all coding style issues in format
 -- `<code>:<description>`.
 outputManifest :: String
-outputManifest = intercalate "\n" (createLine <$> issues)
+outputManifest = intercalate "\n" (sort $ createLine <$> issues)
   where
-    createLine (_, IssueInfo {code = c, showDetails = d}) = c ++ ':':d NoArg
+    createLine (_, IssueInfo {code = c, showDetails = d}) = c ++ ": " ++ d NoArg
 
 -- | Appends a vague description of given 'Issue' to `$PWD/style-student.txt` file.
 outputVague :: [Issue] -> String

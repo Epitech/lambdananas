@@ -22,6 +22,8 @@ import Language.Haskell.Exts.Syntax
 import Language.Haskell.Exts.SrcLoc
 import Language.Haskell.Exts.Comments
 
+import Debug.Trace
+
 data Node = NExp (Exp SrcSpanInfo)
           | NBin (Binds SrcSpanInfo)
           | NSmt (Stmt SrcSpanInfo)
@@ -34,22 +36,24 @@ data ParseError = ParseError { file :: String
                              , column :: Int
                              , desc :: String
                              } deriving Eq
+type ParseResult = ([Decl SrcSpanInfo], [ImportDecl SrcSpanInfo], [Comment], FilePath)
 
 instance Show ParseError where
   show (ParseError f l c d) = d ++ ' ':f ++ ' ':show l ++ ':':show c
 
 parseFile :: FilePath
-          -> IO (Either ParseError ([Decl SrcSpanInfo], [Comment], FilePath))
+          -> IO (Either ParseError Parser.ParseResult)
 parseFile filename = do
     s <- readFile filename
     return $ parseHS filename s
 
 parseHS :: FilePath
         -> String
-        -> Either ParseError ([Decl SrcSpanInfo], [Comment], FilePath)
+        -> Either ParseError Parser.ParseResult
 parseHS f s =
     purge $ parseWithComments (defaultParseMode { parseFilename = f }) s
-  where purge (ParseOk (Module _mod _ _ _ body, c)) = Right (body, c, f)
+  where purge (ParseOk (Module _mod _ _ imports body, comments)) =
+          trace (show _mod) $ Right (body, imports, comments, f)
         purge (ParseFailed (SrcLoc f' l c) err) = Left $ ParseError f' l c err
         purge _ = error "fatal error, should never happen"
 

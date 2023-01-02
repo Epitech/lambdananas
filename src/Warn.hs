@@ -42,6 +42,7 @@ makeWarn i@FunctionTooBig l NoArg = Warn i l NoArg
 makeWarn i@NoSig l a@(StringArg _) = Warn i l a
 makeWarn i@NotParsable l a@(StringArg _) = Warn i l a
 makeWarn i@ForbiddenExt l a@(StringArg _) = Warn i l a
+makeWarn i@ForbiddenImports l a@(StringArg _) = Warn i l a
 makeWarn i@BadHeader l a@(StringArg _) = Warn i l a
 makeWarn i@Debug l a@(StringArg _) = Warn i l a
 makeWarn _ _ _= error "invalid Issue/Arg combination"
@@ -64,6 +65,7 @@ data Issue = BadIf                -- ^ Nested ifs
            | NoSig                -- ^ No signature
            | NotParsable          -- ^ File is not parsable
            | ForbiddenExt         -- ^ File contains forbidden extension
+           | ForbiddenImports     -- ^ File contains forbidden imports
            | BadHeader            -- ^ File has no header
            | Debug                -- ^ Debug
            deriving (Eq, Show)
@@ -106,6 +108,7 @@ issuesFunctions = [ (LineTooLong, dataLineTooLong)
 issuesMisc :: [(Issue, IssueInfo)]
 issuesMisc = [ (NotParsable, dataNotParsable)
              , (ForbiddenExt, dataForbiddenExt)
+             , (ForbiddenImports, dataForbiddenImports)
              , (BadHeader, dataBadHeader)
              , (Debug, dataDebug)
              ]
@@ -185,6 +188,17 @@ dataForbiddenExt = IssueInfo
   where
     description (StringArg s) = s ++ " contains forbidden extensions"
     description _ = "a file contains forbidden extensions"
+
+dataForbiddenImports :: IssueInfo
+dataForbiddenImports = IssueInfo
+  Major
+  "H-M3"
+  description
+  "contains forbidden imports"
+  where
+    description (StringArg s) = "contains a forbidden import: " ++ s
+    description _ = "a file contains forbidden imports"
+
 
 dataNotParsable :: IssueInfo
 dataNotParsable = IssueInfo

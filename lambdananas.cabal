@@ -36,6 +36,7 @@ library
       BadHeader
       BadIf
       Common
+      ForbiddenImports
       FunctionTooWideOrLarge
       NoSig
   other-modules:

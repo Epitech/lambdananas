@@ -9,7 +9,7 @@ import Common
 import Text.Regex.TDFA
 
 check :: Check
-check (_, comments, f) = case filter isHeader comments of
+check (_, _, comments, f) = case filter isHeader comments of
     [_] -> []
     _ -> [makeWarn BadHeader (f, 1) (StringArg f)]
   where

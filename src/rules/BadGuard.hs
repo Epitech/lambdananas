@@ -9,7 +9,7 @@ import Common
 import Data.Foldable
 
 check :: Check
-check (lst, _, _) = join $ explore checkGuard lst
+check (lst, _, _, _) = join $ explore checkGuard lst
   where checkGuard (NDec (FunBind _ m)) =
           fold $ zipWith toWarns (vars m) (matchs m)
         checkGuard _ = []

@@ -6,6 +6,7 @@ import qualified BadGuard (check)
 import qualified BadIf (check)
 import qualified FunctionTooWideOrLarge (check)
 import qualified NoSig (check)
+import qualified ForbiddenImports (check)
 
 import Test.Hspec
 import Control.Monad
@@ -13,8 +14,8 @@ import Control.Monad
 appliedTo :: Check -> [String] -> Either ParseError [Warn]
 appliedTo rule src = rule <$> parseHS "." (unlines src)
 
-takeFirst :: (a, b, c) -> a
-takeFirst (a, _, _) = a
+takeFirst :: (a, b, c, d) -> a
+takeFirst (a, _, _, _) = a
 
 main :: IO ()
 main = hspec $ do
@@ -154,3 +155,9 @@ main = hspec $ do
       FunctionTooWideOrLarge.check
       `appliedTo` ["f 0 = " ++ [' ' | _ <- [1..70] ] ++ "    True"]
       `shouldBe` Right [Warn LineTooLong (".", 1) NoArg]
+
+  describe "forbiddenImports" $ do
+    it "should detect forbidden imports" $
+      ForbiddenImports.check
+      `appliedTo` ["import System.IO.Unsafe"]
+      `shouldBe` Right [Warn ForbiddenImports (".", 1) (StringArg "System.IO.Unsafe")]

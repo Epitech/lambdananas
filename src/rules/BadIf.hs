@@ -8,7 +8,7 @@ module BadIf (
 import Common
 
 check :: Check
-check (lst, _, _) = (join . explore checkIf) lst
+check (lst, _, _, _) = (join . explore checkIf) lst
   where checkIf (NExp (If ssi _ ift ife)) | countIfs ift ife >= 1 =
           [makeWarn BadIf (getLoc ssi) NoArg]
         checkIf _ = []

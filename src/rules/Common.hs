@@ -19,4 +19,5 @@ import Control.Monad.Writer
 import Parser
 import Warn
 
-type Check = ([Decl SrcSpanInfo], [Comment], FilePath) -> [Warn]
+type Check = ([Decl SrcSpanInfo], [ImportDecl SrcSpanInfo],
+              [Comment], FilePath) -> [Warn]

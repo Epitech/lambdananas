@@ -9,7 +9,7 @@ module BadDoReturn (
 import Common
 
 check :: Check
-check (lst, _, _) = (join . explore checkReturn) lst
+check (lst, _, _, _) = (join . explore checkReturn) lst
   where checkReturn (NExp (Do _ body)) =
           foldMap (badReturns . NSmt) body
         checkReturn _ = []

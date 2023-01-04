@@ -1,6 +1,10 @@
-{-|
-Function has no signature.
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Function has no signature.
 -}
+
 module NoSig (
   check,
 ) where
@@ -8,8 +12,8 @@ module NoSig (
 import Common
 
 check :: Check
-check (lst, _, _, _) = join $ map genWarn binds
-  where sigsAndBinds = explore collectSigs lst
+check presult = join $ map genWarn binds
+  where sigsAndBinds = explore collectSigs (decls presult)
         sigs = foldMap fst sigsAndBinds
         binds = foldMap getBind sigsAndBinds
         getBind (_,l) = if null l then [] else [head l]

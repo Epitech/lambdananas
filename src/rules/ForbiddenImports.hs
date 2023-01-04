@@ -1,6 +1,10 @@
-{-|
-Function has no signature.
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Forbidden imports
 -}
+
 module ForbiddenImports (
   check,
 ) where
@@ -15,7 +19,7 @@ forbiddenImportList = [ "Data.IORef"
                       ]
 
 check :: Check
-check (_, imports, _, _) = map toWarn $ getForbiddenImports imports
+check presult = map toWarn $ getForbiddenImports (imports presult)
   where
     getForbiddenImports lst = filter filterImp $ map getImp lst
     getImp (ImportDecl ssi (ModuleName _ name) _ _ _ _ _ _) = (name, ssi)

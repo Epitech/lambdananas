@@ -1,6 +1,10 @@
-{-|
-Common imports for all rules to use.
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Common imports for all rules to use.
 -}
+
 module Common (
   Check,
   module Language.Haskell.Exts.Syntax,
@@ -19,5 +23,4 @@ import Control.Monad.Writer
 import Parser
 import Warn
 
-type Check = ([Decl SrcSpanInfo], [ImportDecl SrcSpanInfo],
-              [Comment], FilePath) -> [Warn]
+type Check = PResult -> [Warn]

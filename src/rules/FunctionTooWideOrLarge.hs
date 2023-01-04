@@ -1,6 +1,10 @@
-{-|
-Line too long or function too long.
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Line too long or function too long.
 -}
+
 module FunctionTooWideOrLarge (
   check,
 ) where
@@ -8,7 +12,7 @@ module FunctionTooWideOrLarge (
 import Common
 
 check :: Check
-check (lst, _, _, _) = uniqWarn $ join $ explore checkLine lst
+check presult = uniqWarn $ join $ explore checkLine (decls presult)
   where checkLine (NDec (FunBind _ matches)) = foldMap checkLine' matches
         checkLine (NDec decl@PatBind{}) = checkLine' decl
         checkLine _ = []

@@ -1,7 +1,14 @@
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Bad do return. 
+-}
+
 {-|
-Bad do return.
 (Also named uselessReturn or uselessGenerator through the code).
 -}
+
 module BadDoReturn (
   check,
 ) where
@@ -9,7 +16,7 @@ module BadDoReturn (
 import Common
 
 check :: Check
-check (lst, _, _, _) = (join . explore checkReturn) lst
+check presult = (join . explore checkReturn) (decls presult)
   where checkReturn (NExp (Do _ body)) =
           foldMap (badReturns . NSmt) body
         checkReturn _ = []

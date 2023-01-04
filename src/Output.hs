@@ -81,7 +81,8 @@ forbiddenExtIssue f l = makeWarn ForbiddenExt (f, l) $ StringArg f
 outputManifest :: String
 outputManifest = intercalate "\n" (sort $ createLine <$> issues)
   where
-    createLine (_, IssueInfo {code = c, showDetails = d}) = c ++ ": " ++ d NoArg
+    createLine (_, IssueInfo {code = c, showDetails = d}) =
+      c ++ ": " ++ d NoArg
 
 -- | Appends a vague description of given 'Issue' to `$PWD/style-student.txt` file.
 outputVague :: [Issue] -> String

@@ -1,6 +1,10 @@
-{-|
-Bad ifs.
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Bad ifs.
 -}
+
 module BadIf (
   check,
 ) where
@@ -8,7 +12,7 @@ module BadIf (
 import Common
 
 check :: Check
-check (lst, _, _, _) = (join . explore checkIf) lst
+check presult = (join . explore checkIf) (decls presult)
   where checkIf (NExp (If ssi _ ift ife)) | countIfs ift ife >= 1 =
           [makeWarn BadIf (getLoc ssi) NoArg]
         checkIf _ = []

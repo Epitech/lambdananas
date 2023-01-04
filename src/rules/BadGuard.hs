@@ -1,6 +1,10 @@
-{-|
-Bad guard.
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Bad guard.
 -}
+
 module BadGuard (
   check,
 ) where
@@ -9,7 +13,7 @@ import Common
 import Data.Foldable
 
 check :: Check
-check (lst, _, _, _) = join $ explore checkGuard lst
+check presult = join $ explore checkGuard (decls presult)
   where checkGuard (NDec (FunBind _ m)) =
           fold $ zipWith toWarns (vars m) (matchs m)
         checkGuard _ = []

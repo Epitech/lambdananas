@@ -1,6 +1,10 @@
-{-|
-Bad do.
+{-
+-- EPITECH PROJECT, 2023
+-- Lambdananas
+-- File description:
+-- Bad do.
 -}
+
 module BadDo (
   check,
 ) where
@@ -8,7 +12,7 @@ module BadDo (
 import Common
 
 check :: Check
-check (lst, _, _, _) = (join . explore checkDo) lst
+check presult = (join . explore checkDo) (decls presult)
   where checkDo (NExp (Do ssi body)) | countGenerators body < 1 =
                                        [makeWarn BadDo (getLoc ssi) NoArg]
         checkDo _ = []

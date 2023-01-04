@@ -14,14 +14,11 @@ import Control.Monad
 appliedTo :: Check -> [String] -> Either ParseError [Warn]
 appliedTo rule src = rule <$> parseHS "." (unlines src)
 
-takeFirst :: (a, b, c, d) -> a
-takeFirst (a, _, _, _) = a
-
 main :: IO ()
 main = hspec $ do
   describe "parseHS" $
     it "parse haskell source" $
-      let res = map void <$> takeFirst <$> parseHS "." "v = 42"
+      let res = map void <$> decls <$> parseHS "." "v = 42"
       in res `shouldBe` Right [PatBind () (PVar () (Ident () "v"))
                                (UnGuardedRhs () (Lit () (Int () 42 "42")))
                                Nothing]

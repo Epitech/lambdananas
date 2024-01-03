@@ -77,7 +77,7 @@ forbiddenExtIssue :: String -> Int -> Warn
 forbiddenExtIssue f l = makeWarn ForbiddenExt (f, l) $ StringArg f
 
 -- | Generates a manifest of all coding style issues in format
--- `<code>:<description>`.
+-- `<code>: <description>`.
 outputManifest :: String
 outputManifest = intercalate "\n" (sort $ createLine <$> issues)
   where

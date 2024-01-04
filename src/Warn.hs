@@ -212,7 +212,7 @@ dataNotParsable = IssueInfo
 
 dataBadHeader :: IssueInfo
 dataBadHeader = IssueInfo
-  Major
+  Minor
   "H-G1"
   description
   "file must start with a correctly formatted Epitech standard header"

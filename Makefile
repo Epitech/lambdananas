@@ -9,11 +9,21 @@ INSTALL_PATH=$(HOME)/bin/
 
 SRC = app/Main.hs $(wildcard src/*.hs)
 
-$(NAME): $(SRC)
+all: $(NAME)
+
+run:
 	stack build
 	$(CP) $(BIN_PATH) $(NAME)
+	rm -f ./stack.yaml ./package.yaml ./lambdananas.cabal ./stack.yaml.lock
 
-all: $(NAME)
+$(NAME): $(SRC)
+	./change_version.sh linux
+	@$(MAKE) run
+
+mac:	$(SRC)
+	./change_version.sh mac
+	@$(MAKE) run
+
 
 install: $(NAME)
 	upx --best $(NAME) || true
@@ -33,4 +43,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all tests_run clean fclean re
+.PHONY: all mac tests_run clean fclean re

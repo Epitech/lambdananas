@@ -1,3 +1,8 @@
 .stack-work/
 *~
 *.txt
+
+./stack.yaml
+./package.yaml
+./lambdananas.cabal
+./stack.yaml.lock

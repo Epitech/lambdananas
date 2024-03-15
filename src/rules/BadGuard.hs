@@ -11,6 +11,7 @@ module BadGuard (
 
 import Common
 import Data.Foldable
+import Control.Monad (join)
 
 check :: Check
 check presult = join $ explore checkGuard (decls presult)

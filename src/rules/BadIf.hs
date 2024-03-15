@@ -10,6 +10,8 @@ module BadIf (
 ) where
 
 import Common
+import Data.Monoid (Sum(..))
+import Control.Monad (join)
 
 check :: Check
 check presult = (join . explore checkIf) (decls presult)

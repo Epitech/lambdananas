@@ -10,6 +10,7 @@ module FunctionTooWideOrLarge (
 ) where
 
 import Common
+import Control.Monad (join)
 
 check :: Check
 check presult = uniqWarn $ join $ explore checkLine (decls presult)

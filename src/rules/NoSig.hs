@@ -17,7 +17,8 @@ check presult = join $ map genWarn binds
   where sigsAndBinds = explore collectSigs (decls presult)
         sigs = foldMap fst sigsAndBinds
         binds = foldMap getBind sigsAndBinds
-        getBind (_,l) = if null l then [] else [head l]
+        getBind (_, []) = []
+        getBind (_, x:_) = [x]
         genWarn (fct, ssi) | fct `notElem` sigs =
                               [makeWarn NoSig (getLoc ssi) $ StringArg fct]
         genWarn _ = []

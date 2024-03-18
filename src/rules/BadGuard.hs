@@ -18,8 +18,8 @@ check presult = join $ explore checkGuard (decls presult)
   where checkGuard (NDec (FunBind _ m)) =
           fold $ zipWith toWarns (vars m) (matchs m)
         checkGuard _ = []
-        vars match = map (inspectMatch collectVar) match
-        matchs match = map (inspectMatch collectGuards) match
+        vars = map (inspectMatch collectVar)
+        matchs = map (inspectMatch collectGuards)
         collectVar (NPat (PVar _ idt)) = [getIdent idt]
         collectVar _ = []
         collectGuards (NSmt (Qualifier _ expr)) = [expr]

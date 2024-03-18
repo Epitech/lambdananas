@@ -89,7 +89,7 @@ outputVague :: [Issue] -> String
 outputVague i = (++ "\n") . intercalate "\n" $ uncurry showVague <$>
     removeNoOccurences (count <$> occurenceList)
   where
-    removeNoOccurences l = filter (\(_, y) -> y /= 0) l
+    removeNoOccurences = filter ((/=0) . snd)
     count (x, _, _) = (x, length $ filter (== x) i)
     occurenceList = [(x, y, 0 :: Int)| (x, y) <- issues]
 

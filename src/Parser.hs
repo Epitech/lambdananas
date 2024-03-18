@@ -135,7 +135,7 @@ inspectMatch _ _ = mempty
 inspectDecl :: Monoid a => (Node -> a) -> Decl SrcSpanInfo -> a
 inspectDecl f d@(PatBind _ (PVar _ _) a _) = f (NDec d) <> inspectRhs f a
 inspectDecl f d@(FunBind _ lst) = f (NDec d) <> foldMap (inspectMatch f) lst
-inspectDecl f d = f (NDec d) <> mempty
+inspectDecl f d = f (NDec d)
 
 explore :: Monoid a => (Node -> a) -> [Decl SrcSpanInfo] -> [a]
 explore f = map (inspectDecl f)

@@ -14,6 +14,7 @@ module BadDoReturn (
 ) where
 
 import Common
+import Control.Monad (join)
 
 check :: Check
 check presult = (join . explore checkReturn) (decls presult)

@@ -10,6 +10,7 @@ module NoSig (
 ) where
 
 import Common
+import Control.Monad (join)
 
 check :: Check
 check presult = join $ map genWarn binds
